@@ -1,0 +1,7 @@
+pytest
+coverage
+pytest-cov
+colored
+attrs
+attr
+toml

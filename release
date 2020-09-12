@@ -1,0 +1,195 @@
+#!/bin/zsh
+# The Release Script
+# Part of the Python Project Template.
+# Copyright © 2013-2018, Chris Warrick.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions, and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions, and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the author of this software nor the names of
+#    contributors to this software may be used to endorse or promote
+#    products derived from this software without specific prior written
+#    consent.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+. .pypt/config
+function status {
+    echo $@
+}
+
+function warning {
+    echo 'WARNING: '$@
+}
+
+function error {
+    echo 'ERROR: '$@
+}
+
+function cleanup {
+    rm -rf $PROJECTLC.egg-info build || true
+    rm -rf **/__pycache__ || true
+}
+
+function cleanup_cmfn {
+    [[ -e $cmfn ]] && rm $cmfn || true
+    [[ -e $cmfn2 ]] && rm $cmfn2 || true
+}
+
+status '*** Chris Warrick’s Release Scripts (PyPT)'
+
+echo -n "Version number: "
+read version
+
+echo $version | grep '^[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}$' > /dev/null
+
+if [[ $? != 0 ]]; then
+    echo $version | grep '^[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}\-[0-9A-Za-z-]\{1,\}$' > /dev/null
+    if [[ $? != 0 ]]; then
+        warning 'version number is not compliant with versioning scheme (Semantic Versioning 2.0)'
+        echo -n 'Continue? [y/N] '
+        read vercont
+        if [[ $vercont == 'y' || $vercont == 'Y' ]]; then
+            echo 'Continuing.'
+        else
+            exit 2
+        fi
+    else
+        status 'NOTICE: pre-release version number in use.'
+        echo -n 'Continue? [Y/n] '
+        read vercont
+        if [[ $vercont == 'n' || $vercont == 'N' ]]; then
+            exit 2
+        else
+            echo 'Continuing.'
+        fi
+    fi
+fi
+
+# Creating all the dates at the exact same time.
+date=$(date '+%Y-%m-%d')
+datel=$(date '+%Y-%m-%d %H:%M%z')
+#datep=$(date '+%Y%m%d')
+dates=$(date '+%s')
+
+cmfn=$PWD/.git/kwrs-$dates
+cmfn2=$cmfn"-commit"
+
+cleanup
+cleanup_cmfn
+git add -A --ignore-errors .
+
+cat > $cmfn <<EOF
+#~ Chris Warrick’s Release Scripts (PyPT)
+#~ Please write your commit and changelog messages.
+#~ You may use reST formatting in the latter.
+#~ Please make the first line of your commit message short.
+#~ The second line of multi-line commits should be empty.
+
+#~ COMMIT MESSAGE START ~#
+#~version~#
+#~ COMMIT MESSAGE END ~#
+
+#~ CHANGELOG MESSAGE START ~#
+
+#~ CHANGELOG MESSAGE END ~#
+
+#~~~#
+EOF
+
+sed -i "s/#~version~#/v$version: /" $cmfn
+git status >> $cmfn
+
+if [[ "$EDITOR" == 'vim' || "$EDITOR" == '/usr/bin/vim' ]]; then
+    $EDITOR -c 'set filetype=gitcommit' $cmfn
+elif [[ $EDITOR == '' ]]; then
+    vim -c 'set filetype=gitcommit' $cmfn
+else
+    $EDITOR $cmfn
+fi
+
+.pypt/commitlog $cmfn $PWD $version
+
+status 'Replacing versions and dates in files...'
+sed "s/version=.*/version='$version',/g" setup.py -i
+sed "s/version = .*/version = '$version'/g" docs/conf.py -i
+sed "s/release = .*/release = '$version'/g" docs/conf.py -i
+sed "s/:Version: .*/:Version: $version/g" docs/**/*.rst -i
+sed "s/# $PROJECT v.*/# $PROJECT v$version/" $PROJECTLC/**/*.py -i
+sed "s/__version__ = .*/__version__ = '$version'/g" $PROJECTLC/__init__.py -i
+sed "s/:Date: .*/:Date: $date/g" docs/*.rst -i
+
+[[ -e "PKGBUILD" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD -i || true
+[[ -e "PKGBUILD-git" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD-git -i || true
+
+cp docs/README.rst docs/CHANGELOG.rst docs/CONTRIBUTING.rst .
+cp docs/README.rst README
+
+status 'Generating locales...'
+./.pypt/localegen
+
+status 'Importing...'
+python -c "import $PROJECTLC"
+if [[ $? != 0 ]]; then
+    error "Import failed.  Fix your code or don't come back."
+    exit 1
+fi
+
+if [[ -e tests ]]; then
+    status 'Running tests...'
+    pytest tests/
+    if [[ $? != 0 ]]; then
+        error "Tests failed.  Fix your code or don't come back."
+        exit 1
+    fi
+fi
+
+status 'Running pre-sdist.hook...'
+
+. .pypt/hooks/pre-sdist.hook
+
+status 'This is the last chance to quit.  Hit ^C now if you want to.'
+read bailout
+
+./setup.py sdist bdist_wheel || exit $?
+twine upload -s dist/$PROJECTLC-$version.tar.gz dist/$PROJECTLC-$version*.whl || exit $?
+
+if [[ -e PKGBUILD ]]; then
+    status 'Updating AUR PKGBUILDs...'
+    md5out=$(md5sum 'dist/'$PROJECTLC'-'$version'.tar.gz'|awk '{print $1}')
+    sed "s/md5sums=.*/md5sums=('$md5out')/" PKGBUILD -i
+fi
+
+cleanup
+
+git add -A --ignore-errors . || exit $?
+
+git commit -S -asF $cmfn2 || exit $?
+git tag -sm "Version $version" v$version || exit $?
+git push --follow-tags origin master || exit $?
+
+.pypt/ghrel $cmfn $PWD $GITUSER/$GITREPO v$version
+
+cleanup_cmfn
+
+status "Done!"
+. .pypt/hooks/post-release.hook

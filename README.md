@@ -76,6 +76,9 @@ echo "source ~/.kb_alias" >> ~/.bashrc
 source ~/.kb_alias
 ```
 
+**Tip** for Windows users: Do not use notepad as %EDITOR%, kb is not
+compatible with notepad, a reasonable alternative is notepadd++.
+
 ## USAGE
 
 A quick demo of a typical scenario using kb:

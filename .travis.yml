@@ -3,17 +3,13 @@ language: python
 
 sudo: false
 python:
- - "3.3"
- - "3.4"
- - "3.5"
- - "3.6"
- - "3.7"
  - "3.8"
- - "pypy"
 
 install:
  - "pip install -r requirements.txt"
  - "pip install ."
+ - "pip install setuptools"
+ - "pip install pyinstaller"
 
 script:
   - bash -c echo "Tests must go here"

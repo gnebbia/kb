@@ -99,7 +99,8 @@ def colorize_output(data, markers):
         colorized_output.append(mark_row(row, markers))
     return colorized_output
 
-def view(filepath: str, markers: Dict[str,str], color: bool=True) -> None:
+
+def view(filepath: str, markers: Dict[str, str], color: bool = True) -> None:
     """
     Visualize the specified file with applied markers
     if color is True.

@@ -239,7 +239,7 @@ def parse_args(args):
 
     # delete parser
     delete_parser.add_argument(
-        "-i","--id",
+        "-i", "--id",
         help="ID of the artifact",
         type=str,
         nargs='*',

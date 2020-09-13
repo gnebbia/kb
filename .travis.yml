@@ -1,11 +1,14 @@
+os: linux
 language: python
+
 sudo: false
 python:
  - "3.3"
  - "3.4"
  - "3.5"
  - "3.6"
- - "3.6\7"
+ - "3.7"
+ - "3.8"
  - "pypy"
 
 install:
@@ -13,9 +16,18 @@ install:
  - "pip install ."
 
 script:
-  - "py.test --cov kb --cov-report term-missing tests/"
+  - bash -c echo "Tests must go here"
 
-notifications:
-  email:
-    on_success: change
-    on_failure: always
+before_deploy:
+  - pyinstaller --onefile --paths kb/ kb/__main__.py
+
+deploy:
+  provider: releases
+  api_key: $RELEASE_TOKEN
+  file_glob: true
+  file: dist/*
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: true
+  name: $TRAVIS_TAG (DRAFT)

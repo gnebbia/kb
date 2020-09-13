@@ -16,7 +16,6 @@ import subprocess
 import platform
 
 
-
 def open_non_text_file(filename):
     """
     Open a non-text file
@@ -27,6 +26,3 @@ def open_non_text_file(filename):
         os.startfile(filename)
     else:
         subprocess.Popen(['xdg-open', filename])
-
-
-

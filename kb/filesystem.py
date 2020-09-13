@@ -167,6 +167,7 @@ def move_file(source: str, dest: str) -> None:
     """
     shutil.move(source, dest)
 
+
 def is_text_file(filename: str) -> bool:
     """
     Determines if a file is textual (that can be
@@ -175,16 +176,17 @@ def is_text_file(filename: str) -> bool:
 
     Arguments:
     filename        - the file name/path to check
-    
+
     Returns:
     A boolean, True if the file is of type text.
     """
-    txt_extensions = ("",".conf",".ini",".txt",
-            ".md",".rst",".ascii",".org",".tex")
+    txt_extensions = ("", ".conf", ".ini", ".txt",
+                      ".md", ".rst", ".ascii", ".org", ".tex")
 
     file_ext = os.path.splitext(filename)[1]
 
     return file_ext in txt_extensions
+
 
 def get_filename_parts_wo_prefix(
         filename: str,
@@ -292,6 +294,3 @@ def grep_in_files_uniq(
             # so we don't search through binary files
             continue
     return list(set(matches))
-
-
-

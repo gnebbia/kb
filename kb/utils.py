@@ -21,7 +21,6 @@ def sanitize_string(string_to_sanitize):
     return string_to_sanitize
 
 
-
 def open_non_text_file(filename):
     """
     Open a non-text file

@@ -15,6 +15,7 @@ from typing import List
 from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 from kb.entities.artifact import Artifact
 
+
 def generate_grep_header(
         grep_result: List[Artifact],
         hits_list: List[int],
@@ -233,6 +234,8 @@ def print_grep_result_verbose(
             print(ALT_BGROUND + result_line + RESET)
         else:
             print(result_line)
+
+
 def print_grep_matches(grep_matches, color=True):
     """
     Print text associated to grep matches.

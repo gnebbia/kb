@@ -15,7 +15,7 @@ script:
   - bash -c echo "Tests must go here"
 
 before_deploy:
-  - pyinstaller --onefile --paths kb/ kb/__main__.py
+  - pyinstaller --onefile --paths kb/ kb/__main__.py -n kb
 
 deploy:
   provider: releases
@@ -24,3 +24,5 @@ deploy:
   file: dist/*
   skip_cleanup: true
   draft: true
+  on:
+    tags: true

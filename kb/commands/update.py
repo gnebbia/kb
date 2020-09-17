@@ -56,6 +56,10 @@ def update(args: Dict[str, str], config: Dict[str, str]):
     if args["id"]:
         old_artifact = history.get_artifact(conn,
                                             config["PATH_KB_HIST"], args["id"])
+        if not old_artifact:
+            print("The artifact you are trying to update does not exist! "\
+                   "Please insert a valid ID...")
+            return None
 
         updated_artifact = Artifact(
             id=None,

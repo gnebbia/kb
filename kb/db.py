@@ -207,7 +207,9 @@ def get_artifact_by_id(conn, artifact_id: int) -> Artifact:
     sql_query = "SELECT * FROM artifacts WHERE id = ?"
     cur.execute(sql_query, [artifact_id])
 
-    return Artifact(*cur.fetchall().pop())
+    result = cur.fetchone()
+    if result:
+        return Artifact(*result)
 
 
 def get_artifacts_by_filter(
@@ -508,6 +510,8 @@ def update_artifact_by_id(
     Returns an error if there was a failure in the update operation
     """
     current_artifact = get_artifact_by_id(conn, artifact_id)
+    if not current_artifact:
+        return None
 
     update_record = (artifact_id, artifact.title, artifact.category,
                      artifact.path, artifact.tags, artifact.author,

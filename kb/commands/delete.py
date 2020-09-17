@@ -45,6 +45,9 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
             artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], i)
             artifact = db.get_artifact_by_id(conn, artifact_id)
 
+            if not artifact:
+                continue
+
             db.delete_artifact_by_id(conn, artifact_id)
 
             category_path = Path(config["PATH_KB_DATA"], artifact.category)

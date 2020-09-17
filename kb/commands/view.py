@@ -59,6 +59,9 @@ def view(args: Dict[str, str], config: Dict[str, str]):
 
         artifact = db.get_artifact_by_id(conn, artifact_id)
 
+        if not artifact:
+            sys.exit(1)
+
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
         artifact_path = Path(category_path, artifact.title)
 

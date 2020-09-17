@@ -1,5 +1,4 @@
 <p align="center">
-    <a href="https://terminalizer.com">
     <img src="img/kb_logo.png?raw=true" width="200"/>
     </a>
 </p>

@@ -46,7 +46,8 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
 
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
 
-        call([config["EDITOR"], Path(category_path, artifact.title)], shell=True)
+        shell_cmd = config["EDITOR"].split() + [Path(category_path, artifact.title)]
+        call(shell_cmd)
 
     # else if a title is specified
     elif args["title"]:
@@ -57,7 +58,8 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
         if len(artifacts) == 1:
             artifact = artifacts.pop()
             category_path = Path(config["PATH_KB_DATA"], artifact.category)
-            call([config["EDITOR"], Path(category_path, artifact.title)], shell=True)
+            shell_cmd = config["EDITOR"].split() + [Path(category_path, artifact.title)]
+            call(shell_cmd)
         elif len(artifacts) > 1:
             print(
                 "There is more than one artifact with that title, please specify a category")

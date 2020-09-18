@@ -76,7 +76,7 @@ source ~/.kb_alias
 ```
 
 **Tip** for Windows users: Do not use notepad as %EDITOR%, kb is not
-compatible with notepad, a reasonable alternative is notepadd++.
+compatible with notepad, a reasonable alternative is notepad++.
 
 ## USAGE
 

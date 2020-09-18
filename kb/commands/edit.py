@@ -46,7 +46,7 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
 
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
 
-        call([config["EDITOR"], Path(category_path, artifact.title)])
+        call([config["EDITOR"], Path(category_path, artifact.title)], shell=True)
 
     # else if a title is specified
     elif args["title"]:

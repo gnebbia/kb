@@ -1,5 +1,6 @@
 # TODO List
 
+- add option to export only data directory containing cheatsheet
 - Write installation procedure for Windows
 - Fix windows hell with automatic extensions...
 - find a way to include complex artifacts

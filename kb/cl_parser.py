@@ -145,49 +145,6 @@ def parse_args(args):
         default=False,
     )
 
-    # update parser
-    update_parser.add_argument(
-        "-i", "--id",
-        help="ID of the artifact to update",
-        type=str,
-    )
-    update_parser.add_argument(
-        "-t", "--title",
-        help="Title to update",
-        default=None,
-        type=str,
-    )
-    update_parser.add_argument(
-        "-c", "--category",
-        help="Category to update",
-        default=None,
-        type=str,
-    )
-    update_parser.add_argument(
-        "-g", "--tags",
-        help="Tags to update in the form \"tag1;tag2;...;tagN\"",
-        default=None,
-        type=str,
-    )
-    update_parser.add_argument(
-        "-a", "--author",
-        help="Author to update",
-        default=None,
-        type=str,
-    )
-    update_parser.add_argument(
-        "-s", "--status",
-        help="Status to update",
-        default=None,
-        type=str,
-    )
-    update_parser.add_argument(
-        "-x", "--edit-content",
-        help="Edit content of the artifact",
-        default=None,
-        type=str,
-    )
-
     # list parser
     list_parser.add_argument(
         "query",
@@ -235,26 +192,6 @@ def parse_args(args):
         action='store_true',
         dest='no_color',
         default=False,
-    )
-
-    # delete parser
-    delete_parser.add_argument(
-        "-i", "--id",
-        help="ID of the artifact",
-        type=str,
-        nargs='*',
-    )
-    delete_parser.add_argument(
-        "-t", "--title",
-        help="Title of the artifact to remove",
-        default=None,
-        type=str,
-    )
-    delete_parser.add_argument(
-        "-c", "--category",
-        help="Category associated to the artifact to remove",
-        default=None,
-        type=str,
     )
 
     # view parser
@@ -349,13 +286,67 @@ def parse_args(args):
         default=False,
     )
 
-    # erase parser
-    erase_parser.add_argument(
-        "--db",
-        help="Only remove kb database",
-        action='store_true',
-        dest='db',
-        default=False,
+    # update parser
+    update_parser.add_argument(
+        "-i", "--id",
+        help="ID of the artifact to update",
+        type=str,
+    )
+    update_parser.add_argument(
+        "-t", "--title",
+        help="Title to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
+        "-c", "--category",
+        help="Category to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
+        "-g", "--tags",
+        help="Tags to update in the form \"tag1;tag2;...;tagN\"",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
+        "-a", "--author",
+        help="Author to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
+        "-s", "--status",
+        help="Status to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
+        "-x", "--edit-content",
+        help="Edit content of the artifact",
+        default=None,
+        type=str,
+    )
+
+    # delete parser
+    delete_parser.add_argument(
+        "-i", "--id",
+        help="ID of the artifact",
+        type=str,
+        nargs='*',
+    )
+    delete_parser.add_argument(
+        "-t", "--title",
+        help="Title of the artifact to remove",
+        default=None,
+        type=str,
+    )
+    delete_parser.add_argument(
+        "-c", "--category",
+        help="Category associated to the artifact to remove",
+        default=None,
+        type=str,
     )
 
     # import parser
@@ -371,6 +362,15 @@ def parse_args(args):
         help="Name of the exported archive",
         type=str,
         nargs="?"
+    )
+
+    # erase parser
+    erase_parser.add_argument(
+        "--db",
+        help="Only remove kb database",
+        action='store_true',
+        dest='db',
+        default=False,
     )
 
     if len(args) == 0:

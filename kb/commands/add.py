@@ -68,7 +68,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            call([config["EDITOR"], Path(category_path, title)])
+            call([config["EDITOR"], Path(category_path, title)], shell=True)
 
         new_artifact = Artifact(
             id=None, title=title, category=category,

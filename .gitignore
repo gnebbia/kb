@@ -53,3 +53,7 @@ nosetests.xml
 
 # vim session files
 *.vim
+
+# docker
+docker/data/*
+!docker/data/.gitkeep

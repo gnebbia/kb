@@ -78,6 +78,24 @@ source ~/.kb_alias
 **Tip** for Windows users: Do not use notepad as %EDITOR%, kb is not
 compatible with notepad, a reasonable alternative is notepad++.
 
+## DOCKER
+
+A docker setup has been included to help with development.
+
+To install and start the project with docker:
+```sh
+docker-compose up -d
+docker-compose exec kb bash
+```
+
+The container has the aliases included in its `.bashrc` so you can use
+kb in the running container as you would if you installed it on the
+host directly.  The `./docker/data` directory on the host is bound to
+`/data` in the container, which is the image's working directly also.
+To interact with the container, place (or symlink) the files on your host
+into the `./docker/data` directory, which can then be seen and used in
+the `/data` directory in the container.
+
 ## USAGE
 
 A quick demo of a typical scenario using kb:

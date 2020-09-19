@@ -13,8 +13,7 @@ kb viewer module
 
 import re
 from typing import Dict
-from colored import fg, attr
-
+from kb.styler import set_fg, reset
 
 def colorize_string(string, color):
     """
@@ -27,7 +26,7 @@ def colorize_string(string, color):
     Returns:
     A colored message
     """
-    return fg(color) + string + attr('reset')
+    return set_fg(color) + string + reset()
 
 
 def colorize_string_on_match(string, regex, color):

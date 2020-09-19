@@ -1,0 +1,163 @@
+# WiFi Pentesting Tips
+I've tried to consolidate information from a variety of sources to
+assist penetration testing during a wireless assessment. This list
+includes plausible tactics, techniques, and procedures (TTP).
+I've decided to publish these in an easy to read, and hopefully digestible
+blog fashion. Some of the items below will be updated occasionally,
+with new attack vectors.
+
+- Find a device, tool, software or environment that is reliable for RF
+  testing. There are so many tools, wrappers and hardware to choose from
+
+- Uncovering Hidden SSIDS: "Hidden SSID is a configuration
+  where the access point does not broadcast its SSID in beacon frames"
+
+- Building a Wireless Penetration Environment using Docker, "When
+  Whales Fly"
+
+- Aircrack-ng is a complete suite of tools to assess WiFi network security
+
+- By using your Let's Encrypt certificate
+  you can effectively avoid internal SSL certificate issues, by not
+  relying on self-signed certificates.
+
+- There are a lot of devices you can use to test: "ESP32 WiFi Hash
+  Monster, store EAPOL & PMKID packets in an SD card using a M5STACK /
+  ESP32 device"
+
+- Buy a WiFi Pineapple, "The WiFi Pineapple® NANO and TETRA are the
+  6th generation pentest platforms from Hak5.
+
+- Learn how to use MANA (https://github.com/sensepost/hostapd-mana),
+  "SensePost's modified hostapd for wifi attacks"
+
+- Download Wpa sycophant (https://github.com/sensepost/wpa_sycophant)
+  for an EAP relay attack (https://w1f1.net/)
+
+- Cheap WiFi hacks (http://deauther.com/)
+
+- Wpa3-vuln: wpa_supplicant 2.7 vulnerable to Mathy's WPA3 bugs
+  (https://github.com/sensepost/wpa3-vuln)
+
+- The default TX-Power of most USB wireless cards is 20 dBm, but by
+  issuing two commands you can increase your transmission power.
+  (Type "iw reg set BO" then "iwconfig wlan0 txpower 30")
+
+- Check out wiggle, there are a lot of of opportunities to use this data
+  for offensive and defensive research.
+
+- Captive Portal Attack
+  (https://github.com/FluxionNetwork/fluxion/wiki/Captive-Portal-Attack)
+  "attack attempts to retrieve the target access point's WPA/WPA2 key by
+  means of a rogue network with a border authentication captive portal"
+
+- crEAP is a python script that will identify WPA Enterprise mode EAP
+  types and if insecure protocols are in use, will attempt to harvest
+  usernames and/or handshakes)
+  (https://www.shellntel.com/blog/2015/9/23/assessing-enterprise-wireless-network)
+
+- You can deuathenticate a client by using
+  a command like this: "aireplay-ng -0 1 -a 00:14:6C:7E:40:80 -c
+  00:0F:B5:34:30:30 ath0"
+
+- Download Eaphammer, it allows targeted evil twin attacks against
+  WPA2-Enterprise networks. Indirect wireless pivots using hostile
+  portal attacks.
+
+- Hcxdumptool is a small tool to capture packets from wlan devices
+
+- Hcxtools is a portable solution for conversion of WiFi Hcxdumptool
+  files to hashcat formats
+
+- Freeradius-wpe: Though dated, still may have a valid use case during
+  a wireless assessment
+
+- Hostapd-wpe (The first hostapd Evil Twin implementation and my favorite
+  tool for WPA2-Enterprise attacks)
+
+- Use the additional WPE command line "-s" which return EAP-Success
+  messages after credentials are harvested (See Understanding PEAP In-Depth)
+  (https://sensepost.com/blog/2019/understanding-peap-in-depth/)
+
+- Pwning WiFi-networks with bettercap and the PMKID client less attack
+  (https://www.evilsocket.net/2019/02/13/Pwning-WiFi-networks-with-bettercap-and-the-PMKID-client-less-attack/)
+
+- Build a pwnagtchi: Pwnagotchi is an A2C-based "AI"
+  powered by bettercap and running on a Raspberry Pi Zero W that
+  learns from its surrounding WiFi environment in order to maximize
+  the crackable WPA key material it captures
+
+- When actively scanning the client endpoint searches for wireless
+  networks by transmitting probes and listening for responses from the
+  access points within range
+
+- During a passive scan, the client device waits for beacons,
+  which are specific frames transmitted by the AP. (A probe response,
+  also includes the configuration and capabilities of the wireless
+  networks they service)
+
+- Wifite2: Automates attacks that you may need against WPS/WEP)
+
+- Some wireless penetration tests may require one to
+  ask for credentials and log onto their guest network. This is okay
+  and doesn't mean you have failed.
+
+- Always check Guest Network for Client Isolation issues. Can I get to
+  sensitive areas of the "Corporate" network, or any wired network from
+  the isolated network used by contractors, etc.?
+
+- Ensure that Client Isolation is on all wireless networks if possible.
+  (If client isolation is off, then you can perform man-in-the-middle attacks.)
+
+- Look for rogue access points by detaching your omni antenna, or using
+  a directional antenna for better results.
+
+- Look into Fluke gear if performing extensive rogue access point hunting
+  or heat mapping.
+
+- Use KRACK to ensure a wireless device that has not been patched or
+  updated is not vulnerable to known attacks.
+
+- TP-Link Archer C5 AC1200 is a Wireless Evil Twin Hardware Penetration
+  Testing Router.
+
+- Test the companies WIPS/WIPS by connecting a hardware rogue access
+  point to the corporate network.
+
+- Most "Ralink Wi-Fi chipset" cards work out the box with Kali .(The
+  ALFA and Panda's in the gist below work out of the box with the latest
+  Kali and can scan for 802.11ac clients)
+
+- Antennas do matter, they have different signal patterns. These signal
+  patterns make a difference.
+
+- Signal/power are obviously important, clients will roam from different
+  the 2.4 and 5 GHz bands based on signal strength and distance to the AP
+
+- In an EAP downgrade attack, modify the eap.user file when running
+  hostapd so that it downgrades the EAP connection to use EAP-GTC for
+  authentication.
+  (This will affect Android and iOS and Mac OS Supplicants to downgrade
+  the victim's supplicant to use a less secure method. Let the clear
+  text credentials rain in, aka getting some L00tbooty)
+
+- Karma exploits a behaviour of some Wi-Fi devices, combined with the
+  lack of access point authentication in numerous WiFi protocols. It is
+  a variant of the evil twin attack. Details of the attack were first
+  published in 2004 by Dino dai Zovi and Shaun Macaulay.
+
+- Understand that you are not always trying to attack the access point,
+  you must go after the user's device or PNL. (Preferred Network List)
+
+- When it comes to taxonomy and identifying clients, you may find that one
+  program, or suite of tools is better than the other for certain set tasks.
+
+- Know Beacon Attack, "An attacker that can guess the ESSID of an
+  open network in the victim device's Preferred Network List, will be
+  able to broadcast the corresponding beacon frame and have that device
+  automatically associate with an attacker-controlled access point"
+
+- Ever get access to a network that was hardened, but it was a guest
+  network? Set up your own Evil Twin network, using the real guest WPA2
+  PSK. This is a technique I use to show why companies should rotate their
+  guest network passwords, it can affect offices globally.

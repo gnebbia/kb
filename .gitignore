@@ -6,9 +6,6 @@ __pycache__
 env/
 venv/
 
-# Tests (at the moment)
-tests/
-
 # C extensions
 *.so
 

@@ -1,0 +1,11 @@
+openssl s_client -host www.yahoo.com -port 443
+sslscan www.yahoo.com
+tlssled www.yahoo.com 443
+nmap --script sslv2 www.yahoo.com
+nmap --script ssl-cert www.yahoo.com
+nmap --script ssl-date www.yahoo.com
+nmap --script ssl-enum-ciphers www.yahoo.com
+nmap --script ssl-google-cert-catalog www.yahoo.com
+msf > use auxiliary/pro/web_ssl_scan
+msf > use auxiliary/scanner/ssl/openssl_heartbleed
+msf > use auxiliary/server/openssl_heartbeat_client_memory

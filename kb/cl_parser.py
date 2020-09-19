@@ -363,6 +363,13 @@ def parse_args(args):
         type=str,
         nargs="?"
     )
+    export_parser.add_argument(
+        "-d", "--only-data",
+        help="Export only notes files organized as directories (one for each category)",
+        action='store_true',
+        dest='only_data',
+        default=False,
+    )
 
     # erase parser
     erase_parser.add_argument(

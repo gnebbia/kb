@@ -13,6 +13,7 @@ kb export command module
 
 import time
 import tarfile
+from pathlib import Path
 from typing import Dict
 
 
@@ -32,5 +33,10 @@ def export(args: Dict[str, str], config: Dict[str, str]):
     archive_ext = ".kb.tar.gz"
     if not fname.endswith(archive_ext):
         fname = fname + archive_ext
-    with tarfile.open(fname, mode='w:gz') as archive:
-        archive.add(config["PATH_KB"], arcname=".kb", recursive=True)
+
+    if args["only_data"]:
+        with tarfile.open(fname, mode='w:gz') as archive:
+            archive.add(config["PATH_KB_DATA"], arcname="kb", recursive=True)
+    else:
+        with tarfile.open(fname, mode='w:gz') as archive:
+            archive.add(config["PATH_KB"], arcname=".kb", recursive=True)

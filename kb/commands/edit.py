@@ -11,6 +11,7 @@ kb edit command module
 :License: GPLv3 (see /LICENSE).
 """
 
+import shlex
 from pathlib import Path
 from subprocess import call
 from typing import Dict
@@ -46,7 +47,7 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
 
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
 
-        shell_cmd = config["EDITOR"].split() + [Path(category_path, artifact.title)]
+        shell_cmd = shlex.split(config["EDITOR"]) + [Path(category_path, artifact.title)]
         call(shell_cmd)
 
     # else if a title is specified
@@ -58,7 +59,7 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
         if len(artifacts) == 1:
             artifact = artifacts.pop()
             category_path = Path(config["PATH_KB_DATA"], artifact.category)
-            shell_cmd = config["EDITOR"].split() + [Path(category_path, artifact.title)]
+            shell_cmd = shlex.split(config["EDITOR"]) + [Path(category_path, artifact.title)]
             call(shell_cmd)
         elif len(artifacts) > 1:
             print(

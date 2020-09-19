@@ -14,6 +14,7 @@ kb view command module
 import os
 import platform
 import sys
+import shlex
 import tempfile
 from subprocess import call
 from pathlib import Path
@@ -68,7 +69,10 @@ def view(args: Dict[str, str], config: Dict[str, str]):
         if args["editor"]:
             with tempfile.NamedTemporaryFile() as tmpfname:
                 fs.copy_file(artifact_path, tmpfname.name)
-                call([config["EDITOR"], tmpfname.name])
+
+                shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname.name]
+                call(shell_cmd)
+
             sys.exit(0)
 
         # View File
@@ -89,7 +93,8 @@ def view(args: Dict[str, str], config: Dict[str, str]):
 
             content = ""
             if args["editor"]:
-                call([config["EDITOR"], artifact_path])
+                shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
+                call(shell_cmd)
                 sys.exit(0)
 
             # View File

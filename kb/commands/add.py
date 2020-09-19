@@ -11,6 +11,7 @@ kb add command module
 :License: GPLv3 (see /LICENSE).
 """
 
+import shlex
 import sys
 from pathlib import Path
 from subprocess import call
@@ -68,7 +69,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            shell_cmd = config["EDITOR"].split() + [Path(category_path, title)]
+            shell_cmd = shlex.split(config["EDITOR"]) + [Path(category_path, title)]
             call(shell_cmd)
 
         new_artifact = Artifact(

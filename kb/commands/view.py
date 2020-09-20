@@ -52,58 +52,105 @@ def view(args: Dict[str, str], config: Dict[str, str]):
     # Check initialization
     initializer.init(config)
 
-    conn = db.create_connection(config["PATH_KB_DB"])
 
+    color_mode = not args["no_color"]
     if args["id"]:
-        artifact_id = history.get_artifact_id(
-            config["PATH_KB_HIST"], args["id"])
+        view_by_id(args["id"], config, args["editor"], color_mode)
+    elif args["title"]:
+        view_by_name(args["title"], args["category"], config, args["editor"], color_mode)
 
-        artifact = db.get_artifact_by_id(conn, artifact_id)
 
-        if not artifact:
-            sys.exit(1)
+def view_by_id(id: int, config: Dict[str, str], open_editor: bool, color_mode: bool):
+    """
+    View the content of an artifact by id.
 
+    Arguments:
+    id:             - the ID (the one you see with kb list)
+                      associated to the artifact we want to edit
+    config:         - a configuration dictionary containing at least
+                      the following keys:
+                      PATH_KB_DB        - the database path of KB
+                      PATH_KB_DATA      - the data directory of KB
+                      PATH_KB_HIST      - the history menu path of KB
+                      EDITOR            - the editor program to call
+    open_editor     - a boolean, if True it will open the artifact as
+                      a temporary copy in editor
+    color_mode      - a boolean, if True the colors on screen will be
+                      enabled when printed on stdout
+    """
+    conn = db.create_connection(config["PATH_KB_DB"])
+    artifact_id = history.get_artifact_id(
+        config["PATH_KB_HIST"], id)
+
+    artifact = db.get_artifact_by_id(conn, artifact_id)
+
+    if not artifact:
+        sys.exit(1)
+
+    category_path = Path(config["PATH_KB_DATA"], artifact.category)
+    artifact_path = Path(category_path, artifact.title)
+
+    if open_editor:
+        with tempfile.NamedTemporaryFile() as tmpfname:
+            fs.copy_file(artifact_path, tmpfname.name)
+
+            shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname.name]
+            call(shell_cmd)
+
+        sys.exit(0)
+
+    # View File
+    if fs.is_text_file(artifact_path):
+        markers = get_markers(config["PATH_KB_MARKERS"])
+        viewer.view(artifact_path, markers, color=color_mode)
+    else:
+        opener.open_non_text_file(artifact_path)
+
+
+def view_by_name(title: str, category: str, config: Dict[str, str], open_editor: bool, color_mode: bool):
+    """
+    View the content of an artifact by name, that is title/category
+
+    Arguments:
+    title:          - the title assigned to the artifact(s)
+    category:       - the category assigned to the artifact(s)
+    config:         - a configuration dictionary containing at least
+                      the following keys:
+                      PATH_KB_DB        - the database path of KB
+                      PATH_KB_DATA      - the data directory of KB
+                      PATH_KB_HIST      - the history menu path of KB
+                      EDITOR            - the editor program to call
+    open_editor     - a boolean, if True it will open the artifact as
+                      a temporary copy in editor
+    color_mode      - a boolean, if True the colors on screen will be
+                      enabled when printed on stdout
+    """
+    conn = db.create_connection(config["PATH_KB_DB"])
+    artifacts = db.get_artifacts_by_filter(conn, title=title,
+                                                category=category,
+                                                is_strict=True)
+    if len(artifacts) == 1:
+        artifact = artifacts.pop()
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
         artifact_path = Path(category_path, artifact.title)
 
-        if args["editor"]:
+        if open_editor:
             with tempfile.NamedTemporaryFile() as tmpfname:
                 fs.copy_file(artifact_path, tmpfname.name)
 
                 shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname.name]
                 call(shell_cmd)
-
             sys.exit(0)
 
         # View File
         if fs.is_text_file(artifact_path):
             markers = get_markers(config["PATH_KB_MARKERS"])
-            color_mode = not args["no_color"]
             viewer.view(artifact_path, markers, color=color_mode)
         else:
             opener.open_non_text_file(artifact_path)
-
-    elif args["title"]:
-        artifact = db.get_uniq_artifact_by_filter(conn, title=args["title"],
-                                                  category=args["category"],
-                                                  is_strict=True)
-        if artifact:
-            category_path = Path(config["PATH_KB_DATA"], artifact.category)
-            artifact_path = Path(category_path, artifact.title)
-
-            content = ""
-            if args["editor"]:
-                shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
-                call(shell_cmd)
-                sys.exit(0)
-
-            # View File
-            if fs.is_text_file(artifact_path):
-                markers = get_markers(config["PATH_KB_MARKERS"])
-                color_mode = not args["no_color"]
-                viewer.view(artifact_path, markers, color=color_mode)
-            else:
-                opener.open_non_text_file(artifact_path)
-        else:
-            print(
-                "There is no artifact with that title, please specify a category")
+    elif len(artifacts) > 1:
+        print(
+            "There is more than one artifact with that title, please specify a category")
+    else:
+        print(
+            "There is no artifact with that name, please specify a correct artifact name")

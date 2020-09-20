@@ -110,7 +110,8 @@ def add_file_to_kb(
                         title, category, tags, status, author
     config      -   the configuration dictionary that must contain
                     at least the following key:
-                     PATH_KB_DATA, the path to where artifact are stored
+                    PATH_KB_DATA, the path to where artifact are stored
+    fname       -   the path of the file to add to kb
     """
     title = args["title"] or fs.get_basename(fname)
     category = args["category"] or "default"

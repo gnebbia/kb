@@ -6,7 +6,7 @@ Appendix C. Changelog
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2020-08-09
-:Version: 0.1.0
+:Version: 0.1.1
 
 .. index:: CHANGELOG
 
@@ -19,5 +19,5 @@ More information can be found on GitHub in the `releases section
 Version History
 ===============
 
-0.1.0
+0.1.1
     Initial release.

@@ -1,28 +1,43 @@
-os: linux
-language: python
-
-sudo: false
-python:
- - "3.8"
+language: python            # this works for Linux but is an error on macOS or Windows
+matrix:
+  include:
+    - name: "Python on Linux"
+      python: 3.7           # this works for Linux but is ignored on macOS or Windows
+      python: 3.8           
+      python: 3.6
+      python: 3.5
+    - name: "Python 3.7 on macOS"
+      os: osx
+      osx_image: xcode11    # Python 3.7.2 running on macOS 10.14.3
+      language: shell       # 'language: python' is an error on Travis CI macOS
+      # python: 3.7         # 'python:' is ignored on Travis CI macOS
+      before_install: python3 --version ; pip3 --version ; sw_vers
+    - name: "Python 3.7 on Windows"
+      os: windows           # Windows 10.0.17134 N/A Build 17134
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      # python: 3.7         # 'python:' is ignored on Travis CI Windows
+      env:  PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      before_install:
+        - choco install python  --version 3.7 # this install takes at least 1 min 30 sec
+        - python --version
+        - python -m pip install --upgrade pip
 
 install:
- - "pip install -r requirements.txt"
- - "pip install ."
- - "pip install setuptools"
- - "pip install pyinstaller"
+  - ./.travis/install.sh
 
 script:
-  - bash -c echo "Tests must go here"
+  - bash -c echo "Tests must go here" # pytest
 
 before_deploy:
-  - pyinstaller --onefile --paths kb/ kb/__main__.py -n kb
+  - ./.travis/build_binaries.sh
 
 deploy:
   provider: releases
   api_key: $RELEASE_TOKEN
   file_glob: true
-  file: dist/*
+  file: 
+    - dist/kb_*
   skip_cleanup: true
-  draft: true
   on:
     tags: true
+  name: $TRAVIS_TAG

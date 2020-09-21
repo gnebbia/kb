@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="img/kb_logo.png?raw=true" width="200"/>
+    <img src="https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_logo.png" width="200"/>
 </p>
 
 # kb. A minimalist knowledge base manager
@@ -9,9 +9,9 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-09-11
+Date: 2020-09-21
 
-Version: 0.1.1
+Version: 0.1.2
 
 
 ## PURPOSE
@@ -100,15 +100,15 @@ the `/data` directory in the container.
 
 A quick demo of a typical scenario using kb:
 
-![](img/kb_general_demo.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_general_demo.gif)
 
 A quick demo with kb aliases enabled:
 
-![](img/kb_general_demo_alias.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_general_demo_alias.gif)
 
 A quick demo for non-text documents:
 
-![](img/kb_non_text_demo.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_non_text_demo.gif)
 
 ### List artifacts
 
@@ -119,7 +119,7 @@ kb list
 # or if aliases are used:
 kbl
 ```
-![](img/kb_list_all.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_list_all.gif)
 
 #### List all artifacts containing the string "zip":
 ```sh
@@ -128,7 +128,7 @@ kb list zip
 # or if aliases are used:
 kbl zip
 ```
-![](img/kb_list_title_zip.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_list_title_zip.gif)
 
 #### List all artifacts belonging to the category "cheatsheet":
 ```sh
@@ -139,7 +139,7 @@ kb list -c cheatsheet
 # or if aliases are used:
 kbl -c cheatsheet
 ```
-![](img/kb_list_category.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_list_category.gif)
 
 #### List all the artifacts having the tags "web" or "pentest":
 ```sh
@@ -148,7 +148,7 @@ kb list --tags "web;pentest"
 # or if aliases are used:
 kbl --tags "web;pentest"
 ```
-![](img/kb_list_tags.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_list_tags.gif)
 
 #### List using "verbose mode":
 ```sh
@@ -157,7 +157,7 @@ kb list -v
 # or if aliases are used:
 kbl -v
 ```
-![](img/kb_list_verbose.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_list_verbose.gif)
 
 
 ### Add artifacts
@@ -169,27 +169,27 @@ kb add ~/Notes/cheatsheets/pytest
 # or if aliases are used:
 kba ~/Notes/cheatsheets/pytest
 ```
-![](img/kb_add.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_add.gif)
 
 #### Add a file to the artifacts
 ```sh
 kb add ~/ssh_tunnels --title pentest_ssh --category "procedure" \
     --tags "pentest;network" --author "gnc" --status "draft"
 ```
-![](img/kb_add_title.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_add_title.gif)
 
 #### Add all files contained in a directory to kb
 ```sh
 kb add ~/Notes/cheatsheets/general/* --category "cheatsheet"
 ```
-![](img/kb_add_directory.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_add_directory.gif)
 
 #### Create a new artifact from scratch
 ```sh
 kb add --title "ftp" --category "notes" --tags "protocol;network"
 # a text editor ($EDITOR) will be launched for editing
 ```
-![](img/kb_add_from_scratch.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_add_from_scratch.gif)
 
 ### Delete artifacts
 
@@ -208,13 +208,13 @@ kb delete --id 2 3 4
 # or if aliases are used:
 kbd 2 3 4
 ```
-![](img/kb_delete_multiple.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_delete_multiple.gif)
 
 #### Delete an artifact by name
 ```sh
 kb delete --title zap --category cheatsheet
 ```
-![](img/kb_delete_name.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_delete_name.gif)
 
 
 ### View artifacts
@@ -228,7 +228,7 @@ kb view -i 3
 # or if aliases are used:
 kbv 3
 ```
-![](img/kb_view.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_view.gif)
 
 #### View an artifact by name
 ```sh
@@ -236,13 +236,13 @@ kb view --title "gobuster"
 # or
 kb view -t "gobuster"
 ```
-![](img/kb_view_title.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_view_title.gif)
 
 #### View an artifact without colors
 ```sh
 kb view -t dirb -n
 ```
-![](img/kb_view_title_nocolor.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_view_title_nocolor.gif)
 
 #### View an artifact within a text-editor
 ```sh
@@ -251,7 +251,7 @@ kb view -i 2 -e
 # or if aliases are used:
 kbv 2 -e
 ```
-![](img/kb_view_in_editor.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_view_in_editor.gif)
 
 
 ### Edit artifacts
@@ -269,7 +269,7 @@ kb edit --id 13
 # or if aliases are used:
 kbe 13 
 ```
-![](img/kb_edit.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_edit.gif)
 
 #### Edit an artifact by name
 ```sh
@@ -287,13 +287,13 @@ kb grep "[bg]zip"
 # or if aliases are used:
 kbg "[bg]zip"
 ```
-![](img/kb_grep.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_grep.gif)
 
 #### Grep (case-insensitive) through the knowledge base
 ```sh
 kb grep -i "[BG]ZIP"
 ```
-![](img/kb_grep_case_insensitive.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_grep_case_insensitive.gif)
 
 #### Grep in "verbose mode" through the knowledge base
 ```sh
@@ -308,7 +308,7 @@ kb export
 ```
 This will generate a .kb.tar.gz archive that can
 be later be imported by kb.
-![](img/kb_export.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_export.gif)
 
 #### Import a knowledge base
 ```sh
@@ -316,13 +316,13 @@ kb import archive.kb.tar.gz
 ```
 **NOTE**: Importing a knowledge base erases all the previous
 data. Basically it erases everything and imports the knowledge base.
-![](img/kb_import.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_import.gif)
 
 #### Erase the entire knowledge base
 ```sh
 kb erase
 ```
-![](img/kb_erase.gif)
+![](https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_erase.gif)
 
 
 ## UPGRADE

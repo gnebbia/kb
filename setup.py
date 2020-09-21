@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='kb-manager',
-      version='0.1.1',
+      version='0.1.2',
       description='A minimalist knowledge base manager',
       keywords='kb',
       author='gnc',
@@ -13,7 +13,7 @@ setup(name='kb-manager',
       url='https://github.com/gnebbia/kb',
       license='GPLv3',
       long_description=io.open(
-          './README.md', 'r', encoding='utf-8').read(),
+          './docs/README.md', 'r', encoding='utf-8').read(),
       long_description_content_type="text/markdown",
       platforms='any',
       zip_safe=False,

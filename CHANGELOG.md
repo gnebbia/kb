@@ -10,5 +10,11 @@
 
 0.1.1 
     * Initial release.
+0.1.2
+    * Fixed important bugs of 0.1.1
+    * Refactored
+    * Added cross-platform binaries
+    * Included docker image
+    * Ready for pypi publishing
 
 

@@ -48,6 +48,7 @@ function error {
 # DEFINE WHAT PROJECTPYPI IS
 PROJECTPYPI="kb-manager"
 PROJECTGH="kb"
+PROJECT="kb"
 function cleanup {
     rm -rf $PROJECTPYPI.egg-info build || true
     rm -rf **/__pycache__ || true
@@ -89,16 +90,18 @@ date=$(date '+%Y-%m-%d')
 
 
 status 'Replacing versions and dates in files...'
+sed "s/Version: .*/Version: $version/g" README.md -i
+sed "s/Date: .*/Date: $date/g" README.md -i
 sed "s/version=.*/version='$version',/g" setup.py -i
 sed "s/version = .*/version = '$version'/g" docs/conf.py -i
 sed "s/release = .*/release = '$version'/g" docs/conf.py -i
 sed "s/:Version: .*/:Version: $version/g" docs/**/*.rst -i
-sed "s/# $PROJECT v.*/# $PROJECT v$version/" $PROJECTLC/**/*.py -i
-sed "s/__version__ = .*/__version__ = '$version'/g" $PROJECTLC/__init__.py -i
-sed "s/:Date: .*/:Date: $date/g" docs/*.rst -i
+sed "s/# $PROJECT v.*/# $PROJECT v$version/" $PROJECT/**/*.py -i
+sed "s/__version__ = .*/__version__ = '$version'/g" $PROJECT/__init__.py -i
+sed "s/:Date: .*/:Date: $date/g" docs/*.md -i
 
-[[ -e "PKGBUILD" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD -i || true
-[[ -e "PKGBUILD-git" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD-git -i || true
+# [[ -e "PKGBUILD" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD -i || true
+# [[ -e "PKGBUILD-git" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD-git -i || true
 
 
 if [[ -e tests ]]; then
@@ -122,7 +125,7 @@ fi
 
 cleanup
 
-git add -A --ignore-errors . || exit $?
+# git add -A --ignore-errors . || exit $?
 
-git commit -S -asF $cmfn2 || exit $?
-git tag -sm "Version $version" v$version || exit $?
+# git commit -S -asF $cmfn2 || exit $?
+# git tag -sm "Version $version" v$version || exit $?

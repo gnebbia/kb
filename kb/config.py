@@ -19,12 +19,12 @@ import toml
 
 
 DEFAULT_CONFIG = {
-    "PATH_KB": Path(Path.home(), ".kb"),
-    "PATH_KB_DB": Path(Path.home(), ".kb", "kb.db"),
-    "PATH_KB_HIST": Path(Path.home(), ".kb", "recent.hist"),
-    "PATH_KB_DATA": Path(Path.home(), ".kb", "data"),
-    "PATH_KB_CONFIG": Path(Path.home(), ".kb", "kb.conf.py"),  # for future use
-    "PATH_KB_MARKERS": Path(Path.home(), ".kb", "markers.toml"),
+    "PATH_KB": str(Path(Path.home(), ".kb")),
+    "PATH_KB_DB": str(Path(Path.home(), ".kb", "kb.db")),
+    "PATH_KB_HIST": str(Path(Path.home(), ".kb", "recent.hist")),
+    "PATH_KB_DATA": str(Path(Path.home(), ".kb", "data")),
+    "PATH_KB_CONFIG": str(Path(Path.home(), ".kb", "kb.conf.py")),  # for future use
+    "PATH_KB_MARKERS": str(Path(Path.home(), ".kb", "markers.toml")),
     "EDITOR": os.environ.get('EDITOR', 'vim'),
     "INITIAL_CATEGORIES": ["default",
                            "cheatsheets",

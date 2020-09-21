@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.0
+# kb v0.1.1
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.

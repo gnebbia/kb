@@ -45,17 +45,16 @@ function error {
     echo 'ERROR: '$@
 }
 
+# DEFINE WHAT PROJECTPYPI IS
+PROJECTPYPI="kb-manager"
+PROJECTGH="kb"
 function cleanup {
-    rm -rf $PROJECTLC.egg-info build || true
+    rm -rf $PROJECTPYPI.egg-info build || true
     rm -rf **/__pycache__ || true
 }
 
-function cleanup_cmfn {
-    [[ -e $cmfn ]] && rm $cmfn || true
-    [[ -e $cmfn2 ]] && rm $cmfn2 || true
-}
 
-status '*** Chris Warrick’s Release Scripts (PyPT)'
+status '*** gnebbia Release Script'
 
 echo -n "Version number: "
 read version
@@ -87,47 +86,7 @@ fi
 
 # Creating all the dates at the exact same time.
 date=$(date '+%Y-%m-%d')
-datel=$(date '+%Y-%m-%d %H:%M%z')
-#datep=$(date '+%Y%m%d')
-dates=$(date '+%s')
 
-cmfn=$PWD/.git/kwrs-$dates
-cmfn2=$cmfn"-commit"
-
-cleanup
-cleanup_cmfn
-git add -A --ignore-errors .
-
-cat > $cmfn <<EOF
-#~ Chris Warrick’s Release Scripts (PyPT)
-#~ Please write your commit and changelog messages.
-#~ You may use reST formatting in the latter.
-#~ Please make the first line of your commit message short.
-#~ The second line of multi-line commits should be empty.
-
-#~ COMMIT MESSAGE START ~#
-#~version~#
-#~ COMMIT MESSAGE END ~#
-
-#~ CHANGELOG MESSAGE START ~#
-
-#~ CHANGELOG MESSAGE END ~#
-
-#~~~#
-EOF
-
-sed -i "s/#~version~#/v$version: /" $cmfn
-git status >> $cmfn
-
-if [[ "$EDITOR" == 'vim' || "$EDITOR" == '/usr/bin/vim' ]]; then
-    $EDITOR -c 'set filetype=gitcommit' $cmfn
-elif [[ $EDITOR == '' ]]; then
-    vim -c 'set filetype=gitcommit' $cmfn
-else
-    $EDITOR $cmfn
-fi
-
-.pypt/commitlog $cmfn $PWD $version
 
 status 'Replacing versions and dates in files...'
 sed "s/version=.*/version='$version',/g" setup.py -i
@@ -141,18 +100,6 @@ sed "s/:Date: .*/:Date: $date/g" docs/*.rst -i
 [[ -e "PKGBUILD" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD -i || true
 [[ -e "PKGBUILD-git" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD-git -i || true
 
-cp docs/README.rst docs/CHANGELOG.rst docs/CONTRIBUTING.rst .
-cp docs/README.rst README
-
-status 'Generating locales...'
-./.pypt/localegen
-
-status 'Importing...'
-python -c "import $PROJECTLC"
-if [[ $? != 0 ]]; then
-    error "Import failed.  Fix your code or don't come back."
-    exit 1
-fi
 
 if [[ -e tests ]]; then
     status 'Running tests...'
@@ -163,15 +110,9 @@ if [[ -e tests ]]; then
     fi
 fi
 
-status 'Running pre-sdist.hook...'
-
-. .pypt/hooks/pre-sdist.hook
-
-status 'This is the last chance to quit.  Hit ^C now if you want to.'
-read bailout
-
-./setup.py sdist bdist_wheel || exit $?
-twine upload -s dist/$PROJECTLC-$version.tar.gz dist/$PROJECTLC-$version*.whl || exit $?
+# ADD THESE
+# ./setup.py sdist bdist_wheel || exit $?
+# twine upload -s dist/$PROJECTPYPI-$version.tar.gz dist/$PROJECTPYPI-$version*.whl || exit $?
 
 if [[ -e PKGBUILD ]]; then
     status 'Updating AUR PKGBUILDs...'
@@ -185,11 +126,3 @@ git add -A --ignore-errors . || exit $?
 
 git commit -S -asF $cmfn2 || exit $?
 git tag -sm "Version $version" v$version || exit $?
-git push --follow-tags origin master || exit $?
-
-.pypt/ghrel $cmfn $PWD $GITUSER/$GITREPO v$version
-
-cleanup_cmfn
-
-status "Done!"
-. .pypt/hooks/post-release.hook

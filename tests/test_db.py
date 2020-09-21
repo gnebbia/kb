@@ -12,6 +12,7 @@ imp.reload(kb.db)
 imp.reload(kb.filesystem)
 """
 
+import attr
 import kb
 import kb.db as db
 import kb.filesystem as fs
@@ -391,28 +392,26 @@ def test_get_artifacts_by_filter():
 
     rows = db.get_artifacts_by_filter(conn, category="procedure",
                                       tags=["pt"], is_strict=False)
-    print(rows)
-    assert set(rows) == {(1,"pentest_smb","procedure","","pt;smb","ok","gnc"),
-                         (3,"pentest_ftp","procedure","","pt;ftp","draft", "elektroniz")}
+    assert set(rows) == {Artifact(1,"pentest_smb","procedure","procedure/pentest_smb","pt;smb","ok","gnc", None),
+                         Artifact(3,"pentest_ftp","procedure","procedure/pentest_ftp","pt;ftp","draft", "elektroniz", None)}
 
 
     rows = db.get_artifacts_by_filter(conn, title="OR")
-    assert set(rows) == {(4,"CORS","general","general/CORS","web",
-                          "draft","elektroniz")}
+    assert set(rows) == {Artifact(4,"CORS","general","general/CORS","web", "draft","elektroniz", None)}
 
 
     rows = db.get_artifacts_by_filter(conn, category="cheatsheet",
                                       is_strict=False)
-    assert set(rows) == {(2,"ftp","cheatsheet","","protocol", "draft", "elektroniz")}
+    assert set(rows) == {Artifact(2,"ftp","cheatsheet","cheatsheet/ftp","protocol", "draft", "elektroniz", None)}
 
 
     rows = db.get_artifacts_by_filter(conn, category="sheet",
                                       is_strict=False)
-    assert set(rows) == {(2,"ftp","cheatsheet","","protocol", "draft", "elektroniz")}
+    assert set(rows) == {Artifact(2,"ftp","cheatsheet","cheatsheet/ftp","protocol", "draft", "elektroniz", None)}
 
     rows = db.get_artifacts_by_filter(conn, category="cheatsheet",
                                       is_strict=True)
-    assert set(rows) == {(2,"ftp","cheatsheet","","protocol", "draft", "elektroniz")}
+    assert set(rows) == {Artifact(2,"ftp","cheatsheet","cheatsheet/ftp","protocol", "draft", "elektroniz", None)}
 
     rows = db.get_artifacts_by_filter(conn, category="sheet",
                                       is_strict=True)

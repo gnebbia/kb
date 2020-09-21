@@ -2,10 +2,9 @@ language: python            # this works for Linux but is an error on macOS or W
 matrix:
   include:
     - name: "Python on Linux"
-      python: 3.7           # this works for Linux but is ignored on macOS or Windows
-      python: 3.8           
       python: 3.6
-      python: 3.5
+      python: 3.7 
+      python: 3.8 
     - name: "Python 3.7 on macOS"
       os: osx
       osx_image: xcode11    # Python 3.7.2 running on macOS 10.14.3

@@ -56,6 +56,9 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                 continue
             add_file_to_kb(conn, args, config, fname)
     else:
+        # Get title for the new artifact
+        title = args["title"]
+
         # Assign a "default" category if not provided
         category = args["category"] or "default"
 
@@ -63,8 +66,6 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         category_path = Path(config["PATH_KB_DATA"], category)
         category_path.mkdir(parents=True, exist_ok=True)
 
-        # Get title for the new artifact
-        title = args["title"]
 
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory

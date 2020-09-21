@@ -10,3 +10,8 @@ clean:
 	rm -rf build/ dist/
 test:
 	pytest
+reinstall:
+	pip uninstall kb
+	pyenv rehash
+	pip install .
+	pyenv rehash

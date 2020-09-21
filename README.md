@@ -325,7 +325,16 @@ kb erase
 ![](img/kb_erase.gif)
 
 
-## Donations
+## UPGRADE
+
+To update kb, just do:
+```sh
+git clone https://github.com/gnebbia/kb 
+cd kb
+pip install --upgrade .
+```
+
+## DONATIONS
 
 I am an independent developer working on kb in my free time,
 if you like kb and would like to say thank you, buy me a beer!

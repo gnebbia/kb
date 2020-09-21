@@ -115,7 +115,7 @@ def create_directory(directory: str) -> None:
     Arguments:
     directory    - the directory path to be created
     """
-    os.makedirs(directory, exist_ok=True)
+    os.makedirs(Path(directory), exist_ok=True)
 
 
 def is_directory(path: str) -> bool:

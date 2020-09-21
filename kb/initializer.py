@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import toml
 import kb.db as db
+import kb.filesystem as fs
 import kb.config as conf
 
 
@@ -60,19 +61,19 @@ def create_kb_files(config):
     initial_categs = config["INITIAL_CATEGORIES"]
 
     # Create main kb
-    kb_path.mkdir(parents=True, exist_ok=True)
+    fs.create_directory(kb_path)
 
     # Create kb database
     if not os.path.exists(db_path):
         db.create_kb_database(db_path)
 
     # Create "data" director
-    data_path.mkdir(parents=True, exist_ok=True)
+    fs.create_directory(data_path)
 
     # Create kb initial categories directories
     for category in initial_categs:
         category_path = Path(data_path, category)
-        category_path.mkdir(parents=True, exist_ok=True)
+        fs.create_directory(category_path)
 
     # Create markers file
     with open(markers_path, 'w') as cfg:

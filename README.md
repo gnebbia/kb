@@ -86,7 +86,7 @@ compatible with notepad, a reasonable alternative is notepad++.
 
 Please upgrade kb frequently by doing:
 ```sh
-pip install -U pip
+pip install -U kb-manager
 ```
 
 ## DOCKER

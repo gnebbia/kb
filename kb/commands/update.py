@@ -11,6 +11,7 @@ kb edit command module
 :License: GPLv3 (see /LICENSE).
 """
 
+import shlex
 from subprocess import call
 from typing import Dict
 from pathlib import Path

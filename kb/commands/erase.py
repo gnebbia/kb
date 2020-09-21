@@ -33,12 +33,18 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
         answer = input(
             "Are you sure you want to erase the kb database ? [YES/NO]")
         if answer.lower() == "yes":
-            fs.remove_file(config["PATH_KB_DB"])
-            fs.remove_file(config["PATH_KB_HIST"])
-            print("kb database deleted successfully!")
+            try:
+                fs.remove_file(config["PATH_KB_DB"])
+                fs.remove_file(config["PATH_KB_HIST"])
+                print("kb database deleted successfully!")
+            except FileNotFoundError:
+                pass
     else:
         answer = input(
             "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]")
         if answer.lower() == "yes":
-            fs.remove_directory(config["PATH_KB"])
-            print("kb knowledge base deleted successfully!")
+            try:
+                fs.remove_directory(config["PATH_KB"])
+                print("kb knowledge base deleted successfully!")
+            except FileNotFoundError:
+                pass

@@ -78,6 +78,8 @@ def add(args: Dict[str, str], config: Dict[str, str]):
             path=str(Path(category, title)),
             tags=args["tags"],
             status=args["status"], author=args["author"])
+        print("HERRREEE")
+        print(new_artifact)
         db.insert_artifact(conn, new_artifact)
 
 

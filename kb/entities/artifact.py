@@ -22,6 +22,6 @@ class Artifact:
     category: str
     path: Optional[str] = None
     tags: Optional[str] = None
-    author: Optional[str] = None
     status: Optional[str] = None
+    author: Optional[str] = None
     template: Optional[str] = None

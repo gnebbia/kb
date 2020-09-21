@@ -20,7 +20,7 @@ import toml
 
 DEFAULT_CONFIG = {
     "PATH_KB": Path(Path.home(), ".kb"),
-    "PATH_KB_DB": Path(Path.home(), ".kb", "kb.db"),
+    "PATH_KB_DB": str(Path(Path.home(), ".kb", "kb.db")),
     "PATH_KB_HIST": Path(Path.home(), ".kb", "recent.hist"),
     "PATH_KB_DATA": Path(Path.home(), ".kb", "data"),
     "PATH_KB_CONFIG": Path(Path.home(), ".kb", "kb.conf.py"),  # for future use

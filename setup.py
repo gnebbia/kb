@@ -11,6 +11,7 @@ setup(name='kb-manager',
       author='gnc',
       author_email='nebbionegiuseppe@gmail.com',
       url='https://github.com/gnebbia/kb',
+      download_url='https://github.com/gnebbia/kb/archive/v0.1.2.tar.gz',
       license='GPLv3',
       long_description=io.open(
           './docs/README.md', 'r', encoding='utf-8').read(),

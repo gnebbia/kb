@@ -51,7 +51,13 @@ Basically, kb provides a clean text-based way to organize your knowledge.
 
 ## INSTALLATION
 
-The installation of kb can be performed by simply doing:
+To install the most recent stable version of kb just type:
+```sh
+pip install -U kb-manager
+```
+
+If you want to install the bleeding-edge version of kb (that may have
+some bugs) you shoud do:
 ```sh
 git clone https://github.com/gnebbia/kb
 cd kb
@@ -77,6 +83,11 @@ source ~/.kb_alias
 
 **Tip** for Windows users: Do not use notepad as %EDITOR%, kb is not
 compatible with notepad, a reasonable alternative is notepad++.
+
+Please upgrade kb frequently by doing:
+```sh
+pip install -U pip
+```
 
 ## DOCKER
 
@@ -327,7 +338,13 @@ kb erase
 
 ## UPGRADE
 
-To update kb, just do:
+If you want to upgrade kb to the most recent stable release do:
+```sh
+pip install -U kb-manager
+```
+
+If instead you want to update kb to the most recent release 
+(that may be bugged), do:
 ```sh
 git clone https://github.com/gnebbia/kb 
 cd kb

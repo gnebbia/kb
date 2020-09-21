@@ -81,12 +81,20 @@ echo "source ~/.kb_alias" >> ~/.bashrc
 source ~/.kb_alias
 ```
 
-**Tip** for Windows users: Do not use notepad as %EDITOR%, kb is not
-compatible with notepad, a reasonable alternative is notepad++.
-
-Please upgrade kb frequently by doing:
+Please remember to upgrade kb frequently by doing:
 ```sh
 pip install -U kb-manager
+```
+
+### NOTES FOR WINDOWS USERS
+
+Windows users should keep in mind these things:
+- DO NOT USE notepad as %EDITOR%, kb is not compatible with notepad,
+  a reasonable alternative is notepad++;
+- %EDITOR% variable should ALWAYS be enclosed within double quotes;
+```sh
+EDITOR=C:\Program Files\Editor\my cool editor.exe      -> WRONG!
+EDITOR="C:\Program Files\Editor\my cool editor.exe"    -> OK!
 ```
 
 ## DOCKER

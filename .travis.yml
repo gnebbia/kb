@@ -1,28 +1,31 @@
+os: linux
+dist: focal
 language: python            # this works for Linux but is an error on macOS or Windows
-matrix:
+jobs:
   include:
-    - name: "Python on Linux"
-      python: 3.8           
-    - name: "Python 3.7 on macOS"
+    - name: "Python 3.8.3 on Linux"
+      python: 3.8
+    - name: "Python 3.8.5 on macOS"
       os: osx
-      osx_image: xcode11    # Python 3.7.2 running on macOS 10.14.3
+      osx_image: xcode12    # Python 3.8.2 running on macOS 10.15.6
       language: shell       # 'language: python' is an error on Travis CI macOS
-      # python: 3.7         # 'python:' is ignored on Travis CI macOS
+      # python: 3.8         # 'python:' is ignored on Travis CI macOS
       before_install: python3 --version ; pip3 --version ; sw_vers
-    - name: "Python 3.7 on Windows"
+    - name: "Python 3.8.5 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
-      # python: 3.7         # 'python:' is ignored on Travis CI Windows
-      env:  PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      # python: 3.8         # 'python:' is ignored on Travis CI Windows
+      env:  PATH=/c/Python38:/c/Python38/Scripts:$PATH
       before_install:
-        - choco install python  --version 3.7 # this install takes at least 1 min 30 sec
-        - python --version
-        - python -m pip install --upgrade pip
+        - choco install python --version 3.8.5  # this install takes at least 1 min 30 sec
 
 install:
   - ./.travis/install.sh
 
 script:
+  - python --version
+  - codespell . --ignore-words-list=hist --quiet-level=2
+  - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
   - pytest
 
 before_deploy:
@@ -30,11 +33,10 @@ before_deploy:
 
 deploy:
   provider: releases
-  api_key: $RELEASE_TOKEN
+  token: $RELEASE_TOKEN
   file_glob: true
   file: 
     - dist/kb_*
-  skip_cleanup: true
   on:
     tags: true
   name: $TRAVIS_TAG

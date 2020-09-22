@@ -13,12 +13,13 @@ imp.reload(kb.filesystem)
 """
 
 import attr
-import kb
-import kb.db as db
-import kb.filesystem as fs
+import os
 import sqlite3
 import pytest
 from pathlib import Path
+import kb
+import kb.db as db
+import kb.filesystem as fs
 from kb.entities.artifact import Artifact
 
 
@@ -84,6 +85,9 @@ def test_list_tables():
                              """
 
     db_path = Path("tests","data","two_tables.db")
+    if os.path.exists(db_path):
+            os.remove(db_path)
+
     conn = db.create_connection(str(db_path))
     with conn:
         try:
@@ -107,6 +111,9 @@ def test_create_table(db_connect):
                           """
 
     db_path = Path("tests","data","mydb.db")
+    if os.path.exists(db_path):
+            os.remove(db_path)
+
     conn = db.create_connection(str(db_path))
     with conn:
         if conn is not None:
@@ -127,8 +134,10 @@ def test_create_table_2(db_connect):
                                 status text,
                                 author text);
                           """
-
     db_path = Path("tests","data","mydb.db")
+    if os.path.exists(db_path):
+            os.remove(db_path)
+
     conn = db.create_connection(str(db_path))
     with conn:
         if conn is not None:

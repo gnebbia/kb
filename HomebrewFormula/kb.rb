@@ -6,8 +6,8 @@ class Kb < Formula
   desc "Minimalist knowledge base manager"
   homepage "https://github.com/gnebbia/kb"
   url "https://github.com/gnebbia/kb.git",
-    tag:      "v0.1.2",
-    revision: "2155c70485049abfec2fafe371f2c20f3d563565"
+    tag:      "v0.1.3",
+    revision: "00f979a0ae23c27f03ce529b5bc08e954e47611a"
   license "GPL-3.0-or-later"
 
   depends_on "python@3.8"

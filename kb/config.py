@@ -14,9 +14,11 @@ kb config module
 __all__ = ()
 
 import os
+from sys import platform
 from pathlib import Path
 import toml
 
+DEFAULT_EDITOR = "code" if platform.startswith("win") else "vim"
 
 DEFAULT_CONFIG = {
     "PATH_KB": str(Path(Path.home(), ".kb")),
@@ -25,7 +27,7 @@ DEFAULT_CONFIG = {
     "PATH_KB_DATA": str(Path(Path.home(), ".kb", "data")),
     "PATH_KB_CONFIG": str(Path(Path.home(), ".kb", "kb.conf.py")),  # for future use
     "PATH_KB_MARKERS": str(Path(Path.home(), ".kb", "markers.toml")),
-    "EDITOR": os.environ.get('EDITOR', 'vim'),
+    "EDITOR": os.environ.get("EDITOR", DEFAULT_EDITOR),
     "INITIAL_CATEGORIES": ["default",
                            "cheatsheets",
                            "procedures",

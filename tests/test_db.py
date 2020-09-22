@@ -241,6 +241,10 @@ def test_delete_artifact_by_id():
     
         rows = cur.fetchall()
         assert len(rows) == 0
+    try:
+        os.unlink(db_path)
+    except FileNotFoundError:
+        pass
 
 
 def test_delete_artifact_by_name():
@@ -271,6 +275,10 @@ def test_delete_artifact_by_name():
         assert len(rows) == 1
         assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
                             'Draft', 'elektroniz')}
+    try:
+        os.unlink(db_path)
+    except FileNotFoundError:
+        pass
 
 
 def test_get_artifacts_by_tags():

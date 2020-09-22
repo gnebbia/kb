@@ -16,5 +16,11 @@
     * Added cross-platform binaries
     * Included docker image
     * Ready for pypi publishing
-
+0.1.3
+    * Added support for brew (with brew tap)
+    * Fixed minor bugs
+    * Fixed update mode '-e' flag
+    * Fixed Windows bugs
+    * Fixed cross-platforms tests
+    * Improved continuous integration
 

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.2
+# kb v0.1.3
 # A knowledge base organizer
 # Copyright 2020, Giuseppe Nebbione.
 
@@ -24,7 +24,7 @@ A knowledge base organizer
 """
 
 __title__ = 'kb'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = 'gnc'
 __license__ = 'GPLv3'
 __docformat__ = 'restructuredtext en'

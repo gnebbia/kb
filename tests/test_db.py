@@ -85,8 +85,6 @@ def test_list_tables():
                              """
 
     db_path = Path("tests","data","two_tables.db")
-    if os.path.exists(db_path):
-            os.remove(db_path)
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -111,8 +109,6 @@ def test_create_table(db_connect):
                           """
 
     db_path = Path("tests","data","mydb.db")
-    if os.path.exists(db_path):
-            os.remove(db_path)
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -134,9 +130,7 @@ def test_create_table_2(db_connect):
                                 status text,
                                 author text);
                           """
-    db_path = Path("tests","data","mydb.db")
-    if os.path.exists(db_path):
-            os.remove(db_path)
+    db_path = Path("tests","data","mydb2.db")
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -150,7 +144,7 @@ def test_create_table_2(db_connect):
 
 
 def test_create_kb_database_table():
-    db_path = Path("tests","data","mydb.db")
+    db_path = Path("tests","data","mydb3.db")
     db.create_kb_database(str(db_path))
 
     conn = db.create_connection(str(db_path))
@@ -219,8 +213,6 @@ def test_is_artifact_existing():
 
 def test_delete_artifact_by_id():
     db_path = Path("tests","data","test_id.db")
-    if os.path.exists(db_path):
-            os.remove(db_path)
 
     db.create_kb_database(str(db_path))
     conn = db.create_connection(str(db_path))
@@ -253,8 +245,6 @@ def test_delete_artifact_by_id():
 
 def test_delete_artifact_by_name():
     db_path = Path("tests","data","test_name.db")
-    if os.path.exists(db_path):
-            os.remove(db_path)
 
     db.create_kb_database(str(db_path))
     conn = db.create_connection(str(db_path))

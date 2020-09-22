@@ -219,6 +219,9 @@ def test_is_artifact_existing():
 
 def test_delete_artifact_by_id():
     db_path = Path("tests","data","test_id.db")
+    if os.path.exists(db_path):
+            os.remove(db_path)
+
     db.create_kb_database(str(db_path))
     conn = db.create_connection(str(db_path))
     with conn:
@@ -250,6 +253,9 @@ def test_delete_artifact_by_id():
 
 def test_delete_artifact_by_name():
     db_path = Path("tests","data","test_name.db")
+    if os.path.exists(db_path):
+            os.remove(db_path)
+
     db.create_kb_database(str(db_path))
     conn = db.create_connection(str(db_path))
     with conn:

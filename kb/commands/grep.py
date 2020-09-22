@@ -61,7 +61,7 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     artifact_names = [fs.get_filename_parts_wo_prefix(
         res[0], config["PATH_KB_DATA"]) for res in results]
 
-    # If user specied --matches -> just show matching lines and exit
+    # If user specified --matches -> just show matching lines and exit
     if args["matches"]:
         printer.print_grep_matches(artifact_names)
         sys.exit(0)

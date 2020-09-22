@@ -57,7 +57,7 @@ pip install -U kb-manager
 ```
 
 If you want to install the bleeding-edge version of kb (that may have
-some bugs) you shoud do:
+some bugs) you should do:
 ```sh
 git clone https://github.com/gnebbia/kb
 cd kb

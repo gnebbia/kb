@@ -11,6 +11,8 @@ pep8:
 clean:
 	rm -rf build/ dist/ kb_manager.egg-info/
 test:
+	codespell . --ignore-words-list=hist --quiet-level=2
+	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 	pytest
 reinstall:
 	pip uninstall kb

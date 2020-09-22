@@ -137,13 +137,6 @@ def parse_args(args):
         default=None,
         type=str,
     )
-    edit_parser.add_argument(
-        "-x", "--edit-content",
-        help="Edit artifact content",
-        action='store_true',
-        dest='edit_content',
-        default=False,
-    )
 
     # list parser
     list_parser.add_argument(
@@ -323,8 +316,7 @@ def parse_args(args):
         type=str,
     )
     update_parser.add_argument(
-        "-x",
-        "--edit-content",
+        "-e", "--edit-content",
         help="Edit content of the artifact",
         action="store_true",
         dest="edit_content",

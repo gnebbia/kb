@@ -135,7 +135,8 @@ def insert_artifact(conn, artifact: Artifact) -> None:
     if artifact.path:
         path = artifact.path
     else:
-        path = str(Path(artifact.category, artifact.title))
+        path = "{category}/{title}".format(
+            category=artifact.category, title=artifact.title)
 
     cur = conn.cursor()
     if is_artifact_existing(conn, artifact.title, artifact.category):

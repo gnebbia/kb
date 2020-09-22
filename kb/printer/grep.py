@@ -236,6 +236,8 @@ def print_grep_result_verbose(
             print(result_line)
 
 # This function still has to be implemented, this is just a placeholder
+
+
 def print_grep_matches(grep_matches, hits_list, color=True):
     """
     Print text associated to grep matches.

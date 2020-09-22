@@ -364,7 +364,8 @@ def parse_args(args):
         nargs="?"
     )
     export_parser.add_argument(
-        "-d", "--only-data",
+        "-d",
+        "--only-data",
         help="Export only notes files organized as directories (one for each category)",
         action='store_true',
         dest='only_data',

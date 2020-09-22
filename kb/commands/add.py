@@ -66,16 +66,16 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         category_path = Path(config["PATH_KB_DATA"], category)
         category_path.mkdir(parents=True, exist_ok=True)
 
-
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            shell_cmd = shlex.split(config["EDITOR"]) + [str(Path(category_path, title))]
+            shell_cmd = shlex.split(
+                config["EDITOR"]) + [str(Path(category_path, title))]
             call(shell_cmd)
-                
+
         new_artifact = Artifact(
             id=None, title=title, category=category,
-            path=str(Path(category, title)),
+            path="{category}/{title}".format(category=category, title=title),
             tags=args["tags"],
             status=args["status"], author=args["author"])
         db.insert_artifact(conn, new_artifact)
@@ -128,7 +128,7 @@ def add_file_to_kb(
     new_artifact = Artifact(
         id=None,
         title=title, category=category,
-        path=str(Path(category, title)),
+        path="{category}/{title}".format(category=category, title=title),
         tags=args["tags"],
         status=args["status"], author=args["author"])
     db.insert_artifact(conn, new_artifact)

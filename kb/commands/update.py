@@ -58,8 +58,8 @@ def update(args: Dict[str, str], config: Dict[str, str]):
         old_artifact = history.get_artifact(conn,
                                             config["PATH_KB_HIST"], args["id"])
         if not old_artifact:
-            print("The artifact you are trying to update does not exist! "\
-                   "Please insert a valid ID...")
+            print("The artifact you are trying to update does not exist! "
+                  "Please insert a valid ID...")
             return None
 
         updated_artifact = Artifact(
@@ -98,5 +98,6 @@ def update(args: Dict[str, str], config: Dict[str, str]):
                 "There is more than one artifact with that title, please specify a category")
 
     if args["edit_content"]:
-        shell_cmd = shlex.split(config["EDITOR"]) + [str(Path(category_path, artifact.title))]
+        shell_cmd = shlex.split(
+            config["EDITOR"]) + [str(Path(category_path, artifact.title))]
         call(shell_cmd)

@@ -15,6 +15,7 @@ import re
 from typing import Dict
 from kb.styler import set_fg, reset
 
+
 def colorize_string(string, color):
     """
     This function applies the provided color to the specified string

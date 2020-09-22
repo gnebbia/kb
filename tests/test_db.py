@@ -182,8 +182,8 @@ def test_insert_artifact():
         rows = cur.fetchall()
         print(rows)
         assert set(rows) == {(1, 'pentest_smb', 'procedure',
-                            'pentest/smb', 'pt;smb', 'OK', 'gnc'),
-                            (2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
+                            str(Path('pentest','smb')), 'pt;smb', 'OK', 'gnc'),
+                            (2, 'ftp', 'cheatsheet', str(Path('protocol','ftp')), None,
                             'Draft', 'elektroniz')}
 
 
@@ -230,7 +230,7 @@ def test_delete_artifact_by_id():
     
         rows = cur.fetchall()
         assert len(rows) == 1
-        assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
+        assert set(rows) == {(2, 'ftp', 'cheatsheet', str(Path('protocol','ftp')), None,
                             'Draft', 'elektroniz')}
 
         db.delete_artifact_by_id(conn,2)
@@ -269,7 +269,7 @@ def test_delete_artifact_by_name():
     
         rows = cur.fetchall()
         assert len(rows) == 1
-        assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
+        assert set(rows) == {(2, 'ftp', 'cheatsheet', str(Path('protocol','ftp')), None,
                             'Draft', 'elektroniz')}
 
 
@@ -383,7 +383,7 @@ def test_get_artifacts_by_filter():
                 category="procedure", tags="pt;ftp", status="draft",
                 author="elektroniz"))
 
-        db.insert_artifact(conn, Artifact(id=None, path="general/CORS", title="CORS",
+        db.insert_artifact(conn, Artifact(id=None, path=str(Path("general","CORS")), title="CORS",
                 category="general", tags="web", status="draft",
                 author="elektroniz"))
 
@@ -396,26 +396,26 @@ def test_get_artifacts_by_filter():
         rows = db.get_artifacts_by_filter(conn, category="procedure",
                                         tags=["pt"], is_strict=False)
         
-        assert sorted(list(set(rows)), key=lambda i: i.id) == [Artifact(1,"pentest_smb","procedure",str(Path("procedure/pentest_smb")),"pt;smb","ok","gnc", None),
-                            Artifact(3,"pentest_ftp","procedure",str(Path("procedure/pentest_ftp")),"pt;ftp","draft", "elektroniz", None)]
+        assert sorted(list(set(rows)), key=lambda i: i.id) == [Artifact(1,"pentest_smb","procedure",str(Path("procedure","pentest_smb")),"pt;smb","ok","gnc", None),
+                            Artifact(3,"pentest_ftp","procedure",str(Path("procedure","pentest_ftp")),"pt;ftp","draft", "elektroniz", None)]
 
 
         rows = db.get_artifacts_by_filter(conn, title="OR")
-        assert set(rows) == {Artifact(4,"CORS","general", "general/CORS", "web", "draft","elektroniz", None)}
+        assert set(rows) == {Artifact(4,"CORS","general", str(Path("general","CORS")), "web", "draft","elektroniz", None)}
 
 
         rows = db.get_artifacts_by_filter(conn, category="cheatsheet",
                                         is_strict=False)
-        assert set(rows) == {Artifact(2,"ftp","cheatsheet",str(Path("cheatsheet/ftp")),"protocol", "draft", "elektroniz", None)}
+        assert set(rows) == {Artifact(2,"ftp","cheatsheet",str(Path("cheatsheet","ftp")),"protocol", "draft", "elektroniz", None)}
 
 
         rows = db.get_artifacts_by_filter(conn, category="sheet",
                                         is_strict=False)
-        assert set(rows) == {Artifact(2,"ftp","cheatsheet",str(Path("cheatsheet/ftp")),"protocol", "draft", "elektroniz", None)}
+        assert set(rows) == {Artifact(2,"ftp","cheatsheet",str(Path("cheatsheet","ftp")),"protocol", "draft", "elektroniz", None)}
 
         rows = db.get_artifacts_by_filter(conn, category="cheatsheet",
                                         is_strict=True)
-        assert set(rows) == {Artifact(2,"ftp","cheatsheet",str(Path("cheatsheet/ftp")),"protocol", "draft", "elektroniz", None)}
+        assert set(rows) == {Artifact(2,"ftp","cheatsheet",str(Path("cheatsheet","ftp")),"protocol", "draft", "elektroniz", None)}
 
         rows = db.get_artifacts_by_filter(conn, category="sheet",
                                         is_strict=True)

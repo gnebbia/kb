@@ -69,7 +69,7 @@ def edit_by_id(id: int, config: Dict[str, str]):
 
     category_path = Path(config["PATH_KB_DATA"], artifact.category)
 
-    shell_cmd = shlex.split(config["EDITOR"]) + [Path(category_path, artifact.title)]
+    shell_cmd = shlex.split(config["EDITOR"]) + [str(Path(category_path, artifact.title))]
     call(shell_cmd)
 
 
@@ -95,7 +95,7 @@ def edit_by_name(title: str, category: str, config: Dict[str, str]):
     if len(artifacts) == 1:
         artifact = artifacts.pop()
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
-        shell_cmd = shlex.split(config["EDITOR"]) + [Path(category_path, artifact.title)]
+        shell_cmd = shlex.split(config["EDITOR"]) + [str(Path(category_path, artifact.title))]
         call(shell_cmd)
     elif len(artifacts) > 1:
         print(

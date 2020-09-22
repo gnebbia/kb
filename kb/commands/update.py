@@ -98,5 +98,5 @@ def update(args: Dict[str, str], config: Dict[str, str]):
                 "There is more than one artifact with that title, please specify a category")
 
     if args["edit_content"]:
-        shell_cmd = shlex.split(config["EDITOR"]) + [Path(category_path, artifact.title)]
+        shell_cmd = shlex.split(config["EDITOR"]) + [str(Path(category_path, artifact.title))]
         call(shell_cmd)

@@ -99,11 +99,12 @@ def view_by_id(id: int,
     artifact_path = Path(category_path, artifact.title)
 
     if open_editor:
-        with tempfile.NamedTemporaryFile() as tmpfname:
-            fs.copy_file(artifact_path, tmpfname.name)
+        tmpfname = fs.get_temp_filepath()
+        fs.copy_file(artifact_path, tmpfname)
 
-            shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname.name]
-            call(shell_cmd)
+        shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname]
+        call(shell_cmd)
+        fs.remove_file(tmpfname)
 
         sys.exit(0)
 
@@ -148,11 +149,12 @@ def view_by_name(title: str,
         artifact_path = Path(category_path, artifact.title)
 
         if open_editor:
-            with tempfile.NamedTemporaryFile() as tmpfname:
-                fs.copy_file(artifact_path, tmpfname.name)
+            tmpfname = fs.get_temp_filepath()
+            fs.copy_file(artifact_path, tmpfname)
 
-                shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname.name]
-                call(shell_cmd)
+            shell_cmd = shlex.split(config["EDITOR"]) + [tmpfname]
+            call(shell_cmd)
+            fs.remove_file(tmpfname)
             sys.exit(0)
 
         # View File

@@ -16,6 +16,7 @@ __all__ = ()
 import os
 import re
 import shutil
+import tempfile
 from pathlib import Path
 from typing import List
 
@@ -95,7 +96,10 @@ def remove_file(filename: str) -> None:
     Arguments:
     filename    - the file to remove from the kb directory
     """
-    Path(filename).unlink()
+    try:
+        Path(filename).unlink()
+    except FileNotFoundError:
+        pass
 
 
 def remove_directory(directory: str) -> None:
@@ -166,6 +170,22 @@ def move_file(source: str, dest: str) -> None:
     dest      - the destination path of the copy
     """
     shutil.move(source, dest)
+
+
+def get_temp_filepath() -> str:
+    """
+    Generates a temporary file path.
+
+    Returns:
+    A boolean, True if the file is of type text.
+    """
+    tmpfilename = None
+    while tmpfilename is None:
+        random_tmp_path = str(Path(tempfile.gettempdir(),
+                                   os.urandom(24).hex()))
+        if not os.path.isfile(random_tmp_path):
+            tmpfilename = random_tmp_path
+    return tmpfilename
 
 
 def is_text_file(filename: str) -> bool:

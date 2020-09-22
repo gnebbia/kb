@@ -71,11 +71,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
             shell_cmd = shlex.split(config["EDITOR"]) + [str(Path(category_path, title))]
-            if sys.platform.startswith('win'):
-                # when windows need shell True
-                call(shell_cmd, shell=True)
-            else:
-                call(shell_cmd)
+            call(shell_cmd)
                 
         new_artifact = Artifact(
             id=None, title=title, category=category,

@@ -195,7 +195,7 @@ def get_filename_parts_wo_prefix(
     Get filename parts without the provided prefix.
     E.g., if the filename is "/path/to/data/dir1/file2.txt"
     and the prefix to remove is "/path/to/data" then the
-    returned will be a tuple containint ("dir1","file2.txt")
+    returned will be a tuple containing ("dir1","file2.txt")
 
     Arguments:
     filename          - a string or path provided by pathlib

@@ -86,6 +86,16 @@ Please remember to upgrade kb frequently by doing:
 pip install -U kb-manager
 ```
 
+### INSTALLATION WITH HOMEBREW
+
+To install using Homebrew, use:
+
+```sh
+brew tap gnebbia/kb https://github.com/gnebbia/kb.git
+brew install gnebbia/kb/kb
+```
+
+
 ### NOTES FOR WINDOWS USERS
 
 Windows users should keep in mind these things:

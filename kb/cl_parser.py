@@ -323,10 +323,11 @@ def parse_args(args):
         type=str,
     )
     update_parser.add_argument(
-        "-x", "--edit-content",
+        "-x",
+        "--edit-content",
         help="Edit content of the artifact",
-        default=None,
-        type=str,
+        action="store_true",
+        dest="edit_content",
     )
 
     # delete parser

@@ -4,6 +4,8 @@
 
 # kb. A minimalist knowledge base manager
 
+[![Build Status](https://travis-ci.com/gnebbia/kb.svg?branch=master)](https://travis-ci.com/gnebbia/kb)
+
 
 Author: gnc <nebbionegiuseppe@gmail.com>
 

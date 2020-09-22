@@ -2,6 +2,8 @@
 
 default:
 	python -m kb
+spell:
+	codespell . --ignore-words-list=hist --skip=./.* --quiet-level=2 || true
 lint:
 	pylint kb
 pep8:

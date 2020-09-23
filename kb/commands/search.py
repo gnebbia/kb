@@ -29,6 +29,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       tags -> filter for the tags field of the artifact
                       author -> filter for the author field of the artifact
                       status -> filter for the status field of the artifact
+                      response -> determines whether  any data is required to be returned
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB_DB        - the database path of KB
@@ -54,6 +55,10 @@ def search(args: Dict[str, str], config: Dict[str, str]):
 
     # rows.sort(key=lambda x: x[1])
     artifacts = sorted(rows, key=lambda x: x.title)
+
+    # if data is required to be returned, and not outputted to the screen
+    if args["response"]:
+        return artifacts
 
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)

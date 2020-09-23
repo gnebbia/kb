@@ -23,4 +23,5 @@
     * Fixed Windows bugs
     * Fixed cross-platforms tests
     * Improved continuous integration
-
+Draft 0.1.4
+    * Added body "-b" function in add

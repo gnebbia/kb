@@ -100,6 +100,11 @@ def parse_args(args):
         help="Status of the artifact",
         type=str,
     )
+    add_parser.add_argument(
+        "-b", "--body",
+        help="Body of the artifact",
+        type=str,
+    )
 
     # edit parser
     edit_parser.add_argument(

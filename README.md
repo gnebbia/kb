@@ -93,13 +93,17 @@ pip install -U kb-manager
 
 ### INSTALLATION WITH HOMEBREW
 
-To install using Homebrew, use:
-
+To install using homebrew, use:
 ```sh
 brew tap gnebbia/kb https://github.com/gnebbia/kb.git
 brew install gnebbia/kb/kb
 ```
 
+To upgrade with homebrew:
+```sh
+brew update
+brew upgrade gnebbia/kb/kb
+```
 
 ### NOTES FOR WINDOWS USERS
 

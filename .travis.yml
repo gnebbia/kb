@@ -34,6 +34,7 @@ before_deploy:
 deploy:
   provider: releases
   token: $RELEASE_TOKEN
+  skip_cleanup: true
   file_glob: true
   file: 
     - dist/kb_*

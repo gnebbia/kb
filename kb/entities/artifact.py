@@ -13,7 +13,7 @@ kb artifact frozen dataclass
 
 import attr
 from typing import List, Set, Optional
-
+import json
 
 @attr.s(auto_attribs=True, frozen=True, slots=True)
 class Artifact:
@@ -25,3 +25,25 @@ class Artifact:
     status: Optional[str] = None
     author: Optional[str] = None
     template: Optional[str] = None
+
+    def toJson(self):
+        record = "{"
+        if self.id:
+            record =  record + "'id':\"" + str(self.id)  + "\","
+        if self.title:
+            record = record + "'title':\"" + self.title  + "\","
+        if self.category:
+            record = record + "'category':\"" + self.category  + "\","
+        if self.path:
+            record = record + "'path':\"" + self.path  + "\","
+        if self.tags:
+            record = record + "'tags':\"" + self.tags  + "\","
+        if  self.status:
+            record = record + "'status':\"" + self.status  + "\","
+        if self.author:
+            record = record + "'author':\"" + self.author  + "\","
+        if  self.template:
+            record = record + "'template':\"" + self.template  + "\""
+
+        record = record + "}"
+        return record

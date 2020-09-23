@@ -102,7 +102,7 @@ def parse_args(args):
     )
     add_parser.add_argument(
         "-b", "--body",
-        help="Body of artifact",
+        help="Body of the artifact",
         type=str,
     )
 

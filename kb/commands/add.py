@@ -69,9 +69,14 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            shell_cmd = shlex.split(
-                config["EDITOR"]) + [str(Path(category_path, title))]
-            call(shell_cmd)
+            if args["body"]:
+                with open(Path(category_path, title), "w+") as f:
+                    body = args["body"].replace("\\n", "\n")
+                    f.write(body)
+            else:
+                shell_cmd = shlex.split(
+                    config["EDITOR"]) + [str(Path(category_path, title))]
+                call(shell_cmd)
 
         new_artifact = Artifact(
             id=None, title=title, category=category,

@@ -32,8 +32,10 @@ def getAll():
                         response = True)
 
     k = search( parameters, config=DEFAULT_CONFIG)
+    response = '['
     for a in k:
-        response = a.toJson()
+        response = response + a.toJson() + ','
+    response =  response[:-1].replace("\"","\"") + ']'
     return {'knowledge': response }
 
 

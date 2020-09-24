@@ -1,5 +1,9 @@
-[![Banner](img/kb-banner.png)](https://xscode.com/gnebbia/kb)
+<p align="center">
+    <img src="img/kb_logo.png?raw=true" width="200"/>
+</p>
 # kb. A minimalist knowledge base manager
+
+[![Banner](img/kb-banner.png)](https://xscode.com/gnebbia/kb)
 
 [![Foo](https://xscode.com/assets/promo-banner.svg)](https://xscode.com/gnebbia/kb)
 

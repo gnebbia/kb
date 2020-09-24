@@ -7,4 +7,5 @@ services:
       dockerfile: ./docker/dockerfile
     volumes:
       - ./docker/data:/data
+      - ./docker/.kb:/root/.kb
     tty: true

@@ -68,6 +68,9 @@ git clone https://github.com/gnebbia/kb
 cd kb
 pip install -r requirements.txt
 python setup.py install
+
+# or with pip
+pip install -U git+https://github.com/gnebbia/kb
 ```
 
 **Tip** for GNU/Linux and MacOS users: For a better user experience,

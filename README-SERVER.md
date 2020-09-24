@@ -42,7 +42,7 @@ be noted:
 when writing, so if there are lots of concurrent writes it is not a suitable
 database for the application (usually the time the database is locked is a few
 milliseconds - so for most uses this does not matter). But it is very well tested
-and very stable (and widely used) so it canbe trusted.
+and very stable (and widely used) so it can be trusted.
 
 This means that there **may** be occasions when a write operation will fail,
 so this should be catered for in any application using this REST API

@@ -23,7 +23,7 @@ import kb.db as db
 import kb.filesystem as fs
 import kb.history as history
 import kb.initializer as initializer
-import kb.opener as opener
+import kb.utils as utils
 import kb.viewer as viewer
 from kb.config import get_markers
 
@@ -113,7 +113,7 @@ def view_by_id(id: int,
         markers = get_markers(config["PATH_KB_MARKERS"])
         viewer.view(artifact_path, markers, color=color_mode)
     else:
-        opener.open_non_text_file(artifact_path)
+        utils.open_non_text_file(artifact_path)
 
 
 def view_by_name(title: str,
@@ -162,7 +162,7 @@ def view_by_name(title: str,
             markers = get_markers(config["PATH_KB_MARKERS"])
             viewer.view(artifact_path, markers, color=color_mode)
         else:
-            opener.open_non_text_file(artifact_path)
+            utils.open_non_text_file(artifact_path)
     elif len(artifacts) > 1:
         print(
             "There is more than one artifact with that title, please specify a category")

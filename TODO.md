@@ -1,9 +1,11 @@
 # TODO List
 
-- Write installation procedure for Windows
-- find a way to include complex artifacts
-- find a way to load custom templates by artifact (maybe store it in db?)
-- Distributed API to use kb (kb as a service)
-- Add mobile application to query kb
-- the create kb database queries should be abstracted in some way
-- Fix windows hell with automatic extensions...
+- Fix Dockerfile (develop a kb-vim) and upload to dockerhub (Short-Term)
+- Add installer for choco and scoop
+- kb as a service (alshapton is working on this) (Long-Term)
+- Find a way to include complex artifacts (Long-Term)
+- Write installation procedure for Windows (Medium-Term)
+- Find a way to load custom templates by artifact (maybe store it in db?) (Medium-Term)
+- Add mobile application to query kb (NaN)
+- The create kb database queries should be abstracted in some way (NaN)
+- Fix notepad (windows) hell with automatic extensions... (maybe not)

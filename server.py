@@ -3,9 +3,10 @@ sys.path.append('kb')
 
 from bottle import get, run
 
-from kb.commands.search import search
-from kb.entities.artifact import Artifact
+from kb.api.search import search
+#from kb.api.add import add 
 from kb.config import DEFAULT_CONFIG
+
 
 parameters = dict(id="",
                     title = "",
@@ -26,10 +27,14 @@ parameters = dict(id="",
 # verbose -> determines if a verbose output is needed
 # response -> determines whether any data is required to be returned
 
+def toJson(self):
+    record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s""status":"%s""author":"%s","template":"%s"}' % (self.id,self.title,self.category,self.path,self.tags,self.status, self.author,self.template)
+    return record
+
 def constructResponse(results):
     response = '['
     for result in results:
-        response = response + result.toJson() + ','
+        response = response + toJson(result) + ','
     response =  response[:-1].replace("\"","\"") + ']'
     return response
 
@@ -40,8 +45,14 @@ def getAll():
 
 
 @get('/list/category/<category>')
-def getCategory(category=''):
+def getCategory(category = ''):
     parameters["category"]=category
+    results = search( parameters, config=DEFAULT_CONFIG)
+    return {'knowledge': constructResponse(results) }
+
+@get('/list/tags/<tags>')
+def getTags(tags = ''):
+    parameters["tags"]=tags
     results = search( parameters, config=DEFAULT_CONFIG)
     return {'knowledge': constructResponse(results) }
 

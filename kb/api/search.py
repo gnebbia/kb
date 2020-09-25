@@ -12,10 +12,6 @@ kb search command module
 """
 
 from typing import Dict
-import kb.db as db
-import kb.initializer as initializer
-import kb.printer.search as printer
-import kb.history as history
 import kb.actions.search as actions
 
 
@@ -40,13 +36,4 @@ def search(args: Dict[str, str], config: Dict[str, str]):
  
     artifacts = actions.search( args, config)   
 
-
-    # Write to history file
-    history.write(config["PATH_KB_HIST"], artifacts)
-
-    # Print resulting list
-    color_mode = not args["no_color"]
-    if args["verbose"]:
-        printer.print_search_result_verbose(artifacts, color_mode)
-    else:
-        printer.print_search_result(artifacts, color_mode)
+    return artifacts

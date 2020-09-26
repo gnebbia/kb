@@ -14,8 +14,10 @@ kbAPI server module
 import sys
 sys.path.append('kb')
 
-# Use the bottle framework
-from bottle import get, post, request, run, route, abort
+
+# Use the flask framework
+from flask import Flask, jsonify, abort, make_response, request
+
 
 # Import the API functions
 from kb.api.search import search
@@ -24,6 +26,7 @@ from kb.api.search import search
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
 
+app = Flask(__name__)
 
 parameters = dict(id="",
                     title = "",
@@ -42,7 +45,15 @@ parameters = dict(id="",
 # no_color -> determines whether  a color output is needed
 # verbose -> determines if a verbose output is needed
 
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
 """
+
     This function converts an Artifact object to a Json document
 
     Arguments:
@@ -76,39 +87,46 @@ def constructResponse(results):
     return response
 
 
-@get('/list')
+@app.route('/list', methods=['GET'])
 def getAll():
-    results = search( parameters, config=DEFAULT_CONFIG)    
+    results = search(parameters, config=DEFAULT_CONFIG)    
     if len(results) == 0:
-        abort(404, "Knowledgebase empty.")
+        abort(404)
     else:
-        return {'knowledge': constructResponse(results) }
+        return {'knowledge': constructResponse(results) }    
+        
 
-
-@get('/list/category/<category>')
+@app.route('/list/category/<category>', methods=['GET'])
 def getCategory(category = ''):
 
     parameters["category"]=category
 
     results = search( parameters, config=DEFAULT_CONFIG)
     if len(results) == 0:
-        abort(404, "Category not Found.")
+        abort(404)
     else:
         return {'knowledge': constructResponse(results) }
 
-@get('/list/tags/<tags>')
+@app.route('/list/tags/<tags>', methods=['GET'])
 def getTags(tags = ''):
     parameters["tags"]=tags
     results = search( parameters, config=DEFAULT_CONFIG)
     if len(results) == 0:
-        abort(404, "Tag(s) not Found.")
+        abort(404)
     else:
         return {'knowledge': constructResponse(results) }
-@post('/add')
+
+@app.route('/add', methods=['POST'])
 def addArtefact():
-    data = request.body.json
-    print (data)
+    title = request.json.get("title","")
+    category = request.json.get("category","")
+    author = request.json.get("author","")
+    status = request.json.get("status","")
+    tags = request.json.get("tags","")
+    return(jsonify(tags))
+
 
 
 # Start the server
-run(host='localhost', port=8080, debug=True,reloader=True)
+if __name__ == '__main__':
+    app.run(debug=True)

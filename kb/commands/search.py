@@ -21,7 +21,7 @@ import kb.actions.search as actions
 
 def search(args: Dict[str, str], config: Dict[str, str]):
     """
-    Search artifacts within the knowledge base of kb.
+    Search artifacts within the knowledge base of kb and display the output on the terminal.
 
     Arguments:
     args:           - a dictionary containing the following fields:

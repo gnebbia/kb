@@ -17,7 +17,7 @@ import kb.actions.search as actions
 
 def search(args: Dict[str, str], config: Dict[str, str]):
     """
-    Search artifacts within the knowledge base of kb.
+    Search artifacts within the knowledge base of kb to return to the API.
 
     Arguments:
     args:           - a dictionary containing the following fields:

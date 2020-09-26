@@ -517,7 +517,7 @@ def update_artifact_by_id(
 
     update_record = (artifact_id, artifact.title, artifact.category,
                      artifact.path, artifact.tags, artifact.status,
-                     artifact.author, None)
+                     artifact.author, artifact.template)
 
     new_record = list()
     for i, elem in enumerate(attr.astuple(current_artifact)):

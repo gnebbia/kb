@@ -361,32 +361,53 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
 
-    # template_parser
-    template_parser.add_argument(
-        "-l", "--list",
-        help="List existing templates",
-        action='store_true',
-        default=False,
-    )
-    template_parser.add_argument(
-        "-a", "--add",
-        help="Add a template",
+    # template parser
+    template_subparsers = template_parser.add_subparsers(help='template commands', dest="template_command")
+    template_subparsers.required = True
+
+    # template subcommands
+    add_template_parser = template_subparsers.add_parser(
+        'add', help='Add a template from a file')
+    edit_template_parser = template_subparsers.add_parser(
+        'edit', help='Edit a template')
+    list_template_parser = template_subparsers.add_parser(
+        'list', help='List all templates')
+    new_template_parser = template_subparsers.add_parser(
+        'new', help='Create a template from starting from an example')
+    delete_template_parser = template_subparsers.add_parser(
+        'delete', help='Delete an existing template')
+
+    add_template_parser.add_argument(
+        "file",
+        help="The template file to add to kb",
         type=str,
     )
-    template_parser.add_argument(
-        "-n", "--new",
-        help="Create a new template",
-        action='store_true',
-        default=False,
-    )
-    template_parser.add_argument(
-        "-d", "--delete",
-        help="Delete template",
+    edit_template_parser.add_argument(
+        "template",
+        help="The name of the template to edit",
         type=str,
     )
-    template_parser.add_argument(
-        "-e", "--edit",
-        help="Edit template",
+    list_template_parser.add_argument(
+        "query",
+        help="The name (or part of it) of the template to search for",
+        type=str,
+        nargs='?',
+    )
+    list_template_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
+    )
+    delete_template_parser.add_argument(
+        "template",
+        help="The name of the template to delete",
+        type=str,
+    )
+    new_template_parser.add_argument(
+        "template",
+        help="The name of the template to create",
         type=str,
     )
 

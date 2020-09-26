@@ -40,6 +40,8 @@ def update(args: Dict[str, str], config: Dict[str, str]):
                         to update
                       status -> the status to be assigned to the artifact
                         to update
+                      template -> the template to be assigned to the artifact
+                        to update
                       edit_content -> a boolean, if True -> also open the
                         artifact to edit the content
     config:         - a configuration dictionary containing at least
@@ -68,7 +70,8 @@ def update(args: Dict[str, str], config: Dict[str, str]):
             category=args["category"],
             tags=args["tags"],
             author=args["author"],
-            status=args["status"])
+            status=args["status"],
+            template=args["template"])
 
         db.update_artifact_by_id(conn, old_artifact.id, updated_artifact)
         # If either title or category has been changed, we must move the file

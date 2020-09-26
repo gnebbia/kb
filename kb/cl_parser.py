@@ -16,21 +16,22 @@ __all__ = ()
 import sys
 import argparse
 from kb import __version__
+from typing import Sequence
 
 
-def parse_args(args):
+def parse_args(args: Sequence[str]) -> argparse.Namespace:
     """
     This function parses the arguments which have been passed from the command
     line, these can be easily retrieved for example by using "sys.argv[1:]".
-    It returns a parser object as with argparse.
+    It returns an argparse Namespace object.
 
     Arguments:
     args -- the list of arguments passed from the command line as the sys.argv
             format
 
     Returns:
-    A parser with the provided arguments, which can be used in a
-    simpler format
+    An argparse Namespace object with the provided arguments, which
+    can be used in a simpler format.
     """
     parser = argparse.ArgumentParser(prog='kb',
                                      description='A knowledge base organizer')

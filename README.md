@@ -155,7 +155,7 @@ A quick demo for non-text documents:
 
 ### List artifacts
 
-#### List all artifacts contained in the kb knowledge base:
+#### List all artifacts contained in the kb knowledge base
 ```sh
 kb list
 
@@ -164,7 +164,7 @@ kbl
 ```
 ![](img/kb_list_all.gif)
 
-#### List all artifacts containing the string "zip":
+#### List all artifacts containing the string "zip"
 ```sh
 kb list zip
 
@@ -173,7 +173,7 @@ kbl zip
 ```
 ![](img/kb_list_title_zip.gif)
 
-#### List all artifacts belonging to the category "cheatsheet":
+#### List all artifacts belonging to the category "cheatsheet"
 ```sh
 kb list --category cheatsheet
 # or
@@ -184,7 +184,7 @@ kbl -c cheatsheet
 ```
 ![](img/kb_list_category.gif)
 
-#### List all the artifacts having the tags "web" or "pentest":
+#### List all the artifacts having the tags "web" or "pentest"
 ```sh
 kb list --tags "web;pentest"
 
@@ -193,7 +193,7 @@ kbl --tags "web;pentest"
 ```
 ![](img/kb_list_tags.gif)
 
-#### List using "verbose mode":
+#### List using "verbose mode"
 ```sh
 kb list -v
 
@@ -346,6 +346,8 @@ kb grep -v "[bg]zip"
 ### Import/Export/Erase a knowledge base
 
 #### Export the current knowledge base
+
+To export the entire knowledge base, do:
 ```sh
 kb export
 ```
@@ -353,12 +355,22 @@ This will generate a .kb.tar.gz archive that can
 be later be imported by kb.
 ![](img/kb_export.gif)
 
+If you want to export only data (so that it can be used in other software):
+
+```sh
+ kb export --only-data
+```
+
+This will export a directory containing a subdirectory for each category
+and within these subdirectories we will have all the artifacts belonging
+to that specific category.
+
 #### Import a knowledge base
 ```sh
 kb import archive.kb.tar.gz
 ```
 **NOTE**: Importing a knowledge base erases all the previous
-data. Basically it erases everything and imports the knowledge base.
+data. Basically it erases everything and imports the new knowledge base.
 ![](img/kb_import.gif)
 
 #### Erase the entire knowledge base

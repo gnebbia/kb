@@ -59,6 +59,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'update', help='Update artifact properties')
     delete_parser = subparsers.add_parser(
         'delete', help='Delete artifacts')
+    template_parser = subparsers.add_parser(
+        'template', help='Manage templates for artifacts')
     import_parser = subparsers.add_parser(
         'import', help='Import a knowledge base')
     export_parser = subparsers.add_parser(
@@ -99,6 +101,11 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     add_parser.add_argument(
         "-s", "--status",
         help="Status of the artifact",
+        type=str,
+    )
+    add_parser.add_argument(
+        "--template",
+        help="Template to apply to the artifact",
         type=str,
     )
     add_parser.add_argument(
@@ -322,6 +329,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     update_parser.add_argument(
+        "--template",
+        help="Template to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
         "-e", "--edit-content",
         help="Edit content of the artifact",
         action="store_true",
@@ -345,6 +358,35 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         "-c", "--category",
         help="Category associated to the artifact to remove",
         default=None,
+        type=str,
+    )
+
+    # template_parser
+    template_parser.add_argument(
+        "-l", "--list",
+        help="List existing templates",
+        action='store_true',
+        default=False,
+    )
+    template_parser.add_argument(
+        "-a", "--add",
+        help="Add a template",
+        type=str,
+    )
+    template_parser.add_argument(
+        "-n", "--new",
+        help="Create a new template",
+        action='store_true',
+        default=False,
+    )
+    template_parser.add_argument(
+        "-d", "--delete",
+        help="Delete template",
+        type=str,
+    )
+    template_parser.add_argument(
+        "-e", "--edit",
+        help="Edit template",
         type=str,
     )
 

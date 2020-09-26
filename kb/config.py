@@ -26,11 +26,11 @@ DEFAULT_CONFIG = {
     # for future use
     "PATH_KB_CONFIG": str(Path(Path.home(), ".kb", "kb.conf.py")),
     "PATH_KB_MARKERS": str(Path(Path.home(), ".kb", "markers.toml")),
+    "PATH_KB_TEMPLATES": str(Path(Path.home(), ".kb", "templates")),
     "EDITOR": os.environ.get("EDITOR", "vim"),
     "INITIAL_CATEGORIES": ["default",
                            "cheatsheets",
-                           "procedures",
-                           "guides"],
+                           "procedures"],
 }
 
 

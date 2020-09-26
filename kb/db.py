@@ -27,7 +27,8 @@ DB_CREATE_QUERY = """CREATE TABLE IF NOT EXISTS artifacts (
                          path text NOT NULL,
                          tags text,
                          status text,
-                         author text);
+                         author text,
+                         template text);
                      CREATE TABLE IF NOT EXISTS tags (
                          artifact_id integer,
                          tag text,
@@ -145,10 +146,10 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         return
 
     sql = '''INSERT INTO artifacts
-             (title,category,path,tags,author,status)
-             VALUES(?,?,?,?,?,?)'''
+             (title,category,path,tags,author,status,template)
+             VALUES(?,?,?,?,?,?,?)'''
     args = (artifact.title, artifact.category,
-            path, artifact.tags, artifact.author, artifact.status)
+            path, artifact.tags, artifact.author, artifact.status, artifact.template)
 
     cur.execute(sql, args)
     last_artifact_id = cur.lastrowid

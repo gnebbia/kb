@@ -21,6 +21,7 @@ from kb.commands.search import search
 from kb.commands.edit import edit
 from kb.commands.update import update
 from kb.commands.delete import delete
+from kb.commands.template import template
 from kb.commands.view import view
 from kb.commands.grep import grep
 from kb.commands.erase import erase
@@ -41,6 +42,7 @@ COMMANDS = {
     'erase': erase,
     'import': ingest,
     'export': export,
+    'template': template,
 }
 
 

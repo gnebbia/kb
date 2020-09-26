@@ -59,6 +59,7 @@ def create_kb_files(config):
     data_path = config["PATH_KB_DATA"]
     markers_path = config["PATH_KB_MARKERS"]
     initial_categs = config["INITIAL_CATEGORIES"]
+    templates_path = config["PATH_KB_TEMPLATES"]
 
     # Create main kb
     fs.create_directory(kb_path)
@@ -67,8 +68,11 @@ def create_kb_files(config):
     if not os.path.exists(db_path):
         db.create_kb_database(db_path)
 
-    # Create "data" director
+    # Create "data" directory
     fs.create_directory(data_path)
+
+    # Create "templates" directory
+    fs.create_directory(templates_path)
 
     # Create kb initial categories directories
     for category in initial_categs:
@@ -102,7 +106,8 @@ def is_initialized(config) -> bool:
     kb_path = config["PATH_KB"]
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
-    for path in [kb_path, db_path, data_path]:
+    templates_path = config["PATH_KB_TEMPLATES"]
+    for path in [kb_path, db_path, data_path, templates_path]:
         if not os.path.exists(path):
             return False
     return True

@@ -26,6 +26,7 @@ import kb.initializer as initializer
 import kb.opener as opener
 import kb.viewer as viewer
 from kb.config import get_markers
+from kb.entities.artifact import Artifact
 
 
 def view(args: Dict[str, str], config: Dict[str, str]):
@@ -110,7 +111,8 @@ def view_by_id(id: int,
 
     # View File
     if fs.is_text_file(artifact_path):
-        markers = get_markers(config["PATH_KB_MARKERS"])
+        print(artifact)
+        markers = get_template(artifact, config)
         viewer.view(artifact_path, markers, color=color_mode)
     else:
         opener.open_non_text_file(artifact_path)
@@ -159,7 +161,7 @@ def view_by_name(title: str,
 
         # View File
         if fs.is_text_file(artifact_path):
-            markers = get_markers(config["PATH_KB_MARKERS"])
+            markers = get_template(artifact, config)
             viewer.view(artifact_path, markers, color=color_mode)
         else:
             opener.open_non_text_file(artifact_path)
@@ -169,3 +171,27 @@ def view_by_name(title: str,
     else:
         print(
             "There is no artifact with that name, please specify a correct artifact name")
+
+
+def get_template(artifact: Artifact, config: Dict[str, str]) -> str:
+    """"
+    Get template for a specific artifact.
+
+    Arguments:
+    artifact        - the artifact to get the template for
+    config:         - a configuration dictionary containing at least
+                      the following keys:
+                      PATH_KB_MARKERS   - the file associated to the markers
+                      PATH_KB_TEMPLATES - the path where templates are stored
+
+    Returns:
+    A dictionary containing markers, where the key is a regex
+    and the value is a string representing a color.
+    """
+    template = artifact.template or "default"
+    print(template)
+    if template == "default":
+        markers = get_markers(config["PATH_KB_MARKERS"])
+    else:
+        markers = get_markers(str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split('/'))))
+    return markers

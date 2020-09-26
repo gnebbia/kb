@@ -5,7 +5,7 @@
 # See /LICENSE for licensing information.
 
 """
-kb add command module
+kb template command module
 
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
@@ -22,9 +22,9 @@ import kb.filesystem as fs
 from kb.entities.artifact import Artifact
 
 
-def add(args: Dict[str, str], config: Dict[str, str]):
+def template(args: Dict[str, str], config: Dict[str, str]):
     """
-    Adds a list of artifacts to the knowledge base of kb.
+    Manage templates for kb
 
     Arguments:
     args:           - a dictionary containing the following fields:
@@ -41,67 +41,59 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
     # Check if the add command has proper arguments/options
-    is_valid_add = args["file"] or args["title"]
-    if not is_valid_add:
-        print("Please, either specify a file or a title for the new artifact")
+    is_valid_template = args["list"] or args["add"] or args["new"] or args["delete"] or args["edit"]
+    if not is_valid_template:
+        print("Please, specify a valid template command")
         sys.exit(1)
 
     # Check initialization
     initializer.init(config)
 
-    conn = db.create_connection(config["PATH_KB_DB"])
-    if args["file"]:
-        for fname in args["file"]:
-            if fs.is_directory(fname):
-                continue
-            add_file_to_kb(conn, args, config, fname)
+    if args["list"]:
+        template_list = fs.list_files(config["PATH_KB_TEMPLATES"])
+        print(template_list)
+    elif args["new"]:
+        template_name = input("Specify a name for the new template: ")
+        
+        if not template_name:
+            sys.exit(1)
+
+        print(template_name.split('/'))
+        template_path = str(Path(*[config["PATH_KB_TEMPLATES"]] + template_name.split('/')))
+        print(template_path)
+
+        if fs.is_file(template_path):
+            print("ERROR: The template you inserted corresponds to an existing one. "
+                  "Please specify another name for the new template")
+            sys.exit(1)
+
+        fs.copy_file(config["PATH_KB_MARKERS"], template_path)
+
+        shell_cmd = shlex.split(
+            config["EDITOR"]) + [template_path]
+        call(shell_cmd)
+
+    elif args["add"]:
+        template_path = args["add"]
+        fs.copy_file(template_path, config["PATH_KB_TEMPLATES"])
+
+    elif args["delete"]:
+        template_name = args["delete"]
+        fs.remove_file(Path(config["PATH_KB_TEMPLATES"], template_name))
+
+    elif args["edit"]:
+        template_name = args["edit"]
+        template_path = str(Path(*[config["PATH_KB_TEMPLATES"]] + template_name.split('/')))
+
+        shell_cmd = shlex.split(
+            config["EDITOR"]) + [template_path]
+        call(shell_cmd)
+
     else:
-        # Get title for the new artifact
-        title = args["title"]
-
-        # Assign a "default" category if not provided
-        category = args["category"] or "default"
-
-        # Create "category" directory if it does not exist
-        category_path = Path(config["PATH_KB_DATA"], category)
-        category_path.mkdir(parents=True, exist_ok=True)
-
-        if not db.is_artifact_existing(conn, title, category):
-            # If a file is provided, copy the file to kb directory
-            # otherwise open up the editor and create some content
-            artifact_path = str(Path(category_path, title))
-            if args["body"]:
-                with open(artifact_path, "w+") as art_file:
-                    body = args["body"].replace("\\n", "\n")
-                    art_file.write(body)
-            else:
-                shell_cmd = shlex.split(
-                    config["EDITOR"]) + [artifact_path]
-                call(shell_cmd)
-
-        new_artifact = Artifact(
-            id=None, title=title, category=category,
-            path="{category}/{title}".format(category=category, title=title),
-            tags=args["tags"],
-            status=args["status"], author=args["author"], template=args["template"])
-        db.insert_artifact(conn, new_artifact)
+        print("Please specify a correct template command")
 
 
-def validate(args):
-    """
-    Validate arguments for the add command
-
-    Arguments:
-    args        - the dictionary of arguments
-                  passed to the add command
-
-    Returns:
-    A boolean, True if the add command is valid
-    """
-    return bool(args["file"] or args["title"])
-
-
-def add_file_to_kb(
+def add_template_to_kb(
         conn,
         args: Dict[str, str],
         config: Dict[str, str],

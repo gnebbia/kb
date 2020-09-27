@@ -573,5 +573,5 @@ def update_artifact_by_id(
         new_record.append(update_record[i] or elem or None)
 
     delete_artifact_by_id(conn, artifact_id)
-    updated_artifact = Artifact(artifact_id, *new_record[1:])
+    updated_artifact = Artifact(*new_record)
     insert_artifact_with_id(conn, updated_artifact, artifact_id)

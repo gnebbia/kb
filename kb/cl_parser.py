@@ -382,6 +382,11 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="The template file to add to kb",
         type=str,
     )
+    add_template_parser.add_argument(
+        "-t","--title",
+        help="The title to assign to the template added from a file to kb",
+        type=str,
+    )
     edit_template_parser.add_argument(
         "template",
         help="The name of the template to edit",

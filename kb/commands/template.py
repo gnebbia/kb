@@ -82,13 +82,18 @@ def add(args: Dict[str, str], config: Dict[str, str]):
     Arguments:
     args:           - a dictionary containing the following fields:
                       file -> the path to the template to include in kb templates
+                      title -> the title to assign to the kb template added
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB_TEMPLATES         - the path to where the templates of KB
                                                   are stored
     """
     template_path = args["file"]
-    fs.copy_file(template_path, config["PATH_KB_TEMPLATES"])
+    if args["title"]:
+        dest_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["title"])
+    else:
+        dest_path = config["PATH_KB_TEMPLATES"]
+    fs.copy_file(template_path, dest_path)
 
 def delete(args: Dict[str, str], config: Dict[str, str]):
     """

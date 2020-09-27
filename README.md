@@ -21,6 +21,56 @@ Date: 2020-09-22
 Version: 0.1.3
 
 
+## Table of Contents
+
+      * [PURPOSE](#purpose)
+      * [INSTALLATION](#installation)
+         * [INSTALLATION WITH HOMEBREW](#installation-with-homebrew)
+         * [NOTES FOR WINDOWS USERS](#notes-for-windows-users)
+      * [DOCKER](#docker)
+      * [USAGE](#usage)
+         * [List artifacts](#list-artifacts)
+            * [List all artifacts contained in the kb knowledge base](#list-all-artifacts-contained-in-the-kb-knowledge-base)
+            * [List all artifacts containing the string "zip"](#list-all-artifacts-containing-the-string-zip)
+            * [List all artifacts belonging to the category "cheatsheet"](#list-all-artifacts-belonging-to-the-category-cheatsheet)
+            * [List all the artifacts having the tags "web" or "pentest"](#list-all-the-artifacts-having-the-tags-web-or-pentest)
+            * [List using "verbose mode"](#list-using-verbose-mode)
+         * [Add artifacts](#add-artifacts)
+            * [Add a file to the collection of artifacts](#add-a-file-to-the-collection-of-artifacts)
+            * [Add a file to the artifacts](#add-a-file-to-the-artifacts)
+            * [Add all files contained in a directory to kb](#add-all-files-contained-in-a-directory-to-kb)
+            * [Create a new artifact from scratch](#create-a-new-artifact-from-scratch)
+         * [Delete artifacts](#delete-artifacts)
+            * [Delete an artifact by ID](#delete-an-artifact-by-id)
+            * [Delete multiple artifacts by ID](#delete-multiple-artifacts-by-id)
+            * [Delete an artifact by name](#delete-an-artifact-by-name)
+         * [View artifacts](#view-artifacts)
+            * [View an artifact by id](#view-an-artifact-by-id)
+            * [View an artifact by name](#view-an-artifact-by-name)
+            * [View an artifact without colors](#view-an-artifact-without-colors)
+            * [View an artifact within a text-editor](#view-an-artifact-within-a-text-editor)
+         * [Edit artifacts](#edit-artifacts)
+            * [Edit an artifact by id](#edit-an-artifact-by-id)
+            * [Edit an artifact by name](#edit-an-artifact-by-name)
+         * [Grep through artifacts](#grep-through-artifacts)
+            * [Grep through the knowledge base](#grep-through-the-knowledge-base)
+            * [Grep (case-insensitive) through the knowledge base](#grep-case-insensitive-through-the-knowledge-base)
+            * [Grep in "verbose mode" through the knowledge base](#grep-in-verbose-mode-through-the-knowledge-base)
+         * [Import/Export/Erase a knowledge base](#importexporterase-a-knowledge-base)
+            * [Export the current knowledge base](#export-the-current-knowledge-base)
+            * [Import a knowledge base](#import-a-knowledge-base)
+            * [Erase the entire knowledge base](#erase-the-entire-knowledge-base)
+         * [Manage Templates](#manage-templates)
+            * [List available templates](#list-available-templates)
+            * [Create a new template](#create-a-new-template)
+            * [Delete a template](#delete-a-template)
+            * [Edit a template](#edit-a-template)
+            * [Add a template](#add-a-template)
+            * [Change template for an artifact](#change-template-for-an-artifact)
+      * [UPGRADE](#upgrade)
+      * [DONATIONS](#donations)
+      * [COPYRIGHT](#copyright)
+
 ## PURPOSE
 
 kb is a text-oriented minimalist command line knowledge base manager. kb
@@ -379,6 +429,49 @@ kb erase
 ```
 ![](img/kb_erase.gif)
 
+
+### Manage Templates
+
+#### List available templates
+
+```sh
+kb template list
+```
+
+```sh
+kb template list "theory"
+```
+
+#### Create a new template
+
+```sh
+kb template new lisp-cheatsheets
+```
+
+#### Delete a template
+
+```sh
+kb template delete lisp-cheatsheets
+```
+
+#### Edit a template
+
+```sh
+kb template edit lisp-cheatsheets
+```
+
+#### Add a template
+
+To add a template from a toml configuration file, just do:
+```sh
+kb template add ~/path/to/myconfig.toml --title myconfig
+```
+
+#### Change template for an artifact
+
+```sh
+kb update --id 2 --template "lisp-cheatsheets"
+```
 
 ## UPGRADE
 

@@ -66,7 +66,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     erase_parser = subparsers.add_parser(
         'erase', help='Erase the entire kb knowledge base')
     help_parser = subparsers.add_parser(
-        'help', help='Show help of a particular commnad')
+        'help', help='Show help of a particular command')
 
     # add parser
     add_parser.add_argument(

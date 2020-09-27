@@ -163,6 +163,55 @@ def insert_artifact(conn, artifact: Artifact) -> None:
 
     conn.commit()
 
+def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
+    """
+    Inserts in the database the provided artifact
+
+    Arguments:
+    conn            - An sqlite connection object representing
+                      the database on which data will be inserted
+    artifact        - an artifact object
+    id              - the ID to use for the insertion of artifact
+                      in the database
+
+    Returns:
+    Returns an error if there was a failure in the insertion operation
+    """
+    # Convert tags to a string with ';' separating tags
+    tags_list = []
+    if artifact.tags:
+        tags_list = list(set(artifact.tags.split(';')))
+
+    path = ""
+    if artifact.path:
+        path = artifact.path
+    else:
+        path = "{category}/{title}".format(
+            category=artifact.category, title=artifact.title)
+
+    cur = conn.cursor()
+    if is_artifact_existing(conn, artifact.title, artifact.category):
+        print("Error: the specified artifact already exists in kb!")
+        print("Run `kb update -h` to understand how to update an artifact")
+        return
+
+    sql = '''INSERT INTO artifacts
+             (id, title,category,path,tags,author,status,template)
+             VALUES(?,?,?,?,?,?,?,?)'''
+    args = (artifact.id, artifact.title, artifact.category,
+            path, artifact.tags, artifact.author, artifact.status, artifact.template)
+
+    cur.execute(sql, args)
+    last_artifact_id = cur.lastrowid
+
+    for tag in tags_list:
+        sql = '''INSERT INTO tags
+                 (artifact_id,tag)
+                 VALUES(?,?)'''
+        args = (last_artifact_id, tag)
+        cur.execute(sql, args)
+
+    conn.commit()
 
 def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
@@ -524,5 +573,5 @@ def update_artifact_by_id(
         new_record.append(update_record[i] or elem or None)
 
     delete_artifact_by_id(conn, artifact_id)
-    updated_artifact = Artifact(None, *new_record[1:])
-    insert_artifact(conn, updated_artifact)
+    updated_artifact = Artifact(artifact_id, *new_record[1:])
+    insert_artifact_with_id(conn, updated_artifact, artifact_id)

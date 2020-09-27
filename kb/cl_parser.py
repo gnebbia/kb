@@ -65,6 +65,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'export', help='Export the knowledge base')
     erase_parser = subparsers.add_parser(
         'erase', help='Erase the entire kb knowledge base')
+    help_parser = subparsers.add_parser(
+        'help', help='Show help of a particular command')
 
     # add parser
     add_parser.add_argument(
@@ -380,8 +382,28 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         default=False,
     )
 
+    help_parser.add_argument(
+        'cmd',
+        help='Name of command to get help for',
+        nargs='?'
+    )
+
     if len(args) == 0:
         parser.print_help(sys.stderr)
         sys.exit(1)
 
-    return parser.parse_args(args)
+    parsed_args = parser.parse_args()
+    if parsed_args.command == 'help':
+        if not parsed_args.cmd:
+            parser.print_help(sys.stderr)
+        else:
+            try:
+                subparsers.choices[parsed_args.cmd].print_help()
+            except KeyError:
+                print(f'Unknown command name `{parsed_args.cmd}`')
+                print(
+                    f"Valid commands are: {', '.join(subparsers.choices.keys())}"
+                )
+        sys.exit(1)
+
+    return parsed_args

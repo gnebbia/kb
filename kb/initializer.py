@@ -25,14 +25,14 @@ def init(config):
 
     Arguments:
     config  - a dictionary containing the following keys:
-                PATH_KB         - the path to kb
-                                    (~/.kb by default)
-                PATH_KB_DB      - the path to kb database
-                                    (~/.kb/kb.db by default)
-                PATH_KB_DATA    - the path to kb data
-                                    (~/.kb/data/ by default)
-                PATH_KB_MARKERS - the path to kb markers
-                                    (~/.kb/markers.toml by default)
+                PATH_KB                 - the path to kb
+                                            (~/.kb by default)
+                PATH_KB_DB              - the path to kb database
+                                            (~/.kb/kb.db by default)
+                PATH_KB_DATA            - the path to kb data
+                                            (~/.kb/data/ by default)
+                PATH_KB_DEFAULT_TEMPLATE - the path to kb markers
+                                            (~/.kb/templates/default by default)
     """
     if not is_initialized(config):
         create_kb_files(config)
@@ -44,21 +44,22 @@ def create_kb_files(config):
 
     Arguments:
     config  - a dictionary containing the following keys:
-                PATH_KB         - the path to kb
-                                    (~/.kb by default)
-                PATH_KB_DB      - the path to kb database
-                                    (~/.kb/kb.db by default)
-                PATH_KB_DATA    - the path to kb data
-                                    (~/.kb/data/ by default)
-                PATH_KB_MARKERS - the path to kb markers
-                                    (~/.kb/markers.toml by default)
+                PATH_KB                 - the path to kb
+                                            (~/.kb by default)
+                PATH_KB_DB              - the path to kb database
+                                            (~/.kb/kb.db by default)
+                PATH_KB_DATA            - the path to kb data
+                                            (~/.kb/data/ by default)
+                PATH_KB_DEFAULT_TEMPLATE - the path to kb markers
+                                            (~/.kb/templates/default by default)
     """
     # Get paths for kb from configuration
     kb_path = config["PATH_KB"]
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
-    markers_path = config["PATH_KB_MARKERS"]
     initial_categs = config["INITIAL_CATEGORIES"]
+    templates_path = config["PATH_KB_TEMPLATES"]
+    default_template_path = str(Path(templates_path) / "default")
 
     # Create main kb
     fs.create_directory(kb_path)
@@ -67,8 +68,11 @@ def create_kb_files(config):
     if not os.path.exists(db_path):
         db.create_kb_database(db_path)
 
-    # Create "data" director
+    # Create "data" directory
     fs.create_directory(data_path)
+
+    # Create "templates" directory
+    fs.create_directory(templates_path)
 
     # Create kb initial categories directories
     for category in initial_categs:
@@ -76,8 +80,8 @@ def create_kb_files(config):
         fs.create_directory(category_path)
 
     # Create markers file
-    with open(markers_path, 'w') as cfg:
-        cfg.write(toml.dumps(conf.DEFAULT_MARKERS))
+    with open(default_template_path, 'w') as cfg:
+        cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
 
 def is_initialized(config) -> bool:
@@ -102,7 +106,8 @@ def is_initialized(config) -> bool:
     kb_path = config["PATH_KB"]
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
-    for path in [kb_path, db_path, data_path]:
+    templates_path = config["PATH_KB_TEMPLATES"]
+    for path in [kb_path, db_path, data_path, templates_path]:
         if not os.path.exists(path):
             return False
     return True

@@ -59,6 +59,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'update', help='Update artifact properties')
     delete_parser = subparsers.add_parser(
         'delete', help='Delete artifacts')
+    template_parser = subparsers.add_parser(
+        'template', help='Manage templates for artifacts')
     import_parser = subparsers.add_parser(
         'import', help='Import a knowledge base')
     export_parser = subparsers.add_parser(
@@ -99,6 +101,11 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     add_parser.add_argument(
         "-s", "--status",
         help="Status of the artifact",
+        type=str,
+    )
+    add_parser.add_argument(
+        "--template",
+        help="Template to apply to the artifact",
         type=str,
     )
     add_parser.add_argument(
@@ -322,6 +329,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     update_parser.add_argument(
+        "--template",
+        help="Template to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
         "-e", "--edit-content",
         help="Edit content of the artifact",
         action="store_true",
@@ -345,6 +358,56 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         "-c", "--category",
         help="Category associated to the artifact to remove",
         default=None,
+        type=str,
+    )
+
+    # template parser
+    template_subparsers = template_parser.add_subparsers(help='template commands', dest="template_command")
+    template_subparsers.required = True
+
+    # template subcommands
+    add_template_parser = template_subparsers.add_parser(
+        'add', help='Add a template from a file')
+    edit_template_parser = template_subparsers.add_parser(
+        'edit', help='Edit a template')
+    list_template_parser = template_subparsers.add_parser(
+        'list', help='List all templates')
+    new_template_parser = template_subparsers.add_parser(
+        'new', help='Create a template from starting from an example')
+    delete_template_parser = template_subparsers.add_parser(
+        'delete', help='Delete an existing template')
+
+    add_template_parser.add_argument(
+        "file",
+        help="The template file to add to kb",
+        type=str,
+    )
+    edit_template_parser.add_argument(
+        "template",
+        help="The name of the template to edit",
+        type=str,
+    )
+    list_template_parser.add_argument(
+        "query",
+        help="The name (or part of it) of the template to search for",
+        type=str,
+        nargs='?',
+    )
+    list_template_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
+    )
+    delete_template_parser.add_argument(
+        "template",
+        help="The name of the template to delete",
+        type=str,
+    )
+    new_template_parser.add_argument(
+        "template",
+        help="The name of the template to create",
         type=str,
     )
 

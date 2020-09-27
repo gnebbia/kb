@@ -105,7 +105,8 @@ def test_create_table(db_connect):
                                 path text NOT NULL,
                                 tags text,
                                 status text,
-                                author text);
+                                author text,
+                                template text);
                           """
 
     db_path = Path("tests","data","mydb.db")
@@ -128,7 +129,8 @@ def test_create_table_2(db_connect):
                                 path text NOT NULL,
                                 tags text,
                                 status text,
-                                author text);
+                                author text,
+                                template text);
                           """
     db_path = Path("tests","data","mydb2.db")
 
@@ -182,9 +184,9 @@ def test_insert_artifact():
         rows = cur.fetchall()
         print(rows)
         assert set(rows) == {(1, 'pentest_smb', 'procedure',
-                            'pentest/smb', 'pt;smb', 'OK', 'gnc'),
+                            'pentest/smb', 'pt;smb', 'OK', 'gnc', None),
                             (2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz')}
+                            'Draft', 'elektroniz', None)}
 
 
 
@@ -231,7 +233,7 @@ def test_delete_artifact_by_id():
         rows = cur.fetchall()
         assert len(rows) == 1
         assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz')}
+                            'Draft', 'elektroniz', None)}
 
         db.delete_artifact_by_id(conn,2)
 
@@ -274,7 +276,7 @@ def test_delete_artifact_by_name():
         rows = cur.fetchall()
         assert len(rows) == 1
         assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz')}
+                            'Draft', 'elektroniz',None)}
     # try:
     #     os.unlink(db_path)
     # except FileNotFoundError:

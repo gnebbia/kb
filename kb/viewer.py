@@ -30,60 +30,49 @@ def colorize_string(string, color):
     return set_fg(color) + string + reset()
 
 
-def colorize_string_on_match(string, regex, color):
+def colorize_row(row, markers=None):
     """
-    This function take a string and substitute it using regex and match
-    with configured colors.
+    This function takes a string and a dictionary of markers
+    (where key is regex and value is color) and
+    the transforms the passed string (row) with colors.
 
     Arguments:
-    string   - A string
-    regex    - A regex that will be matched against the string
-    color    - The string name of color or hex, like "red" or "#C0C0C0"
+    row     - the string
+    markers - a dictionary having as key strings
+              representing the purpose of the formatting
+              and having as values a list where
+              the first element is a regex and the second
+              element is the color value.
+              Example:
+              markers = { 
+                    "TITLE":    ["^#.*", "blue"]
+                    "WARNINGS": ["^!.*", "yellow"]
+              }
 
     Returns:
-    A colored string when regex matches
+    A new message colored following the rules within the markers
+    dictionary
     """
-    # re.search(r"%(.*?)%", str)
-    try:
-        new_msg = re.search(rf"{regex}", string).group(1)
-    except BaseException:
-        new_msg = string
-    return re.sub(regex, colorize_string(new_msg, color), string)
-
-
-def mark_row(row, markers=None):
-    """
-    This function take a string, recognize markers using regex and returns
-    the row formatted if needed.
-
-    Arguments:
-    row     - The message
-    markers - an object containing configured marks in the form:
-
-
-    Returns:
-    A new formatted message
-    """
-    is_marked = False
+    colored_row = row
     for mark in markers:
-        regex = rf'{(markers[mark][0])}'
-        color_match = markers[mark][1]
+        regex = re.compile(rf'{(markers[mark][0])}')
+        color = markers[mark][1]
+        
+        match = regex.search(row)
 
-        if re.search(regex, row) is not None:
-            res = colorize_string_on_match(row, regex, color_match)
-            is_marked = True
-            return res
+        if match:
+            colored_row = re.sub(regex, rf'{colorize_string(match.group(0), color)}', rf'{row}')
+            row = colored_row
 
-    if not is_marked:
-        return row
+    return colored_row
 
 
 def colorize_output(data, markers):
     """
-    A function that takes an input list of strings, for example they
+    This function takes an input a list of strings, for example they
     can be taken from a file or any other source, processes them
     and returns a list of formatted colored strings ready to be
-    visualized
+    visualized.
 
     Arguments:
     data    - A list of strings.
@@ -96,7 +85,7 @@ def colorize_output(data, markers):
         return data
     colorized_output = list()
     for row in data:
-        colorized_output.append(mark_row(row, markers))
+        colorized_output.append(colorize_row(row, markers))
     return colorized_output
 
 

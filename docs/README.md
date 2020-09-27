@@ -324,6 +324,74 @@ data. Basically it erases everything and imports the new knowledge base.
 kb erase
 ```
 
+### Manage Templates
+
+kb supports custom templates for the artifacts.
+A template is basically a file using the "toml" format,
+structured in this way:
+```sh
+TITLES   = [ "^#.*", "blue",  ]
+WARNINGS = [ "!.*" , "yellow",]
+COMMENTS = [ ";;.*", "green", ]
+```
+
+Where the first element of each list is a regex and the second element
+is a color.
+
+Note that by default an artifact is assigned with the 'default'
+template, and this template can be changed too (look at "Edit a template"
+subsection).
+
+
+#### List available templates
+
+To list all available templates:
+```sh
+kb template list
+```
+
+To list all the templates containing the string "theory":
+```sh
+kb template list "theory"
+```
+
+#### Create a new template
+
+Create a new template called "lisp-cheatsheets", note that
+an example template will be put as example in the editor.
+```sh
+kb template new lisp-cheatsheets
+```
+
+#### Delete a template
+
+To delete the template called "lisp-cheatsheets" just do:
+```sh
+kb template delete lisp-cheatsheets
+```
+
+#### Edit a template
+
+To edit the template called "listp-cheatsheets" just do:
+```sh
+kb template edit lisp-cheatsheets
+```
+
+#### Add a template
+
+We can also add a template from an already existing toml configuration file
+by just doing:
+```sh
+kb template add ~/path/to/myconfig.toml --title myconfig
+```
+
+#### Change template for an artifact
+
+We can change the template for an existing artifact by using
+the update command:
+```sh
+kb update --id 2 --template "lisp-cheatsheets"
+```
 
 ## UPGRADE
 

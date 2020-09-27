@@ -437,16 +437,16 @@ kb supports custom templates for the artifacts.
 A template is basically a file using the "toml" format,
 structured in this way:
 ```sh
-TITLES = [ "^#.*", "blue",]
-WARNINGS = [ "!.*", "yellow",]
-COMMENTS = [ ";;.*", "green",]
+TITLES   = [ "^#.*", "blue",  ]
+WARNINGS = [ "!.*" , "yellow",]
+COMMENTS = [ ";;.*", "green", ]
 ```
 
 Where the first element of each list is a regex and the second element
 is a color.
 
-Note that by default an artifact is assigned with the 'default' template,
-but the default template can be changed (look at "Edit a template"
+Note that by default an artifact is assigned with the 'default'
+template, and this template can be changed too (look at "Edit a template"
 subsection).
 
 

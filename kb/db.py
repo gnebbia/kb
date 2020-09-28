@@ -618,7 +618,7 @@ def migrate_v0_to_v1(conn):
     Arguments:
     conn            - the database connection object
     """
-
+    cur = conn.cursor()
     sql_query = "ALTER TABLE artifacts ADD COLUMN template text"
     cur.execute(sql_query)
     conn.commit()

@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/gnebbia/kb/master/img/kb_logo.png" width="200"/>
+    <img src="https://raw.githubusercontent.com/gnebbia/kb/main/img/kb_logo.png" width="200"/>
 </p>
 
 # kb. A minimalist knowledge base manager
@@ -11,7 +11,7 @@ Copyright: © 2020, gnc
 
 Date: 2020-09-22
 
-Version: 0.1.3
+Version: 0.1.4
 
 
 ## PURPOSE

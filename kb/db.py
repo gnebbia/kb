@@ -75,7 +75,7 @@ def create_table(conn, create_table_sql: str) -> None:
         print("Table Creation Failed: {error}".format(error=err))
 
 
-def create_kb_database(kb_db_path: str) -> None:
+def create_kb_database(kb_db_path: str, schema_version: int) -> None:
     """
     Create an empty sqlite database for kb
     at the specified path or return an error
@@ -88,6 +88,7 @@ def create_kb_database(kb_db_path: str) -> None:
 
     if conn is not None:
         create_table(conn, DB_CREATE_QUERY)
+        set_schema_version(conn, schema_version)
     else:
         print("Error! cannot create the database connection.")
 
@@ -610,6 +611,23 @@ def set_schema_version(conn, version: int) -> int:
     sql_query = "PRAGMA user_version = {v:d}".format(v=version)
     cur.execute(sql_query)
     conn.commit()
+
+def is_schema_updated_to_version(conn, version: int) -> bool:
+    """
+    Check if the schema version of the database related to the
+    connection object has the same version of the one provided.
+
+    Arguments:
+    conn            - the database connection object
+    version         - the version to check
+    
+    Returns:
+    A boolean that is True if the database schema version is
+    equal to th passed version, False otherwise.
+    """
+    current_schema_version = get_schema_version(conn)
+    return current_schema_version == version
+
 
 def migrate_v0_to_v1(conn):
     """

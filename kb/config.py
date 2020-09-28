@@ -25,9 +25,8 @@ DEFAULT_CONFIG = {
     "PATH_KB_DATA": str(Path(Path.home(), ".kb", "data")),
     "PATH_KB_CONFIG": str(Path(Path.home(), ".kb", "kb.conf.py")),  # for future use
     "PATH_KB_TEMPLATES": str(Path(Path.home(), ".kb", "templates")),
-    "PATH_KB_SCHEMA_VERSION": str(Path(Path.home(), ".kb", ".schema_version_1")),
     "PATH_KB_DEFAULT_TEMPLATE": str(Path(Path.home(), ".kb", "templates", "default")),
-    "SCHEMA_VERSION": 1,
+    "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
     "INITIAL_CATEGORIES": ["default",]
 }

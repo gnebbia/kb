@@ -36,6 +36,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+tests/data/
 
 # Mr Developer
 .mr.developer.cfg

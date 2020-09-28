@@ -109,6 +109,8 @@ Basically, kb provides a clean text-based way to organize your knowledge.
 
 ## INSTALLATION
 
+**You should have Python 3.6 or above installed.**
+
 To install the most recent stable version of kb just type:
 ```sh
 pip install -U kb-manager

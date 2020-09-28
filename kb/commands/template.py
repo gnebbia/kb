@@ -13,12 +13,14 @@ kb template command module
 
 import shlex
 import sys
+import toml
 from pathlib import Path
 from subprocess import call
 from typing import Dict, List
 import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
+import kb.config as conf
 from kb.entities.artifact import Artifact
 import kb.printer.template as printer
 
@@ -49,6 +51,9 @@ def search(args: Dict[str, str], config: Dict[str, str]):
     """
     # template_list = fs.list_files(config["PATH_KB_TEMPLATES"])
     template_list = get_templates(config["PATH_KB_TEMPLATES"])
+    if not template_list:
+        return
+
     if args["query"]:
         template_list = [x for x in template_list if args["query"] in x]
     color_mode = not args["no_color"]
@@ -115,7 +120,11 @@ def new(args: Dict[str, str], config: Dict[str, str]):
 
     
     fs.create_directory(Path(template_path).parent)
-    fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
+    # fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
+
+    with open(template_path, 'w') as tmplt:
+        tmplt.write("# This is an example configuration template\n\n\n")
+        tmplt.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
     shell_cmd = shlex.split(
         config["EDITOR"]) + [template_path]

@@ -34,12 +34,11 @@ def list_files(directory: str) -> List[str]:
     in the directory
     """
 
-    # Get kbdir absolute path independently from OS
+    # Get kbdir path
     dirpath = Path(directory)
-    dirpathabs = str(Path(directory).absolute())
 
     # Get list of files in the form: file1, dir1/file2, ...
-    files = [str(f.absolute()).replace(dirpathabs, '')[1:]
+    files = [str(f.relative_to(dirpath))
              for f in dirpath.rglob("*") if f.is_file()]
     return files
 
@@ -55,12 +54,11 @@ def list_dirs(directory: str) -> List[str]:
     A list of strings representing the path of directories contained
     in the provided directory
     """
-    # Get kbdir absolute path independently from OS
+    # Get kbdir path
     dirpath = Path(directory)
-    dirpathabs = str(dirpath.absolute())
 
     # Get list of files in the form: file1, dir1/file2, ...
-    files = [str(f.absolute()).replace(dirpathabs, '')[1:]
+    files = [str(f.relative_to(dirpath))
              for f in dirpath.rglob("*") if f.is_dir()]
     return files
 

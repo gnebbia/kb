@@ -15,7 +15,7 @@ import shlex
 import sys
 from pathlib import Path
 from subprocess import call
-from typing import Dict
+from typing import Dict, List
 import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
@@ -23,6 +23,17 @@ from kb.entities.artifact import Artifact
 import kb.printer.template as printer
 
 
+def get_templates(templates_path: str) -> List[str]:
+    """
+    Get the list of available templates.
+
+    Arguments:
+    templates_path      - the path where all templates are stored
+
+    Returns:
+    A list of strings representing the available templates
+    """
+    return fs.list_files(templates_path)
 
 def search(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -36,11 +47,47 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_TEMPLATES     - the path to where the templates of KB
                                               are stored
     """
-    template_list = fs.list_files(config["PATH_KB_TEMPLATES"])
+    # template_list = fs.list_files(config["PATH_KB_TEMPLATES"])
+    template_list = get_templates(config["PATH_KB_TEMPLATES"])
     if args["query"]:
         template_list = [x for x in template_list if args["query"] in x]
     color_mode = not args["no_color"]
     printer.print_template_search_result(template_list, color_mode)
+
+
+
+def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Apply the specified template to all the filtered artifacts
+    """
+    # Check initialization
+    initializer.init(config)
+
+    tags_list = None
+    if args["tags"] and args["tags"] != "":
+        tags_list = args["tags"].split(';')
+
+    conn = db.create_connection(config["PATH_KB_DB"])
+    is_query_strict = not args["extended_match"]
+    rows = db.get_artifacts_by_filter(
+        conn,
+        title=args["title"],
+        category=args["category"],
+        tags=tags_list,
+        status=args["status"],
+        author=args["author"],
+        is_strict=is_query_strict)
+
+    for artifact in rows:
+        updated_artifact = Artifact(
+            id=artifact.id,
+            title=artifact.title,
+            category=artifact.category,
+            tags=artifact.tags,
+            author=artifact.author,
+            status=artifact.status,
+            template=args["template"])
+        db.update_artifact_by_id(conn, artifact.id, updated_artifact)
 
 
 def new(args: Dict[str, str], config: Dict[str, str]):
@@ -142,6 +189,7 @@ COMMANDS = {
     'edit': edit,
     'list': search,
     'new': new,
+    'apply': apply_on_set,
 }
 
 

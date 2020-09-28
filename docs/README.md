@@ -387,10 +387,38 @@ kb template add ~/path/to/myconfig.toml --title myconfig
 
 #### Change template for an artifact
 
-We can change the template for an existing artifact by using
-the update command:
+We can change the template for an existing artifact by ID by using the
+update command:
 ```sh
 kb update --id 2 --template "lisp-cheatsheets"
+```
+
+#### Apply a template to all artifacts of a category
+
+We can apply the template "lisp-cheatsheets" to all artifacts
+belonging to the category "lispcode" by doing:
+```sh
+kb template apply "lisp-cheatsheets" --category "lispcode"
+```
+
+#### Apply a template to all artifacts having zip in their title
+
+We can apply the template "dark" to all artifacts having in their title
+the string "zip" (e.g., bzip, 7zip, zipper) by doing:
+```sh
+kb template apply "dark" --title "zip" --extended-match
+# or 
+kb template apply "dark" --title "zip" -m
+```
+We can always have our queries to "contain" the string by using
+the `--extended-match` option when using `kb template apply`.
+
+#### Apply a template to all artifacts having specific properties
+
+We can apply the template "light" to all artifacts of the category
+"cheatsheet" who have as author "gnc" and as status "OK" by doing:
+```sh
+kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
 
 ## UPGRADE

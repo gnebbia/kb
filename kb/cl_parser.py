@@ -378,6 +378,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'new', help='Create a template from starting from an example')
     delete_template_parser = template_subparsers.add_parser(
         'delete', help='Delete an existing template')
+    apply_template_parser = template_subparsers.add_parser(
+        'apply', help='Apply a template to an entire set of artifacts')
 
     add_template_parser.add_argument(
         "file",
@@ -416,6 +418,57 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         "template",
         help="The name of the template to create",
         type=str,
+    )
+
+    apply_template_parser.add_argument(
+        "template",
+        help="The name of the template to apply to the filtered artifacts",
+        type=str,
+    )
+
+    apply_template_parser.add_argument(
+        "-t", "--title",
+        help="Title of the artifacts on which template is applied",
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-c", "--category",
+        help="Category of the artifacts on which template is applied",
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-g", "--tags",
+        help="""
+        Tags associates to the artifacts in the form \"tag1;tag2;...;tagN\" where template is applied
+        """,
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-a", "--author",
+        help="Author of the artifacts on which template is applied",
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-s", "--status",
+        help="Status of the artifacts on which template is applied",
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-m","--extended-match",
+        help="""
+        Perform application query not on a strict match,
+        for example:
+        `kb template apply --category cheat -m`
+        will match all artifacts containing in their category \"cheat\",
+        hence \"cheatsheet\", \"mycheats\",\"cheatsheets\" and so on"
+        """,
+        action='store_true',
+        dest='extended_match',
+        default=False,
     )
 
     # import parser

@@ -575,3 +575,51 @@ def update_artifact_by_id(
     delete_artifact_by_id(conn, artifact_id)
     updated_artifact = Artifact(*new_record)
     insert_artifact_with_id(conn, updated_artifact, artifact_id)
+
+def get_schema_version(conn) -> int:
+    """
+    Check what is the version of the schema used by the
+    database.
+
+    Arguments:
+    conn            - the database connection object
+    
+    Returns:
+    An int number representing the version of the
+    schema used by kb.
+    """
+    cur = conn.cursor()
+    sql_query = """PRAGMA user_version;"""
+    cur.execute(sql_query)
+    return cur.fetchone()[0]
+
+def set_schema_version(conn, version: int) -> int:
+    """
+    Check what is the version of the schema used by the
+    database.
+
+    Arguments:
+    conn            - the database connection object
+    version         - the version of the schema to be set (integer)
+    
+    Returns:
+    An int number representing the version of the
+    schema used by kb.
+    """
+    cur = conn.cursor()
+    sql_query = "PRAGMA user_version = {v:d}".format(v=version)
+    cur.execute(sql_query)
+    conn.commit()
+
+def migrate_v0_to_v1(conn):
+    """
+    Migrates the database schema from v0 to v1.
+
+    Arguments:
+    conn            - the database connection object
+    """
+
+    sql_query = "ALTER TABLE artifacts ADD COLUMN template text"
+    cur.execute(sql_query)
+    conn.commit()
+    set_schema_version(conn, 1)

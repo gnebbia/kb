@@ -68,6 +68,15 @@ def create_kb_files(config):
     if not os.path.exists(db_path):
         db.create_kb_database(db_path)
 
+    # Check schema version
+    conn = db.create_connection(db_path)
+    current_schema_version = db.get_schema_version(conn)
+
+    if current_schema_version == 0:
+        db.migrate_v0_to_v1(conn)
+        fs.touch_file(config["PATH_KB_SCHEMA_VERSION"])
+    
+
     # Create "data" directory
     fs.create_directory(data_path)
 
@@ -107,7 +116,8 @@ def is_initialized(config) -> bool:
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
     templates_path = config["PATH_KB_TEMPLATES"]
-    for path in [kb_path, db_path, data_path, templates_path]:
+    schema_path = config["PATH_KB_SCHEMA_VERSION"]
+    for path in [kb_path, db_path, data_path, templates_path, schema_path]:
         if not os.path.exists(path):
             return False
     return True

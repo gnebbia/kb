@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.3
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -59,6 +59,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'update', help='Update artifact properties')
     delete_parser = subparsers.add_parser(
         'delete', help='Delete artifacts')
+    template_parser = subparsers.add_parser(
+        'template', help='Manage templates for artifacts')
     import_parser = subparsers.add_parser(
         'import', help='Import a knowledge base')
     export_parser = subparsers.add_parser(
@@ -101,6 +103,11 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     add_parser.add_argument(
         "-s", "--status",
         help="Status of the artifact",
+        type=str,
+    )
+    add_parser.add_argument(
+        "--template",
+        help="Template to apply to the artifact",
         type=str,
     )
     add_parser.add_argument(
@@ -324,6 +331,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     update_parser.add_argument(
+        "--template",
+        help="Template to update",
+        default=None,
+        type=str,
+    )
+    update_parser.add_argument(
         "-e", "--edit-content",
         help="Edit content of the artifact",
         action="store_true",
@@ -348,6 +361,114 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="Category associated to the artifact to remove",
         default=None,
         type=str,
+    )
+
+    # template parser
+    template_subparsers = template_parser.add_subparsers(help='template commands', dest="template_command")
+    template_subparsers.required = True
+
+    # template subcommands
+    add_template_parser = template_subparsers.add_parser(
+        'add', help='Add a template from a file')
+    edit_template_parser = template_subparsers.add_parser(
+        'edit', help='Edit a template')
+    list_template_parser = template_subparsers.add_parser(
+        'list', help='List all templates')
+    new_template_parser = template_subparsers.add_parser(
+        'new', help='Create a template from starting from an example')
+    delete_template_parser = template_subparsers.add_parser(
+        'delete', help='Delete an existing template')
+    apply_template_parser = template_subparsers.add_parser(
+        'apply', help='Apply a template to an entire set of artifacts')
+
+    add_template_parser.add_argument(
+        "file",
+        help="The template file to add to kb",
+        type=str,
+    )
+    add_template_parser.add_argument(
+        "-t","--title",
+        help="The title to assign to the template added from a file to kb",
+        type=str,
+    )
+    edit_template_parser.add_argument(
+        "template",
+        help="The name of the template to edit",
+        type=str,
+    )
+    list_template_parser.add_argument(
+        "query",
+        help="The name (or part of it) of the template to search for",
+        type=str,
+        nargs='?',
+    )
+    list_template_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
+    )
+    delete_template_parser.add_argument(
+        "template",
+        help="The name of the template to delete",
+        type=str,
+    )
+    new_template_parser.add_argument(
+        "template",
+        help="The name of the template to create",
+        type=str,
+    )
+
+    apply_template_parser.add_argument(
+        "template",
+        help="The name of the template to apply to the filtered artifacts",
+        type=str,
+    )
+
+    apply_template_parser.add_argument(
+        "-t", "--title",
+        help="Title of the artifacts on which template is applied",
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-c", "--category",
+        help="Category of the artifacts on which template is applied",
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-g", "--tags",
+        help="""
+        Tags associates to the artifacts in the form \"tag1;tag2;...;tagN\" where template is applied
+        """,
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-a", "--author",
+        help="Author of the artifacts on which template is applied",
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-s", "--status",
+        help="Status of the artifacts on which template is applied",
+        default=None,
+        type=str,
+    )
+    apply_template_parser.add_argument(
+        "-m","--extended-match",
+        help="""
+        Perform application query not on a strict match,
+        for example:
+        `kb template apply --category cheat -m`
+        will match all artifacts containing in their category \"cheat\",
+        hence \"cheatsheet\", \"mycheats\",\"cheatsheets\" and so on"
+        """,
+        action='store_true',
+        dest='extended_match',
+        default=False,
     )
 
     # import parser

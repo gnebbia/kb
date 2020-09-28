@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.3
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -27,7 +27,8 @@ DB_CREATE_QUERY = """CREATE TABLE IF NOT EXISTS artifacts (
                          path text NOT NULL,
                          tags text,
                          status text,
-                         author text);
+                         author text,
+                         template text);
                      CREATE TABLE IF NOT EXISTS tags (
                          artifact_id integer,
                          tag text,
@@ -74,7 +75,7 @@ def create_table(conn, create_table_sql: str) -> None:
         print("Table Creation Failed: {error}".format(error=err))
 
 
-def create_kb_database(kb_db_path: str) -> None:
+def create_kb_database(kb_db_path: str, schema_version: int) -> None:
     """
     Create an empty sqlite database for kb
     at the specified path or return an error
@@ -87,6 +88,7 @@ def create_kb_database(kb_db_path: str) -> None:
 
     if conn is not None:
         create_table(conn, DB_CREATE_QUERY)
+        set_schema_version(conn, schema_version)
     else:
         print("Error! cannot create the database connection.")
 
@@ -145,10 +147,10 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         return
 
     sql = '''INSERT INTO artifacts
-             (title,category,path,tags,author,status)
-             VALUES(?,?,?,?,?,?)'''
+             (title,category,path,tags,author,status,template)
+             VALUES(?,?,?,?,?,?,?)'''
     args = (artifact.title, artifact.category,
-            path, artifact.tags, artifact.author, artifact.status)
+            path, artifact.tags, artifact.author, artifact.status, artifact.template)
 
     cur.execute(sql, args)
     last_artifact_id = cur.lastrowid
@@ -162,6 +164,55 @@ def insert_artifact(conn, artifact: Artifact) -> None:
 
     conn.commit()
 
+def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
+    """
+    Inserts in the database the provided artifact
+
+    Arguments:
+    conn            - An sqlite connection object representing
+                      the database on which data will be inserted
+    artifact        - an artifact object
+    id              - the ID to use for the insertion of artifact
+                      in the database
+
+    Returns:
+    Returns an error if there was a failure in the insertion operation
+    """
+    # Convert tags to a string with ';' separating tags
+    tags_list = []
+    if artifact.tags:
+        tags_list = list(set(artifact.tags.split(';')))
+
+    path = ""
+    if artifact.path:
+        path = artifact.path
+    else:
+        path = "{category}/{title}".format(
+            category=artifact.category, title=artifact.title)
+
+    cur = conn.cursor()
+    if is_artifact_existing(conn, artifact.title, artifact.category):
+        print("Error: the specified artifact already exists in kb!")
+        print("Run `kb update -h` to understand how to update an artifact")
+        return
+
+    sql = '''INSERT INTO artifacts
+             (id, title,category,path,tags,author,status,template)
+             VALUES(?,?,?,?,?,?,?,?)'''
+    args = (artifact.id, artifact.title, artifact.category,
+            path, artifact.tags, artifact.author, artifact.status, artifact.template)
+
+    cur.execute(sql, args)
+    last_artifact_id = cur.lastrowid
+
+    for tag in tags_list:
+        sql = '''INSERT INTO tags
+                 (artifact_id,tag)
+                 VALUES(?,?)'''
+        args = (last_artifact_id, tag)
+        cur.execute(sql, args)
+
+    conn.commit()
 
 def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
@@ -516,12 +567,77 @@ def update_artifact_by_id(
 
     update_record = (artifact_id, artifact.title, artifact.category,
                      artifact.path, artifact.tags, artifact.status,
-                     artifact.author, None)
+                     artifact.author, artifact.template)
 
     new_record = list()
     for i, elem in enumerate(attr.astuple(current_artifact)):
         new_record.append(update_record[i] or elem or None)
 
     delete_artifact_by_id(conn, artifact_id)
-    updated_artifact = Artifact(None, *new_record[1:])
-    insert_artifact(conn, updated_artifact)
+    updated_artifact = Artifact(*new_record)
+    insert_artifact_with_id(conn, updated_artifact, artifact_id)
+
+def get_schema_version(conn) -> int:
+    """
+    Check what is the version of the schema used by the
+    database.
+
+    Arguments:
+    conn            - the database connection object
+    
+    Returns:
+    An int number representing the version of the
+    schema used by kb.
+    """
+    cur = conn.cursor()
+    sql_query = """PRAGMA user_version;"""
+    cur.execute(sql_query)
+    return cur.fetchone()[0]
+
+def set_schema_version(conn, version: int) -> int:
+    """
+    Check what is the version of the schema used by the
+    database.
+
+    Arguments:
+    conn            - the database connection object
+    version         - the version of the schema to be set (integer)
+    
+    Returns:
+    An int number representing the version of the
+    schema used by kb.
+    """
+    cur = conn.cursor()
+    sql_query = "PRAGMA user_version = {v:d}".format(v=version)
+    cur.execute(sql_query)
+    conn.commit()
+
+def is_schema_updated_to_version(conn, version: int) -> bool:
+    """
+    Check if the schema version of the database related to the
+    connection object has the same version of the one provided.
+
+    Arguments:
+    conn            - the database connection object
+    version         - the version to check
+    
+    Returns:
+    A boolean that is True if the database schema version is
+    equal to th passed version, False otherwise.
+    """
+    current_schema_version = get_schema_version(conn)
+    return current_schema_version == version
+
+
+def migrate_v0_to_v1(conn):
+    """
+    Migrates the database schema from v0 to v1.
+
+    Arguments:
+    conn            - the database connection object
+    """
+    cur = conn.cursor()
+    sql_query = "ALTER TABLE artifacts ADD COLUMN template text"
+    cur.execute(sql_query)
+    conn.commit()
+    set_schema_version(conn, 1)

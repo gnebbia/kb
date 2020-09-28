@@ -16,9 +16,63 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-09-22
+Date: 2020-09-29
 
-Version: 0.1.3
+Version: 0.1.4
+
+
+## Table of Contents
+
+   * [PURPOSE](#purpose)
+   * [INSTALLATION](#installation)
+      * [INSTALLATION WITH HOMEBREW](#installation-with-homebrew)
+      * [NOTES FOR WINDOWS USERS](#notes-for-windows-users)
+   * [DOCKER](#docker)
+   * [USAGE](#usage)
+      * [List artifacts](#list-artifacts)
+         * [List all artifacts contained in the kb knowledge base](#list-all-artifacts-contained-in-the-kb-knowledge-base)
+         * [List all artifacts containing the string "zip"](#list-all-artifacts-containing-the-string-zip)
+         * [List all artifacts belonging to the category "cheatsheet"](#list-all-artifacts-belonging-to-the-category-cheatsheet)
+         * [List all the artifacts having the tags "web" or "pentest"](#list-all-the-artifacts-having-the-tags-web-or-pentest)
+         * [List using "verbose mode"](#list-using-verbose-mode)
+      * [Add artifacts](#add-artifacts)
+         * [Add a file to the collection of artifacts](#add-a-file-to-the-collection-of-artifacts)
+         * [Add a file to the artifacts](#add-a-file-to-the-artifacts)
+         * [Add all files contained in a directory to kb](#add-all-files-contained-in-a-directory-to-kb)
+         * [Create a new artifact from scratch](#create-a-new-artifact-from-scratch)
+      * [Delete artifacts](#delete-artifacts)
+         * [Delete an artifact by ID](#delete-an-artifact-by-id)
+         * [Delete multiple artifacts by ID](#delete-multiple-artifacts-by-id)
+         * [Delete an artifact by name](#delete-an-artifact-by-name)
+      * [View artifacts](#view-artifacts)
+         * [View an artifact by id](#view-an-artifact-by-id)
+         * [View an artifact by name](#view-an-artifact-by-name)
+         * [View an artifact without colors](#view-an-artifact-without-colors)
+         * [View an artifact within a text-editor](#view-an-artifact-within-a-text-editor)
+      * [Edit artifacts](#edit-artifacts)
+         * [Edit an artifact by id](#edit-an-artifact-by-id)
+         * [Edit an artifact by name](#edit-an-artifact-by-name)
+      * [Grep through artifacts](#grep-through-artifacts)
+         * [Grep through the knowledge base](#grep-through-the-knowledge-base)
+         * [Grep (case-insensitive) through the knowledge base](#grep-case-insensitive-through-the-knowledge-base)
+         * [Grep in "verbose mode" through the knowledge base](#grep-in-verbose-mode-through-the-knowledge-base)
+      * [Import/Export/Erase a knowledge base](#importexporterase-a-knowledge-base)
+         * [Export the current knowledge base](#export-the-current-knowledge-base)
+         * [Import a knowledge base](#import-a-knowledge-base)
+         * [Erase the entire knowledge base](#erase-the-entire-knowledge-base)
+      * [Manage Templates](#manage-templates)
+         * [List available templates](#list-available-templates)
+         * [Create a new template](#create-a-new-template)
+         * [Delete a template](#delete-a-template)
+         * [Edit a template](#edit-a-template)
+         * [Add a template](#add-a-template)
+         * [Change template for an artifact](#change-template-for-an-artifact)
+         * [Apply a template to all artifacts of a category](#apply-a-template-to-all-artifacts-of-a-category)
+         * [Apply a template to all artifacts having zip in their title](#apply-a-template-to-all-artifacts-having-zip-in-their-title)
+         * [Apply a template to all artifacts having specific properties](#apply-a-template-to-all-artifacts-having-specific-properties)
+   * [UPGRADE](#upgrade)
+   * [DONATIONS](#donations)
+   * [COPYRIGHT](#copyright)
 
 
 ## PURPOSE
@@ -381,6 +435,103 @@ kb erase
 ```
 ![](img/kb_erase.gif)
 
+
+### Manage Templates
+
+kb supports custom templates for the artifacts.
+A template is basically a file using the "toml" format,
+structured in this way:
+```sh
+TITLES   = [ "^#.*", "blue",  ]
+WARNINGS = [ "!.*" , "yellow",]
+COMMENTS = [ ";;.*", "green", ]
+```
+
+Where the first element of each list is a regex and the second element
+is a color.
+
+Note that by default an artifact is assigned with the 'default'
+template, and this template can be changed too (look at "Edit a template"
+subsection).
+
+
+#### List available templates
+
+To list all available templates:
+```sh
+kb template list
+```
+
+To list all the templates containing the string "theory":
+```sh
+kb template list "theory"
+```
+
+#### Create a new template
+
+Create a new template called "lisp-cheatsheets", note that
+an example template will be put as example in the editor.
+```sh
+kb template new lisp-cheatsheets
+```
+
+#### Delete a template
+
+To delete the template called "lisp-cheatsheets" just do:
+```sh
+kb template delete lisp-cheatsheets
+```
+
+#### Edit a template
+
+To edit the template called "listp-cheatsheets" just do:
+```sh
+kb template edit lisp-cheatsheets
+```
+
+#### Add a template
+
+We can also add a template from an already existing toml configuration file
+by just doing:
+```sh
+kb template add ~/path/to/myconfig.toml --title myconfig
+```
+
+#### Change template for an artifact
+
+We can change the template for an existing artifact by ID by using the
+update command:
+```sh
+kb update --id 2 --template "lisp-cheatsheets"
+```
+
+#### Apply a template to all artifacts of a category
+
+We can apply the template "lisp-cheatsheets" to all artifacts
+belonging to the category "lispcode" by doing:
+```sh
+kb template apply "lisp-cheatsheets" --category "lispcode"
+```
+
+#### Apply a template to all artifacts having zip in their title
+
+We can apply the template "dark" to all artifacts having in their title
+the string "zip" (e.g., bzip, 7zip, zipper) by doing:
+```sh
+kb template apply "dark" --title "zip" --extended-match
+# or 
+kb template apply "dark" --title "zip" -m
+```
+We can always have our queries to "contain" the string by using
+the `--extended-match` option when using `kb template apply`.
+
+#### Apply a template to all artifacts having specific properties
+
+We can apply the template "light" to all artifacts of the category
+"cheatsheet" who have as author "gnc" and as status "OK" by doing:
+```sh
+kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
+```
 
 ## UPGRADE
 

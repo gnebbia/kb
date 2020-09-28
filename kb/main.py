@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.3
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -21,6 +21,7 @@ from kb.commands.search import search
 from kb.commands.edit import edit
 from kb.commands.update import update
 from kb.commands.delete import delete
+from kb.commands.template import template
 from kb.commands.view import view
 from kb.commands.grep import grep
 from kb.commands.erase import erase
@@ -41,6 +42,7 @@ COMMANDS = {
     'erase': erase,
     'import': ingest,
     'export': export,
+    'template': template,
 }
 
 

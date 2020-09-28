@@ -105,7 +105,8 @@ def test_create_table(db_connect):
                                 path text NOT NULL,
                                 tags text,
                                 status text,
-                                author text);
+                                author text,
+                                template text);
                           """
 
     db_path = Path("tests","data","mydb.db")
@@ -128,7 +129,8 @@ def test_create_table_2(db_connect):
                                 path text NOT NULL,
                                 tags text,
                                 status text,
-                                author text);
+                                author text,
+                                template text);
                           """
     db_path = Path("tests","data","mydb2.db")
 
@@ -145,7 +147,8 @@ def test_create_table_2(db_connect):
 
 def test_create_kb_database_table():
     db_path = Path("tests","data","mydb3.db")
-    db.create_kb_database(str(db_path))
+    schema_version = 1
+    db.create_kb_database(str(db_path), schema_version)
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -163,7 +166,8 @@ def test_create_kb_database_table():
 
 def test_insert_artifact():
     db_path = Path("tests","data","test_insert.db")
-    db.create_kb_database(str(db_path))
+    schema_version = 1
+    db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
         db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb", category="procedure", 
@@ -182,15 +186,16 @@ def test_insert_artifact():
         rows = cur.fetchall()
         print(rows)
         assert set(rows) == {(1, 'pentest_smb', 'procedure',
-                            'pentest/smb', 'pt;smb', 'OK', 'gnc'),
+                            'pentest/smb', 'pt;smb', 'OK', 'gnc', None),
                             (2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz')}
+                            'Draft', 'elektroniz', None)}
 
 
 
 def test_is_artifact_existing():
     db_path = Path("tests","data","test_exist.db")
-    db.create_kb_database(str(db_path))
+    schema_version = 1
+    db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
         db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb",
@@ -214,7 +219,8 @@ def test_is_artifact_existing():
 def test_delete_artifact_by_id():
     db_path = Path("tests","data","test_id.db")
 
-    db.create_kb_database(str(db_path))
+    schema_version = 1
+    db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
         db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb",
@@ -231,7 +237,7 @@ def test_delete_artifact_by_id():
         rows = cur.fetchall()
         assert len(rows) == 1
         assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz')}
+                            'Draft', 'elektroniz', None)}
 
         db.delete_artifact_by_id(conn,2)
 
@@ -250,7 +256,8 @@ def test_delete_artifact_by_id():
 def test_delete_artifact_by_name():
     db_path = Path("tests","data","test_name.db")
 
-    db.create_kb_database(str(db_path))
+    schema_version = 1
+    db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
         db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb",
@@ -274,7 +281,7 @@ def test_delete_artifact_by_name():
         rows = cur.fetchall()
         assert len(rows) == 1
         assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz')}
+                            'Draft', 'elektroniz',None)}
     # try:
     #     os.unlink(db_path)
     # except FileNotFoundError:
@@ -285,7 +292,8 @@ def test_get_artifacts_by_tags():
     db_path = Path("tests","data","kb_art_tags.db")
     conn = db.create_connection(str(db_path))
     with conn:
-        db.create_kb_database(str(db_path))
+        schema_version = 1
+        db.create_kb_database(str(db_path), schema_version)
         db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_smb", title="pentest_smb",
                 category="procedure", tags='pt;smb', status="ok", author="gnc"))
         db.insert_artifact(conn, Artifact(id=None, path="guides/ftp", title="ftp", category="cheatsheet", 
@@ -311,7 +319,8 @@ def test_get_artifacts_by_title():
     db_path = Path("tests","data","kb_filter_title.db")
     conn = db.create_connection(str(db_path))
     with conn:
-        db.create_kb_database(str(db_path))
+        schema_version = 1
+        db.create_kb_database(str(db_path), schema_version)
         db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_smb", title="pentest_smb",
                 category="procedure", tags='pt;smb', status="ok", author="gnc"))
         db.insert_artifact(conn, Artifact(id=None, path="guides/ftp", title="ftp", category="cheatsheet", 
@@ -335,7 +344,8 @@ def test_get_artifacts_by_category():
 
     conn = db.create_connection(str(db_path))
     with conn:
-        db.create_kb_database(str(db_path))
+        schema_version = 1
+        db.create_kb_database(str(db_path), schema_version)
 
         db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_smb", title="pentest_smb",
                 category="procedure", tags='pt;smb', status="ok", author="gnc"))
@@ -377,7 +387,8 @@ def test_get_artifacts_by_filter():
     db_path = Path("tests","data","kb_filter.db")
     conn = db.create_connection(str(db_path))
     with conn:
-        db.create_kb_database(str(db_path))
+        schema_version = 1
+        db.create_kb_database(str(db_path), schema_version)
 
         db.insert_artifact(conn, Artifact(id=None, path="", title="pentest_smb",
                 category="procedure", tags='pt;smb', status="ok", 

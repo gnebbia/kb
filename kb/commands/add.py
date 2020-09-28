@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.3
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -83,7 +83,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
             id=None, title=title, category=category,
             path="{category}/{title}".format(category=category, title=title),
             tags=args["tags"],
-            status=args["status"], author=args["author"])
+            status=args["status"], author=args["author"], template=args["template"])
         db.insert_artifact(conn, new_artifact)
 
 
@@ -122,6 +122,7 @@ def add_file_to_kb(
     """
     title = args["title"] or fs.get_basename(fname)
     category = args["category"] or "default"
+    template = args["template"] or "default"
 
     category_path = Path(config["PATH_KB_DATA"], category)
     category_path.mkdir(parents=True, exist_ok=True)
@@ -136,5 +137,5 @@ def add_file_to_kb(
         title=title, category=category,
         path="{category}/{title}".format(category=category, title=title),
         tags=args["tags"],
-        status=args["status"], author=args["author"])
+        status=args["status"], author=args["author"], template=template)
     db.insert_artifact(conn, new_artifact)

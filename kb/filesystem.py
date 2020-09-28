@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.3
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -61,6 +61,17 @@ def list_dirs(directory: str) -> List[str]:
     files = [str(f.relative_to(dirpath))
              for f in dirpath.rglob("*") if f.is_dir()]
     return files
+
+def touch_file(filename: str):
+    """
+    Creates a new empty file, in the style of the UNIX
+    touch program.
+
+    Arguments:
+
+    filename    - a path to a filename
+    """
+    Path(filename).touch()
 
 
 def get_basename(filename: str) -> str:

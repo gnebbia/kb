@@ -21,10 +21,17 @@ from flask import Flask, jsonify, abort, make_response, request
 
 # Import the API functions
 from kb.api.search import search
-#from kb.api.add import add 
+from kb.api.add import addArtifact
 
 # Get the configuration for the knowledgebase
-from kb.config import DEFAULT_CONFIG
+from kb.config import DEFAULT_CONFIG 
+
+
+import os
+from werkzeug.utils import secure_filename
+import urllib.request
+
+from pathlib import Path
 
 app = Flask(__name__)
 
@@ -118,12 +125,17 @@ def getTags(tags = ''):
 
 @app.route('/add', methods=['POST'])
 def addArtefact():
-    title = request.json.get("title","")
-    category = request.json.get("category","")
-    author = request.json.get("author","")
-    status = request.json.get("status","")
-    tags = request.json.get("tags","")
-    return(jsonify(tags))
+    parameters["title"] = request.form.get("title","")
+    parameters["category"] = request.form.get("category","")
+    parameters["author"]= request.form.get("author","")
+    parameters["status"] = request.form.get("status","")
+    parameters["tags"] = request.form.get("tags","")
+    parameters["file"] = ""
+
+    file = request.files['file']
+    resp = addArtifact(parameters,file,config=DEFAULT_CONFIG)
+    
+    return(resp)
 
 
 

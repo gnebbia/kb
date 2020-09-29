@@ -20,10 +20,13 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 from kb.entities.artifact import Artifact
-from kb.actions.add import add_file_to_kb
+
+import os
+from werkzeug.utils import secure_filename
 
 
-def add(args: Dict[str, str], file,config: Dict[str, str]):
+
+def add(args: Dict[str, str],config: Dict[str, str]):
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -41,13 +44,10 @@ def add(args: Dict[str, str], file,config: Dict[str, str]):
                       PATH_KB_DATA      - the data directory of KB
                       EDITOR            - the editor program to call
     """
-    # Check if the add command has proper arguments/options
-    is_valid_add = args["file"] or args["title"]
-    if not is_valid_add:
-        print("Please, either specify a file or a title for the new artifact")
-        sys.exit(1)
 
-    
+
+    # Check initialization
+    initializer.init(config)
 
     conn = db.create_connection(config["PATH_KB_DB"])
     if args["file"]:
@@ -55,7 +55,6 @@ def add(args: Dict[str, str], file,config: Dict[str, str]):
             if fs.is_directory(fname):
                 continue
             add_file_to_kb(conn, args, config, fname)
-            print("here1")
     else:
         # Get title for the new artifact
         title = args["title"]
@@ -67,18 +66,20 @@ def add(args: Dict[str, str], file,config: Dict[str, str]):
         category_path = Path(config["PATH_KB_DATA"], category)
         category_path.mkdir(parents=True, exist_ok=True)
 
-        if not db.is_artifact_existing(conn, title, category):
+        #if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            artifact_path = str(Path(category_path, title))
-            if args["body"]:
-                with open(artifact_path, "w+") as art_file:
-                    body = args["body"].replace("\\n", "\n")
-                    art_file.write(body)
-            else:
-                shell_cmd = shlex.split(
-                    config["EDITOR"]) + [artifact_path]
-                call(shell_cmd)
+        #    artifact_path = str(Path(category_path, title))
+
+
+#            if args["body"] :
+#                    body = args["body"].replace("\\n", "\n")
+#                with open(artifact_path, "w+") as art_file:
+#                    art_file.write(body)
+#            else:
+#                shell_cmd = shlex.split(
+#                    config["EDITOR"]) + [artifact_path]
+#                call(shell_cmd)
 
         new_artifact = Artifact(
             id=None, title=title, category=category,
@@ -86,5 +87,44 @@ def add(args: Dict[str, str], file,config: Dict[str, str]):
             tags=args["tags"],
             status=args["status"], author=args["author"])
         db.insert_artifact(conn, new_artifact)
+    return("OK")
 
 
+
+def add_file_to_kb(
+        conn,
+        args: Dict[str, str],
+        config: Dict[str, str],
+        fname: str
+) -> None:
+    """
+    Adds a file to the kb knowledge base.
+
+    Arguments:
+    conn        -   the connection to the database object
+    args        -   the args dictionary passed to the add command,
+                    it must contain at least the following keys:
+                        title, category, tags, status, author
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_DATA, the path to where artifact are stored
+    fname       -   the path of the file to add to kb
+    """
+    title = args["title"] or fs.get_basename(fname)
+    category = args["category"] or "default"
+
+    category_path = Path(config["PATH_KB_DATA"], category)
+    category_path.mkdir(parents=True, exist_ok=True)
+
+    fs.copy_file(fname, Path(category_path, title))
+
+    if not db.is_artifact_existing(conn, title, category):
+        fs.copy_file(fname, Path(category_path, title))
+
+    new_artifact = Artifact(
+        id=None,
+        title=title, category=category,
+        path="{category}/{title}".format(category=category, title=title),
+        tags=args["tags"],
+        status=args["status"], author=args["author"])
+    db.insert_artifact(conn, new_artifact)

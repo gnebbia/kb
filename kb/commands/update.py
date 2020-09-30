@@ -100,7 +100,7 @@ def update(args: Dict[str, str], config: Dict[str, str]):
             print(
                 "There is more than one artifact with that title, please specify a category")
 
-    if args["edit_content"]:
+    if args["edit_content"] or args["body"]:
         if args["title"]:
             shell_cmd = shlex.split(config["EDITOR"]) + [
                 str(Path(category_path, artifact.title))
@@ -113,4 +113,11 @@ def update(args: Dict[str, str], config: Dict[str, str]):
                     / old_artifact.title
                 )
             ]
-        call(shell_cmd)
+
+        if args["body"]:
+            artifact_path = shell_cmd[1]
+            args["body"] = args["body"].replace("\\n", "\n")
+            with open(artifact_path, 'w') as art_file:
+                art_file.write(args["body"])
+        else:
+            call(shell_cmd)

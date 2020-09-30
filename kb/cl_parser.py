@@ -338,9 +338,14 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
     update_parser.add_argument(
         "-e", "--edit-content",
-        help="Edit content of the artifact",
+        help="Edit content of the artifact with an editor",
         action="store_true",
         dest="edit_content",
+    )
+    update_parser.add_argument(
+        "-b", "--body",
+        help="Update the body of the artifact (erases the current content)",
+        type=str,
     )
 
     # delete parser

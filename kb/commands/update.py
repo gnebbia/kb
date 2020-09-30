@@ -98,24 +98,19 @@ def update(args: Dict[str, str], config: Dict[str, str]):
             category_path = Path(config["PATH_KB_DATA"], artifact.category)
         else:
             print(
-                "There is more than one artifact with that title, please specify a category")
+                "There is none or more than one artifact with that title, please specify a category")
 
     if args["edit_content"] or args["body"]:
         if args["title"]:
-            shell_cmd = shlex.split(config["EDITOR"]) + [
-                str(Path(category_path, artifact.title))
-            ]
+            artifact_path = str(Path(category_path, artifact.title))
+            shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
         elif args["id"]:
-            shell_cmd = shlex.split(config["EDITOR"]) + [
-                str(
-                    Path(config["PATH_KB_DATA"])
-                    / old_artifact.category
-                    / old_artifact.title
-                )
-            ]
+            artifact_path = str(Path(config["PATH_KB_DATA"])
+                                / old_artifact.category
+                                / old_artifact.title)
+            shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
 
         if args["body"]:
-            artifact_path = shell_cmd[1]
             args["body"] = args["body"].replace("\\n", "\n")
             with open(artifact_path, 'w') as art_file:
                 art_file.write(args["body"])

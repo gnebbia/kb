@@ -20,10 +20,10 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 from kb.entities.artifact import Artifact
-from kb.actions.add import add_file_to_kb
+from kb.actions import add_file_to_kb,add as actions
 
 
-def add(args: Dict[str, str], file,config: Dict[str, str]):
+def add(conn,args: Dict[str, str], file,config: Dict[str, str]):
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -47,27 +47,18 @@ def add(args: Dict[str, str], file,config: Dict[str, str]):
         print("Please, either specify a file or a title for the new artifact")
         sys.exit(1)
 
-    
-
-    conn = db.create_connection(config["PATH_KB_DB"])
+    # If there is a file to add.....
     if args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):
                 continue
             add_file_to_kb(conn, args, config, fname)
-            print("here1")
     else:
-        # Get title for the new artifact
-        title = args["title"]
 
-        # Assign a "default" category if not provided
-        category = args["category"] or "default"
-
-        # Create "category" directory if it does not exist
+        category=args["categpry"]
         category_path = Path(config["PATH_KB_DATA"], category)
-        category_path.mkdir(parents=True, exist_ok=True)
-
-        if not db.is_artifact_existing(conn, title, category):
+        title=args["title"]
+        if not db.is_artifact_existing(conn, title,category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
             artifact_path = str(Path(category_path, title))
@@ -80,11 +71,9 @@ def add(args: Dict[str, str], file,config: Dict[str, str]):
                     config["EDITOR"]) + [artifact_path]
                 call(shell_cmd)
 
-        new_artifact = Artifact(
-            id=None, title=title, category=category,
-            path="{category}/{title}".format(category=category, title=title),
-            tags=args["tags"],
-            status=args["status"], author=args["author"])
-        db.insert_artifact(conn, new_artifact)
+        result = actions.add(conn,args,config)
+
+        
+
 
 

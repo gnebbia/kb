@@ -31,7 +31,7 @@ TODO
 |----------|------------|
 | `http://hostname/list` | Returns ALL of the artifacts in the knowledgebase as a JSON document|
 |`http://hostname/list/category/category`|Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
-
+|`http://hostname/add`|Adds a new artifact to the knowledgebase|
 
 ## Things to be aware of
 

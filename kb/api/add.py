@@ -11,7 +11,7 @@ kb add command module
 :License: GPLv3 (see /LICENSE).
 """
 
-
+import kb.db as db
 from pathlib import Path
 from typing import Dict
 from kb.entities.artifact import Artifact
@@ -47,6 +47,8 @@ def addArtifact(args: Dict[str, str],file,config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
 
+    # If there is a file to add.....
+
     if file :
         # Create "category" directory if it does not exist
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
@@ -58,7 +60,9 @@ def addArtifact(args: Dict[str, str],file,config: Dict[str, str]):
         file.save(os.path.join(category_path, filename))
         resp = jsonify({'message' : 'File successfully uploaded'})
         resp.status_code = 201
-        
-    result = actions.add(args,config=DEFAULT_CONFIG)
+    
+    conn = db.create_connection(config["PATH_KB_DB"])
+    
+    result = actions.add(conn,args,DEFAULT_CONFIG)
     return (result)
 

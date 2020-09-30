@@ -26,7 +26,7 @@ from werkzeug.utils import secure_filename
 
 
 
-def add(args: Dict[str, str],config: Dict[str, str]):
+def add(conn,args: Dict[str, str],config: Dict[str, str]):
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -49,7 +49,7 @@ def add(args: Dict[str, str],config: Dict[str, str]):
     # Check initialization
     initializer.init(config)
 
-    conn = db.create_connection(config["PATH_KB_DB"])
+    ##conn = db.create_connection(config["PATH_KB_DB"])
     if args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):
@@ -66,20 +66,6 @@ def add(args: Dict[str, str],config: Dict[str, str]):
         category_path = Path(config["PATH_KB_DATA"], category)
         category_path.mkdir(parents=True, exist_ok=True)
 
-        #if not db.is_artifact_existing(conn, title, category):
-            # If a file is provided, copy the file to kb directory
-            # otherwise open up the editor and create some content
-        #    artifact_path = str(Path(category_path, title))
-
-
-#            if args["body"] :
-#                    body = args["body"].replace("\\n", "\n")
-#                with open(artifact_path, "w+") as art_file:
-#                    art_file.write(body)
-#            else:
-#                shell_cmd = shlex.split(
-#                    config["EDITOR"]) + [artifact_path]
-#                call(shell_cmd)
 
         new_artifact = Artifact(
             id=None, title=title, category=category,
@@ -87,8 +73,8 @@ def add(args: Dict[str, str],config: Dict[str, str]):
             tags=args["tags"],
             status=args["status"], author=args["author"])
         db.insert_artifact(conn, new_artifact)
+        
     return("OK")
-
 
 
 def add_file_to_kb(

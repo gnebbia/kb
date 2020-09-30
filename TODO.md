@@ -16,10 +16,11 @@ No guarantees can be given that a specific feature will be included in a release
 
 # Later Releases:
 
+- Full test suite
 - Find a way to include complex artifacts
 - Write installation procedure for Windows (choco and scoop)
 - Add mobile application
-- web application
+- Web application
 - SQLite change 
 - Fix notepad (Windows) hell with automatic extensions...
 - Executable standalone - Pyinstaller

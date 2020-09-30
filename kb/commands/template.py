@@ -111,7 +111,6 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                       EDITOR                    - the editor program to call
     """
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
-    print(template_path)
 
     if fs.is_file(template_path):
         print("ERROR: The template you inserted corresponds to an existing one. "

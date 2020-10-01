@@ -1,11 +1,20 @@
-FROM python:3
+# Start with the base image
+
+FROM python:alpine3.8
 
 COPY . /app
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt && \
+# Update the base image, install dependencies and create the aliases file
+
+RUN apk update && \
+    apk add nano vim && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt && \
     python setup.py install && \
-    cat /app/docker/aliases >> ~/.bashrc
+    cat /app/docker/aliases >> /etc/profile
+
+ENV ENV="/etc/profile"
 
 WORKDIR /data

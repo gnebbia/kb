@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.4
+# kb v0.1.3
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -16,12 +16,11 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.printer.search as printer
 import kb.history as history
-import kb.actions.search as actions
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
     """
-    Search artifacts within the knowledge base of kb and display the output on the terminal.
+    Search artifacts within the knowledge base of kb.
 
     Arguments:
     args:           - a dictionary containing the following fields:
@@ -37,16 +36,24 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
                       EDITOR            - the editor program to call
     """
- 
-    artifacts = actions.search( args, config)   
+    # Check initialization
+    initializer.init(config)
 
+    tags_list = None
+    if args["tags"] and args["tags"] != "":
+        tags_list = args["tags"].split(';')
 
-    # Write to history file
-    history.write(config["PATH_KB_HIST"], artifacts)
+    conn = db.create_connection(config["PATH_KB_DB"])
+    rows = db.get_artifacts_by_filter(
+        conn,
+        title=args["query"],
+        category=args["category"],
+        tags=tags_list,
+        status=args["status"],
+        author=args["author"])
 
-    # Print resulting list
-    color_mode = not args["no_color"]
-    if args["verbose"]:
-        printer.print_search_result_verbose(artifacts, color_mode)
-    else:
-        printer.print_search_result(artifacts, color_mode)
+    artifacts = sorted(rows, key=lambda x: x.title)
+
+    return artifacts
+
+    

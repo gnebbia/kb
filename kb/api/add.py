@@ -10,12 +10,15 @@ kb add command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
+import sys
+sys.path.append('kb')
 
 import kb.db as db
 from pathlib import Path
 from typing import Dict
 from kb.entities.artifact import Artifact
-import kb.actions.add as actions
+
+from kb.actions.add import add as actionsAdd
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
@@ -25,7 +28,7 @@ from flask import jsonify
 
 import os
 from werkzeug.utils import secure_filename
-#import urllib.request
+
 
 
 def addArtifact(args: Dict[str, str],file,config: Dict[str, str]):
@@ -63,6 +66,6 @@ def addArtifact(args: Dict[str, str],file,config: Dict[str, str]):
     
     conn = db.create_connection(config["PATH_KB_DB"])
     
-    result = actions.add(conn,args,DEFAULT_CONFIG)
+    result = actionsAdd(conn,args,DEFAULT_CONFIG)
     return (result)
 

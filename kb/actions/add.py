@@ -49,7 +49,6 @@ def add(conn,args: Dict[str, str],config: Dict[str, str]):
     # Check initialization
     initializer.init(config)
 
-    ##conn = db.create_connection(config["PATH_KB_DB"])
     if args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):

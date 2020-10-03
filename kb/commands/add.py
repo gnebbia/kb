@@ -10,6 +10,8 @@ kb add command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
+import sys
+sys.path.append('kb')
 
 import shlex
 import sys
@@ -20,6 +22,9 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 from kb.entities.artifact import Artifact
+from kb.actions.add import add as actionsAdd
+from kb.actions.add import add_file_to_kb as add_file_to_kb
+
 
 
 def add(args: Dict[str, str], config: Dict[str, str]):
@@ -79,63 +84,6 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     config["EDITOR"]) + [artifact_path]
                 call(shell_cmd)
 
-        new_artifact = Artifact(
-            id=None, title=title, category=category,
-            path="{category}/{title}".format(category=category, title=title),
-            tags=args["tags"],
-            status=args["status"], author=args["author"], template=args["template"])
-        db.insert_artifact(conn, new_artifact)
-
-
-def validate(args):
-    """
-    Validate arguments for the add command
-
-    Arguments:
-    args        - the dictionary of arguments
-                  passed to the add command
-
-    Returns:
-    A boolean, True if the add command is valid
-    """
-    return bool(args["file"] or args["title"])
-
-
-def add_file_to_kb(
-        conn,
-        args: Dict[str, str],
-        config: Dict[str, str],
-        fname: str
-) -> None:
-    """
-    Adds a file to the kb knowledge base.
-
-    Arguments:
-    conn        -   the connection to the database object
-    args        -   the args dictionary passed to the add command,
-                    it must contain at least the following keys:
-                        title, category, tags, status, author
-    config      -   the configuration dictionary that must contain
-                    at least the following key:
-                    PATH_KB_DATA, the path to where artifact are stored
-    fname       -   the path of the file to add to kb
-    """
-    title = args["title"] or fs.get_basename(fname)
-    category = args["category"] or "default"
-    template = args["template"] or "default"
-
-    category_path = Path(config["PATH_KB_DATA"], category)
-    category_path.mkdir(parents=True, exist_ok=True)
-
-    fs.copy_file(fname, Path(category_path, title))
-
-    if not db.is_artifact_existing(conn, title, category):
-        fs.copy_file(fname, Path(category_path, title))
-
-    new_artifact = Artifact(
-        id=None,
-        title=title, category=category,
-        path="{category}/{title}".format(category=category, title=title),
-        tags=args["tags"],
-        status=args["status"], author=args["author"], template=template)
-    db.insert_artifact(conn, new_artifact)
+        result = actionsAdd(conn,args,config)
+        return(result)
+  

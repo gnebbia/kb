@@ -24,7 +24,7 @@ def erase(eraseOnlyDB, config: Dict[str, str]):
     Arguments:
     args:           - a string containing what it to be deleted
                       if "db" then only the database will be deleted
-                      else everthing will be deleted
+                      otherwise everthing will be deleted
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB           - the main path of KB

@@ -23,7 +23,7 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
     Arguments:
     args:           - a dictionary containing the following fields:
                       db -> a boolean, if true, only the database
-                        will be deleted
+                      will be deleted
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB           - the main path of KB

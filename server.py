@@ -22,6 +22,7 @@ from flask import Flask, jsonify, abort, make_response, request
 # Import the API functions
 from kb.api.search import search
 from kb.api.add import addArtifact
+from kb.api.erase import eraseAction
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG 
@@ -136,6 +137,19 @@ def addArtefact():
     resp = addArtifact(parameters,file,config=DEFAULT_CONFIG)
     
     return(resp)
+
+@app.route('/erase/<component>', methods=['POST'])
+def eraseDB(component = 'all'):
+    if component == 'db':
+        eraseWhat="db"
+    else:
+        eraseWhat="all"
+
+    results = eraseAction(eraseWhat, config=DEFAULT_CONFIG)
+    if results == "404":
+            abort(404)
+    else:
+        return {'erased': results }
 
 
 

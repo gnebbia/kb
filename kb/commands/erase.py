@@ -13,6 +13,7 @@ kb erase command module
 
 from typing import Dict
 import kb.filesystem as fs
+from kb.actions.erase import eraseAction
 
 
 def erase(args: Dict[str, str], config: Dict[str, str]):
@@ -29,22 +30,19 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_HIST      - the history menu path of KB
     """
+    
     if args["db"]:
         answer = input(
             "Are you sure you want to erase the kb database ? [YES/NO]")
         if answer.lower() == "yes":
-            try:
-                fs.remove_file(config["PATH_KB_DB"])
-                fs.remove_file(config["PATH_KB_HIST"])
+            response = eraseAction("db",config)
+            if response == 200:
                 print("kb database deleted successfully!")
-            except FileNotFoundError:
-                pass
     else:
         answer = input(
             "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]")
         if answer.lower() == "yes":
-            try:
-                fs.remove_directory(config["PATH_KB"])
+            response = eraseAction("all",config)
+            if response == 200:
                 print("kb knowledge base deleted successfully!")
-            except FileNotFoundError:
-                pass
+    

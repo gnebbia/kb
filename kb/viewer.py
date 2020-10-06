@@ -61,7 +61,7 @@ def colorize_row(row, markers=None):
         match = regex.search(row)
 
         if match:
-            colored_row = re.sub(regex, rf'{colorize_string(match.group(0), color)}', rf'{row}')
+            colored_row = re.sub(regex, colorize_string(match.group(0).replace("\\","\\\\"), color), rf'{row}')
             row = colored_row
 
     return colored_row

@@ -223,9 +223,10 @@ def delete_artifact_by_id(conn, artifact_id: int) -> None:
     conn                - the sqlite3 connection object
     artifact_id         - the ID associated to the artifact to remove
     """
+    print("DB")
     cur = conn.cursor()
     sql_query = "DELETE FROM artifacts WHERE id = ?"
-
+    print(sql_query)
     cur.execute(sql_query, [artifact_id])
     conn.commit()
 

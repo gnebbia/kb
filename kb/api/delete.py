@@ -44,15 +44,8 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
 
     response = deleteArtifacts(args, config)
 
-    if response == 200:
-        if 'id' in args:
-            print("Artifact {id} removed!".format(args["id"]))
-        else:
-            print("Artifact {category}/{title} removed!".format(args["category"], args["title"]))
-    
-    if response == "301Multi":
-        print("There is more than one artifact with that title, please specify a category")
-    
-    if response == "301None":
-        print("There is no artifact with that name, please specify a correct artifact name")
+    if response == "200":
+        return "200"
 
+    if response == "301Multi" or response == "301None":
+        return "301"

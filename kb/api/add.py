@@ -31,7 +31,7 @@ from werkzeug.utils import secure_filename
 
 
 
-def addArtifact(args: Dict[str, str],file,config: Dict[str, str]):
+def addArtifact(args: Dict[str, str],config: Dict[str, str],file):
     """
     Adds a list of artifacts to the knowledge base of kb.
 

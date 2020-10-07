@@ -7,7 +7,7 @@
 # See /LICENSE for licensing information.
 
 #
-# kbAPI startup module
+# kbAPI startup module  (for Docker containers)
 #
 # :Copyright: © 2020, alshapton.
 # :License: GPLv3 (see /LICENSE).

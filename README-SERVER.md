@@ -42,8 +42,11 @@ once the image is built, it can be run with:
 | Endpoint | Description|
 |----------|------------|
 | `http://hostname/list` | Returns ALL of the artifacts in the knowledgebase as a JSON document|
-|`http://hostname/list/category/category`|Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
+|`http://hostname/list/category/<category>`|Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
 |`http://hostname/add`|Adds a new artifact to the knowledgebase|
+|`http://hostname/erase/db`|Erase just the knowledgebase database|
+|`http://hostname/erase/all`|Erase all of the knowledgebase as well as files|
+|`http://hostname/delete/id/<id>`|Delete a specific Artifact by ID|
 
 ## Things to be aware of
 

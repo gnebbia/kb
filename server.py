@@ -23,6 +23,7 @@ from flask import Flask, jsonify, abort, make_response, request
 from kb.api.search import search
 from kb.api.add import addArtifact
 from kb.api.erase import eraseAction
+from kb.api.delete import delete
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG 
@@ -125,7 +126,7 @@ def getTags(tags = ''):
         return {'knowledge': constructResponse(results) }
 
 @app.route('/add', methods=['POST'])
-def addArtefact():
+def addItem():
     parameters["title"] = request.form.get("title","")
     parameters["category"] = request.form.get("category","")
     parameters["author"]= request.form.get("author","")
@@ -133,8 +134,8 @@ def addArtefact():
     parameters["tags"] = request.form.get("tags","")
     parameters["file"] = ""
 
-    file = request.files['file']
-    resp = addArtifact(parameters,file,config=DEFAULT_CONFIG)
+    attachment= request.files['file']
+    resp = addArtifact(args=parameters,config=DEFAULT_CONFIG,file=attachment)
     
     return(resp)
 
@@ -151,7 +152,38 @@ def eraseDB(component = 'all'):
     else:
         return {'erased': results }
 
+@app.route('/delete/id/<id>', methods=['POST'])
+def deleteItemByID(id = ''):
+    parameters["id"]=id 
+    print("id=",id)
+    results = delete(parameters, config=DEFAULT_CONFIG)
+    if results == "404":
+            abort(404)
+    else:
+        return {'Deleted': results }
 
+@app.route('/delete/ids/<ids>', methods=['POST'])
+def deleteItemsByID(ids = ''):
+    print(ids)
+    fullParms = ids.replace(";", ";id=")
+    fullParms = "id="+fullParms
+    print(fullParms)
+    idList = dict(x.split("=") for x in fullParms.split(";"))
+    parameters["id"]=idList
+    results = deleteArtifacts(parameters, config=DEFAULT_CONFIG)
+    if results == "404":
+            abort(404)
+    else:
+        return {'Deleted': results }
+
+@app.route('/delete/name/<title>', methods=['POST'])
+def deleteItemByName(title = ''):
+    parameters["title"]=title 
+    results = delete(parameters, config=DEFAULT_CONFIG)
+    if results == "404":
+            abort(404)
+    else:
+        return {'deleted': results }
 
 # Start the server
 if __name__ == '__main__':

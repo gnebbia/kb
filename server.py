@@ -170,7 +170,7 @@ def deleteItemsByID(ids = ''):
     print(fullParms)
     idList = dict(x.split("=") for x in fullParms.split(";"))
     parameters["id"]=idList
-    results = deleteArtifacts(parameters, config=DEFAULT_CONFIG)
+    results = delete(parameters, config=DEFAULT_CONFIG)
     if results == "404":
             abort(404)
     else:

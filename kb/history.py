@@ -44,6 +44,7 @@ def get_artifact_id(hist_file_path: str, list_id: int) -> int:
                 items = line.split(",")
                 print(line)
                 if items[0] == list_id:
+                    print  (items[1])
                     return items[1]
             return None
     else:    

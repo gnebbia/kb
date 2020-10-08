@@ -20,7 +20,7 @@ import kb.history as history
 import kb.filesystem as fs
 
 
-def deleteArtifacts(args: Dict[str, str], config: Dict[str, str]):
+def deleteArtifacts(args: Dict[str, str], config: Dict[str, str],db_id):
     """
     Delete a list of artifacts from the kb knowledge base.
 
@@ -35,19 +35,21 @@ def deleteArtifacts(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_DATA      - the data directory of KB
                       PATH_KB_HIST      - the history menu path of KB
+    db_id:          - True if this is a raw DB id, 
+                      False if this is a viewed artifact IDs
     """
     initializer.init(config)
     results = "404"
     if args["id"]:
         for i in args["id"]:
-            results=delete_by_id(i, config)
+            results=delete_by_id(i, config,db_id)
 
     elif args["title"]:
         results=delete_by_name(args["title"], args["category"], config)
     return(results)
 
-def delete_by_id(id: int, config: Dict[str, str]):
-    """
+def delete_by_id(id: int, config: Dict[str, str],db_id):
+    """s
     Edit the content of an artifact by id.
 
     Arguments:
@@ -59,23 +61,19 @@ def delete_by_id(id: int, config: Dict[str, str]):
                       PATH_KB_DATA      - the data directory of KB
                       PATH_KB_HIST      - the history menu path of KB
                       EDITOR            - the editor program to call
+    db_id:          - True if this is a raw DB id, 
+                      False if this is a viewed artifact IDs
     """
-    print("delete_by_id",str(id))
     conn = db.create_connection(config["PATH_KB_DB"])
     
-    
-    
-    artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
-    print("DBYID",str(artifact_id))
+    artifact_id = id
+    if  db_id == False:
+        artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
     artifact = db.get_artifact_by_id(conn, artifact_id)
-    print(str(artifact_id))
 
     if not artifact:
-        print("No artifact")
         return "404"
-    print("delete_by_id", str(artifact_id))
     db.delete_artifact_by_id(conn, artifact_id)
-    print("Done DB")
     category_path = Path(config["PATH_KB_DATA"], artifact.category)
 
     try:
@@ -85,7 +83,8 @@ def delete_by_id(id: int, config: Dict[str, str]):
 
     if fs.count_files(category_path) == 0:
         fs.remove_directory(category_path)
-        return "200"
+
+    return(str(id))
 
 
 def delete_by_name(title: str, category: str, config: Dict[str, str]):

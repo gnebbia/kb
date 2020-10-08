@@ -39,10 +39,12 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_DATA      - the data directory of KB
                       PATH_KB_HIST      - the history menu path of KB
+    db_id:          - True if this is a raw DB id, 
+                      False if this is a viewed artifact IDs
     """
     initializer.init(config)
 
-    response = deleteArtifacts(args, config)
+    response = deleteArtifacts(args, config,False)
 
     if response == 200:
         if 'id' in args:

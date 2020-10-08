@@ -56,10 +56,6 @@ parameters = dict(id="",
 
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
 
 """
 
@@ -152,15 +148,19 @@ def eraseDB(component = 'all'):
     else:
         return {'erased': results }
 
+
 @app.route('/delete/id/<id>', methods=['POST'])
 def deleteItemByID(id = ''):
     parameters["id"]=id 
-    print("id=",id)
     results = delete(parameters, config=DEFAULT_CONFIG)
     if results == "404":
-            abort(404)
-    else:
-        return {'Deleted': results }
+        return (make_response(jsonify({'Error': 'There is no artifact with that ID, please specify a correct artifact ID'}), 404))
+    if results == "301Multi":
+            return (make_response(jsonify({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
+    if results == "301None":
+            return (make_response(jsonify({'Error': 'There are no artifacts with that title, please specify a title'}), 301))
+    return {'Deleted': results }
+
 
 @app.route('/delete/ids/<ids>', methods=['POST'])
 def deleteItemsByID(ids = ''):

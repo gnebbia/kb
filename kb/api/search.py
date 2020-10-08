@@ -13,6 +13,7 @@ kb search command module
 
 from typing import Dict
 import kb.actions.search as actions
+import kb.history as history
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -35,5 +36,6 @@ def search(args: Dict[str, str], config: Dict[str, str]):
     """
  
     artifacts = actions.search( args, config)   
-
+    # Write to history file
+    history.write(config["PATH_KB_HIST"], artifacts)
     return artifacts

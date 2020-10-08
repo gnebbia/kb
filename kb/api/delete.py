@@ -42,10 +42,9 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     """
     initializer.init(config)
 
-    response = deleteArtifacts(args, config)
+    response = deleteArtifacts(args, config,True)
 
-    if response == "200":
-        return "200"
+    return response
 
-    if response == "301Multi" or response == "301None":
-        return "301"
+
+  

@@ -188,9 +188,9 @@ def deleteItemByName(title = ''):
     parameters["title"]=title 
     results = delete(parameters, config=DEFAULT_CONFIG)
     if results == "404":
-            abort(404)
+        return (make_response(jsonify({'Error': 'There are no artifacts with that title'}), 404))
     else:
-        return {'deleted': results }
+        return {'Deleted': title }
 
 # Start the server
 if __name__ == '__main__':

@@ -71,9 +71,9 @@ def add(conn,args: Dict[str, str],config: Dict[str, str]):
             path="{category}/{title}".format(category=category, title=title),
             tags=args["tags"],
             status=args["status"], author=args["author"])
-        db.insert_artifact(conn, new_artifact)
+        id = db.insert_artifact(conn, new_artifact)
         
-    return("OK")
+    return(id)
 
 
 def add_file_to_kb(

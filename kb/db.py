@@ -163,6 +163,7 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         cur.execute(sql, args)
 
     conn.commit()
+    return(last_artifact_id)
 
 def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     """

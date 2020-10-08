@@ -7,7 +7,7 @@
 """
 kbAPI server module
 
-:Copyright: © 2020, gnc.
+:Copyright: © 2020, alshaptons.
 :License: GPLv3 (see /LICENSE).
 """
 
@@ -37,6 +37,10 @@ from pathlib import Path
 
 app = Flask(__name__)
 
+# Set Flask parameters
+DEBUG = True
+PORT = 5000
+
 parameters = dict(id="",
                     title = "",
                     category = "",
@@ -53,9 +57,6 @@ parameters = dict(id="",
 # status -> filter for the status field of the artifact
 # no_color -> determines whether  a color output is needed
 # verbose -> determines if a verbose output is needed
-
-
-
 
 """
 
@@ -91,14 +92,25 @@ def constructResponse(results):
     response =  response[:-1] + ']'
     return response
 
+# -----------------------------------------------
+"""
+    Application router for server functions 
+    Arguments:
+        Variable
+
+    Returns:
+        JSON document or informationl message in HTTP responses
+
+"""
 
 @app.route('/list', methods=['GET'])
 def getAll():
     results = search(parameters, config=DEFAULT_CONFIG)    
     if len(results) == 0:
-        abort(404)
+        return (make_response(jsonify({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
     else:
-        return {'knowledge': constructResponse(results) }    
+        return (make_response(jsonify({'Knowledge': constructResponse(results)}), 200))
+
         
 
 @app.route('/list/category/<category>', methods=['GET'])
@@ -108,18 +120,18 @@ def getCategory(category = ''):
 
     results = search( parameters, config=DEFAULT_CONFIG)
     if len(results) == 0:
-        abort(404)
+        return (make_response(jsonify({'Error': 'There are no artifacts with this category.'}), 404))
     else:
-        return {'knowledge': constructResponse(results) }
+        return (make_response(jsonify({'Knowledge': constructResponse(results)}), 200))
 
 @app.route('/list/tags/<tags>', methods=['GET'])
 def getTags(tags = ''):
     parameters["tags"]=tags
     results = search( parameters, config=DEFAULT_CONFIG)
     if len(results) == 0:
-        abort(404)
+        return (make_response(jsonify({'Error': 'There are no artifacts with these tags.'}), 404))
     else:
-        return {'knowledge': constructResponse(results) }
+        return (make_response(jsonify({'Knowledge': constructResponse(results)}), 200))
 
 @app.route('/add', methods=['POST'])
 def addItem():
@@ -132,8 +144,12 @@ def addItem():
 
     attachment= request.files['file']
     resp = addArtifact(args=parameters,config=DEFAULT_CONFIG,file=attachment)
-    
-    return(resp)
+    if resp is None:
+        return (make_response(jsonify({'Error': 'There was an issue adding the artifact'}), 404))
+    else:
+        return (make_response(jsonify({'Added': resp}), 200))
+
+
 
 @app.route('/erase/<component>', methods=['POST'])
 def eraseDB(component = 'all'):
@@ -147,7 +163,8 @@ def eraseDB(component = 'all'):
     results = eraseAction(eraseWhat, config=DEFAULT_CONFIG)
 
     if results == "404":
-            abort(404)
+        return (make_response(jsonify({'Error': 'The ' + eraseWhatText + ' has not been erased.'}), 404))
+
     else:
         return (make_response(jsonify({'OK': 'The ' + eraseWhatText + ' has been erased.'}), 200))
 
@@ -163,7 +180,7 @@ def deleteItemByID(id = ''):
             return (make_response(jsonify({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
     if results == "301None":
             return (make_response(jsonify({'Error': 'There are no artifacts with that title, please specify a title'}), 301))
-    return {'Deleted': results }
+    return (make_response(jsonify({'Deleted': results}), 200))
 
 
 @app.route('/delete/ids/<ids>', methods=['POST'])
@@ -190,8 +207,9 @@ def deleteItemByName(title = ''):
     if results == "404":
         return (make_response(jsonify({'Error': 'There are no artifacts with that title'}), 404))
     else:
-        return {'Deleted': title }
+        return (make_response(jsonify({'Deleted': title}), 200))
+
 
 # Start the server
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0',port=5000)
+    app.run(debug = DEBUG, host = '0.0.0.0', port = PORT)

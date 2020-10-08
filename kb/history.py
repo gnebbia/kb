@@ -37,14 +37,11 @@ def get_artifact_id(hist_file_path: str, list_id: int) -> int:
     """
 
     hist_file = Path(hist_file_path)
-    print(list_id)
     if hist_file.exists():
         with open(hist_file_path, 'r') as hfile:
             for line in hfile:
                 items = line.split(",")
-                print(line)
                 if items[0] == list_id:
-                    print  (items[1])
                     return items[1]
             return None
     else:    

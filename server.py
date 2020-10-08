@@ -139,14 +139,18 @@ def addItem():
 def eraseDB(component = 'all'):
     if component == 'db':
         eraseWhat="db"
+        eraseWhatText="database"
     else:
         eraseWhat="all"
+        eraseWhatText="whole knowledgebase"
 
     results = eraseAction(eraseWhat, config=DEFAULT_CONFIG)
+
     if results == "404":
             abort(404)
     else:
-        return {'erased': results }
+        return (make_response(jsonify({'OK': 'The ' + eraseWhatText + ' has been erased.'}), 200))
+
 
 
 @app.route('/delete/id/<id>', methods=['POST'])
@@ -164,18 +168,21 @@ def deleteItemByID(id = ''):
 
 @app.route('/delete/ids/<ids>', methods=['POST'])
 def deleteItemsByID(ids = ''):
-    print(ids)
-    fullParms = ids.replace(";", ";id=")
-    fullParms = "id="+fullParms
-    print(fullParms)
-    idList = dict(x.split("=") for x in fullParms.split(";"))
-    parameters["id"]=idList
-    results = delete(parameters, config=DEFAULT_CONFIG)
-    if results == "404":
-            abort(404)
-    else:
-        return {'Deleted': results }
+    deleted=[]      
+    listofIDs = ids.split(",")
+    for item in listofIDs:
+        parameters["id"]=item
+        results = delete(parameters, config=DEFAULT_CONFIG)
+        if results == item:
+            deleted.append(item)
 
+    if len(deleted) == 0:
+        return (make_response(jsonify({'Error': 'There are no artifacts with any of those IDs'}), 404))
+    if len(deleted) != len(listofIDs):
+        return (make_response(jsonify({'Error': 'These are the only artifacts that were deleted: '+ ', '.join(deleted)}), 200))
+    else:
+        return (make_response(jsonify({'Deleted': 'All artifacts were deleted: '+ ', '.join(deleted)}), 200))
+     
 @app.route('/delete/name/<title>', methods=['POST'])
 def deleteItemByName(title = ''):
     parameters["title"]=title 

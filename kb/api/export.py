@@ -18,6 +18,7 @@ from typing import Dict
 from kb.actions.export import export as actionExport
 
 
+
 def export(args: Dict[str, str], config: Dict[str, str]):
     """
     Export the entire kb knowledge base.
@@ -30,6 +31,7 @@ def export(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
+    fname=actionExport(args, config=config)
 
-    args["file"]= 
-    return (actionExport(args, config=config))
+    return(fname)
+    

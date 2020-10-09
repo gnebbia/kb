@@ -14,16 +14,17 @@ kbAPI server module
 import sys
 sys.path.append('kb')
 
+import io
 
 # Use the flask framework
-from flask import Flask, jsonify, abort, make_response, request
-
+from flask import Flask, jsonify, abort, make_response, request,send_file
 
 # Import the API functions
 from kb.api.search import search
 from kb.api.add import addArtifact
 from kb.api.erase import eraseAction
 from kb.api.delete import delete
+from kb.api.export import export
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG 
@@ -32,6 +33,8 @@ from kb.config import DEFAULT_CONFIG
 import os
 from werkzeug.utils import secure_filename
 import urllib.request
+import tempfile
+import io
 
 from pathlib import Path
 
@@ -209,6 +212,35 @@ def deleteItemByName(title = ''):
     else:
         return (make_response(jsonify({'Deleted': title}), 200))
 
+
+@app.route('/export/kb/data', methods=['GET'])
+def exportKnowledgebaseDATA():
+    with tempfile.NamedTemporaryFile(delete=True) as f:
+        parms=dict()
+        parms["file"]=f.name
+        parms["only_data"]="True" 
+        results = export(parms, config=DEFAULT_CONFIG)
+        with open(results, 'rb') as bites:
+            return send_file(
+                    io.BytesIO(bites.read()),
+                    as_attachment=True,
+                    attachment_filename=results,
+                    mimetype='application/gzip'
+            )
+        
+@app.route('/export/kb/all', methods=['GET'])
+def exportKnowledgebaseALL():
+    with tempfile.NamedTemporaryFile(delete=True) as f:
+        parms=dict()
+        parms["file"]=f.name
+        results = export(parms, config=DEFAULT_CONFIG)
+        with open(results, 'rb') as bites:
+            return send_file(
+                    io.BytesIO(bites.read()),
+                    as_attachment=True,
+                    attachment_filename=results,
+                    mimetype='application/gzip'
+            )
 
 # Start the server
 if __name__ == '__main__':

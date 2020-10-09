@@ -31,5 +31,4 @@ def export(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB           - the main path of KB
     """
 
-    args["file"]= 
     return (actionExport(args, config=config))

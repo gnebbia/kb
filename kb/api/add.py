@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict
 from kb.entities.artifact import Artifact
 
-from kb.actions.add import add_artifact as add_artifact
+from kb.actions.add import add_artifact
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
@@ -31,7 +31,7 @@ from werkzeug.utils import secure_filename
 
 
 
-def addArtifact(args: Dict[str, str],config: Dict[str, str],file):
+def add(args: Dict[str, str],config: Dict[str, str],file):
     """
     Adds a list of artifacts to the knowledge base of kb.
 

@@ -18,7 +18,7 @@ import kb.printer.search as printer
 import kb.history as history
 
 
-def search(args: Dict[str, str], config: Dict[str, str]):
+def search_kb(args: Dict[str, str], config: Dict[str, str]):
     """
     Search artifacts within the knowledge base of kb.
 

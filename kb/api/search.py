@@ -4,6 +4,7 @@
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
 
+
 """
 kb search command module
 
@@ -11,8 +12,11 @@ kb search command module
 :License: GPLv3 (see /LICENSE).
 """
 
+import sys
+sys.path.append('kb')
+
 from typing import Dict
-import kb.actions.search as actions
+from kb.actions.search import search_kb
 import kb.history as history
 
 
@@ -35,7 +39,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
  
-    artifacts = actions.search( args, config)   
+    artifacts = search_kb( args, config)   
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)
     return artifacts

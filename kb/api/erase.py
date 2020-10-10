@@ -15,9 +15,9 @@ sys.path.append('kb')
 
 from typing import Dict
 import kb.filesystem as fs
-from kb.actions.erase import eraseAction
+from kb.actions.erase import erase_kb
 
-def erase(eraseOnlyDB, config: Dict[str, str]):
+def erase(erase_what, config: Dict[str, str]):
     """
     Erase the entire kb knowledge base (or only the database).
 
@@ -32,6 +32,6 @@ def erase(eraseOnlyDB, config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
     """
 
-    response = eraseAction(eraseOnlyDB,config)
+    response = erase_kb(erase_what,config)
     
     return(response)

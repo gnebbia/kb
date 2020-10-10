@@ -16,7 +16,9 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.printer.search as printer
 import kb.history as history
-import kb.actions.search as actions
+from kb.actions.search import search_kb
+import sys
+sys.path.append('kb')
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -38,7 +40,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
  
-    artifacts = actions.search( args, config)   
+    artifacts = search_kb( args, config)   
     
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)

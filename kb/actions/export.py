@@ -20,7 +20,7 @@ import sys
 sys.path.append('kb')
 
 
-def export(args: Dict[str, str], config: Dict[str, str]):
+def export_kb(args: Dict[str, str], config: Dict[str, str]):
     """
     Export the entire kb knowledge base.
 

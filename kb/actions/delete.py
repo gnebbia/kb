@@ -20,7 +20,7 @@ import kb.history as history
 import kb.filesystem as fs
 
 
-def deleteArtifacts(args: Dict[str, str], config: Dict[str, str],db_id):
+def delete_artifacts(args: Dict[str, str], config: Dict[str, str],db_id):
     """
     Delete a list of artifacts from the kb knowledge base.
 
@@ -42,10 +42,10 @@ def deleteArtifacts(args: Dict[str, str], config: Dict[str, str],db_id):
     results = "404"  # Need to standardise on -numbers 
     
     if args["id"]:
-        results=delete_by_id(args["id"], config,db_id)
+        results = delete_by_id(args["id"], config,db_id)
 
     elif args["title"]:
-        results=delete_by_name(args["title"], args["category"], config)
+        results = delete_by_name(args["title"], args["category"], config)
     return(results)
 
 def delete_by_id(id: int, config: Dict[str, str],db_id):

@@ -21,7 +21,7 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.history as history
 import kb.filesystem as fs
-from kb.actions.delete import deleteArtifacts
+from kb.actions.delete import delete_artifacts
 
 
 def delete(args: Dict[str, str], config: Dict[str, str]):
@@ -44,7 +44,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     """
     initializer.init(config)
 
-    response = deleteArtifacts(args, config,False)
+    response = delete_artifacts(args, config,False)
 
     if response == 200:
         if 'id' in args:

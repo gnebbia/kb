@@ -15,7 +15,7 @@ import time
 import tarfile
 from pathlib import Path
 from typing import Dict
-from kb.actions.export import export as actionExport
+from kb.actions.export import export_kb
 
 
 
@@ -31,7 +31,7 @@ def export(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-    fname=actionExport(args, config=config)
+    fname=export_kb(args, config=config)
 
     return(fname)
     

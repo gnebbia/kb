@@ -15,7 +15,7 @@ from typing import Dict
 import kb.filesystem as fs
 
 
-def eraseAction(eraseOnlyDB, config: Dict[str, str]):
+def erase_kb(erase_what, config: Dict[str, str]):
     """
     Erase the entire kb knowledge base (or only the database).
 
@@ -29,7 +29,7 @@ def eraseAction(eraseOnlyDB, config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
     """
 
-    if eraseOnlyDB == "db":
+    if erase_what == "db":
             try:
                 fs.remove_file(config["PATH_KB_DB"])
                 fs.remove_file(config["PATH_KB_HIST"])

@@ -21,8 +21,8 @@ from flask import Flask, jsonify, abort, make_response, request,send_file
 
 # Import the API functions
 from kb.api.search import search
-from kb.api.add import addArtifact
-from kb.api.erase import eraseAction
+from kb.api.add import add
+from kb.api.erase import erase
 from kb.api.delete import delete
 from kb.api.export import export
 
@@ -136,6 +136,7 @@ def getTags(tags = ''):
     else:
         return (make_response(jsonify({'Knowledge': constructResponse(results)}), 200))
 
+
 @app.route('/add', methods=['POST'])
 def addItem():
     parameters["title"] = request.form.get("title","")
@@ -145,8 +146,8 @@ def addItem():
     parameters["tags"] = request.form.get("tags","")
     parameters["file"] = ""
 
-    attachment= request.files['file']
-    resp = addArtifact(args=parameters,config=DEFAULT_CONFIG,file=attachment)
+    attachment = request.files['file']
+    resp = add(args=parameters,config=DEFAULT_CONFIG,file=attachment)
     if resp is None:
         return (make_response(jsonify({'Error': 'There was an issue adding the artifact'}), 404))
     else:
@@ -157,25 +158,25 @@ def addItem():
 @app.route('/erase/<component>', methods=['POST'])
 def eraseDB(component = 'all'):
     if component == 'db':
-        eraseWhat="db"
-        eraseWhatText="database"
+        erase_what = "db"
+        erase_what_text = "database"
     else:
-        eraseWhat="all"
-        eraseWhatText="whole knowledgebase"
+        erase_what = "all"
+        erase_what_text = "whole knowledgebase"
 
-    results = eraseAction(eraseWhat, config=DEFAULT_CONFIG)
+    results = erase(erase_what, config=DEFAULT_CONFIG)
 
     if results == "404":
-        return (make_response(jsonify({'Error': 'The ' + eraseWhatText + ' has not been erased.'}), 404))
+        return (make_response(jsonify({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
 
     else:
-        return (make_response(jsonify({'OK': 'The ' + eraseWhatText + ' has been erased.'}), 200))
+        return (make_response(jsonify({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200))
 
 
 
 @app.route('/delete/id/<id>', methods=['POST'])
 def deleteItemByID(id = ''):
-    parameters["id"]=id 
+    parameters["id"] = id 
     results = delete(parameters, config=DEFAULT_CONFIG)
     if results == "404":
         return (make_response(jsonify({'Error': 'There is no artifact with that ID, please specify a correct artifact ID'}), 404))
@@ -188,10 +189,10 @@ def deleteItemByID(id = ''):
 
 @app.route('/delete/ids/<ids>', methods=['POST'])
 def deleteItemsByID(ids = ''):
-    deleted=[]      
-    listofIDs = ids.split(",")
-    for item in listofIDs:
-        parameters["id"]=item
+    deleted = []      
+    list_of_IDs = ids.split(",")
+    for item in list_of_IDs:
+        parameters["id"] = item
         results = delete(parameters, config=DEFAULT_CONFIG)
         if results == item:
             deleted.append(item)
@@ -205,7 +206,7 @@ def deleteItemsByID(ids = ''):
      
 @app.route('/delete/name/<title>', methods=['POST'])
 def deleteItemByName(title = ''):
-    parameters["title"]=title 
+    parameters["title"] = title 
     results = delete(parameters, config=DEFAULT_CONFIG)
     if results == "404":
         return (make_response(jsonify({'Error': 'There are no artifacts with that title'}), 404))
@@ -216,9 +217,9 @@ def deleteItemByName(title = ''):
 @app.route('/export/data', methods=['GET'])
 def exportKnowledgebaseDATA():
     with tempfile.NamedTemporaryFile(delete=True) as f:
-        parms=dict()
-        parms["file"]=f.name
-        parms["only_data"]="True" 
+        parms = dict()
+        parms["file"] = f.name
+        parms["only_data"] = "True" 
         results = export(parms, config=DEFAULT_CONFIG)
         with open(results, 'rb') as bites:
             return send_file(
@@ -231,8 +232,8 @@ def exportKnowledgebaseDATA():
 @app.route('/export/all', methods=['GET'])
 def exportKnowledgebaseALL():
     with tempfile.NamedTemporaryFile(delete=True) as f:
-        parms=dict()
-        parms["file"]=f.name
+        parms = dict()
+        parms["file"] = f.name
         results = export(parms, config=DEFAULT_CONFIG)
         with open(results, 'rb') as bites:
             return send_file(

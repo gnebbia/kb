@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict
 from kb.entities.artifact import Artifact
 
-from kb.actions.add import add as actionsAdd
+from kb.actions.add import add_artifact as add_artifact
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
@@ -66,6 +66,6 @@ def addArtifact(args: Dict[str, str],config: Dict[str, str],file):
     
     conn = db.create_connection(config["PATH_KB_DB"])
     
-    result = actionsAdd(conn,args,DEFAULT_CONFIG)
+    result = add_artifact(conn,args,DEFAULT_CONFIG)
     return (result)
 

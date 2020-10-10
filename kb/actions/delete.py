@@ -39,7 +39,7 @@ def deleteArtifacts(args: Dict[str, str], config: Dict[str, str],db_id):
                       False if this is a viewed artifact IDs
     """
     initializer.init(config)
-    results = "404"
+    results = "404"  # Need to standardise on -numbers 
     
     if args["id"]:
         results=delete_by_id(args["id"], config,db_id)

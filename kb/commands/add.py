@@ -22,7 +22,7 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 from kb.entities.artifact import Artifact
-from kb.actions.add import add as actionsAdd
+from kb.actions.add import add as add_artifact
 from kb.actions.add import add_file_to_kb as add_file_to_kb
 
 
@@ -62,14 +62,14 @@ def add(args: Dict[str, str], config: Dict[str, str]):
             add_file_to_kb(conn, args, config, fname)
     else:
         # Get title for the new artifact
-        title = args["title"]
+        # title = args["title"]
 
         # Assign a "default" category if not provided
-        category = args["category"] or "default"
+        # category = args["category"] or "default"
 
         # Create "category" directory if it does not exist
-        category_path = Path(config["PATH_KB_DATA"], category)
-        category_path.mkdir(parents=True, exist_ok=True)
+        # category_path = Path(config["PATH_KB_DATA"], category)
+        # category_path.mkdir(parents=True, exist_ok=True)
 
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
@@ -84,6 +84,6 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     config["EDITOR"]) + [artifact_path]
                 call(shell_cmd)
 
-        result = actionsAdd(conn,args,config)
+        result = add_artifact(conn,args,config)
         return(result)
   

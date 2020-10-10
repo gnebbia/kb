@@ -26,7 +26,7 @@ from werkzeug.utils import secure_filename
 
 
 
-def add(conn,args: Dict[str, str],config: Dict[str, str]):
+def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -48,24 +48,34 @@ def add(conn,args: Dict[str, str],config: Dict[str, str]):
 
     # Check initialization
     initializer.init(config)
+    # Get title for the new artifact
+    title = args["title"]
 
-    if args["file"]:
+    # Assign a "default" category if not provided
+    category = args["category"] or "default"
+
+    # Create "category" directory if it does not exist
+    category_path = Path(config["PATH_KB_DATA"], category)
+    category_path.mkdir(parents=True, exist_ok=True)
+    artifact_path = str(Path(category_path, title))
+
+    if args["body"]:
+        with open(artifact_path, "w+") as art_file:
+            body = args["body"].replace("\\n", "\n")
+            art_file.write(body)
+
+    elif args["temp_file"]:
+        for fname in args["temp_file"]:
+            os.rename(fname,artifact_path)
+            add_file_to_kb(conn, args, config, artifact_path)
+
+    elif args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):
                 continue
             add_file_to_kb(conn, args, config, fname)
+
     else:
-        # Get title for the new artifact
-        title = args["title"]
-
-        # Assign a "default" category if not provided
-        category = args["category"] or "default"
-
-        # Create "category" directory if it does not exist
-        category_path = Path(config["PATH_KB_DATA"], category)
-        category_path.mkdir(parents=True, exist_ok=True)
-
-
         new_artifact = Artifact(
             id=None, title=title, category=category,
             path="{category}/{title}".format(category=category, title=title),

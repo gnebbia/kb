@@ -22,10 +22,11 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 from kb.entities.artifact import Artifact
-from kb.actions.add import add as add_artifact
+
+from kb.actions.add import add_artifact as add_artifact
 from kb.actions.add import add_file_to_kb as add_file_to_kb
 
-
+import tempfile
 
 def add(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -55,6 +56,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
     initializer.init(config)
 
     conn = db.create_connection(config["PATH_KB_DB"])
+
     if args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):
@@ -71,19 +73,22 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         # category_path = Path(config["PATH_KB_DATA"], category)
         # category_path.mkdir(parents=True, exist_ok=True)
 
-        if not db.is_artifact_existing(conn, title, category):
+        if not db.is_artifact_existing(conn, args["title"], args["category"]):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            artifact_path = str(Path(category_path, title))
-            if args["body"]:
-                with open(artifact_path, "w+") as art_file:
-                    body = args["body"].replace("\\n", "\n")
-                    art_file.write(body)
-            else:
+            #artifact_path = str(Path(category_path, title))
+            #if args["body"]:
+            #    with open(artifact_path, "w+") as art_file:
+            #        body = args["body"].replace("\\n", "\n")
+            #        art_file.write(body)
+            pass
+        else:
+            with tempfile.NamedTemporaryFile(delete=True) as f:
                 shell_cmd = shlex.split(
-                    config["EDITOR"]) + [artifact_path]
+                    config["EDITOR"]) + [f]
                 call(shell_cmd)
+                args["temp_file"] = f
 
-        result = add_artifact(conn,args,config)
+                result = add_artifact(conn,args,config)
         return(result)
   

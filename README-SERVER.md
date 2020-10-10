@@ -13,13 +13,13 @@ It does this by wrapping the core functionality of kb using the [Bottle framewor
 
 ## Starting the server (MacOS and Linux)
 
-To start the kbAPI server, simply navigate to the  directory containing the server.py module and type
+To start the kbAPI server, simply navigate to the directory containing the `server.py` module and type
 
 `python3 server.py`
 
-or, to run it in the background  as a detached process (thus allowing you to log out and have the server running in the background)
+or, to run it in the background as a detached process (thus allowing you to have the server running in the background)
 
-`nohup python3 server.py &`
+`python3 server.py &`
 
 ## Starting the server (Windows)
 
@@ -39,14 +39,18 @@ once the image is built, it can be run with:
 
 ## Endpoints
 
-| Endpoint | Description|
-|----------|------------|
-| `http://hostname/list` | Returns ALL of the artifacts in the knowledgebase as a JSON document|
-|`http://hostname/list/category/<category>`|Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
-|`http://hostname/add`|Adds a new artifact to the knowledgebase|
-|`http://hostname/erase/db`|Erase just the knowledgebase database|
-|`http://hostname/erase/all`|Erase all of the knowledgebase as well as files|
-|`http://hostname/delete/id/<id>`|Delete a specific Artifact by ID|
+| Endpoint | Method | Description|
+|----------|-|------------|
+| `http://hostname/list` | GET | Returns ALL of the artifacts in the knowledgebase as a JSON document|
+| `http://hostname/list/category/<category>`| GET | Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
+| `http://hostname/list/tags/<tags>`| GET | Returns artifacts in the knowledgebase as a JSON document which are of the requested tags|
+| `http://hostname/export/all`| GET | Export ALL the data (including files) from the knowledgebase|
+| `http://hostname/export/kb`| GET | Export JUST the data from the knowledgebase|
+| `http://hostname/add`| POST | Adds a new artifact to the knowledgebase|
+| `http://hostname/erase/db`| POST | Erase just the knowledgebase database|
+| `http://hostname/erase/all`| POST | Erase all of the knowledgebase as well as files|
+| `http://hostname/delete/id/<id>`| POST | Delete a specific Artifact by ID|
+| `http://hostname/delete/ids/<id,id,id>`| POST | Delete specific Artifacts by ID|
 
 ## Things to be aware of
 

@@ -213,7 +213,7 @@ def deleteItemByName(title = ''):
         return (make_response(jsonify({'Deleted': title}), 200))
 
 
-@app.route('/export/kb/data', methods=['GET'])
+@app.route('/export/data', methods=['GET'])
 def exportKnowledgebaseDATA():
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms=dict()
@@ -228,7 +228,7 @@ def exportKnowledgebaseDATA():
                     mimetype='application/gzip'
             )
         
-@app.route('/export/kb/all', methods=['GET'])
+@app.route('/export/all', methods=['GET'])
 def exportKnowledgebaseALL():
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms=dict()

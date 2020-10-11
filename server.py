@@ -166,7 +166,7 @@ def eraseDB(component = 'all'):
 
     results = erase(erase_what, config=DEFAULT_CONFIG)
 
-    if results == "404":
+    if results == -404:
         return (make_response(jsonify({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
 
     else:
@@ -178,11 +178,11 @@ def eraseDB(component = 'all'):
 def deleteItemByID(id = ''):
     parameters["id"] = id 
     results = delete(parameters, config=DEFAULT_CONFIG)
-    if results == "404":
+    if results == -404:
         return (make_response(jsonify({'Error': 'There is no artifact with that ID, please specify a correct artifact ID'}), 404))
-    if results == "301Multi":
+    if results == -301:
             return (make_response(jsonify({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
-    if results == "301None":
+    if results == -302:
             return (make_response(jsonify({'Error': 'There are no artifacts with that title, please specify a title'}), 301))
     return (make_response(jsonify({'Deleted': results}), 200))
 
@@ -208,7 +208,7 @@ def deleteItemsByID(ids = ''):
 def deleteItemByName(title = ''):
     parameters["title"] = title 
     results = delete(parameters, config=DEFAULT_CONFIG)
-    if results == "404":
+    if results == -404:
         return (make_response(jsonify({'Error': 'There are no artifacts with that title'}), 404))
     else:
         return (make_response(jsonify({'Deleted': title}), 200))

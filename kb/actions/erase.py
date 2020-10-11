@@ -33,13 +33,13 @@ def erase_kb(erase_what, config: Dict[str, str]):
             try:
                 fs.remove_file(config["PATH_KB_DB"])
                 fs.remove_file(config["PATH_KB_HIST"])
-                response = 200
+                response = -200
             except FileNotFoundError:
-                response= 404
+                response= -404
     else:
             try:
                 fs.remove_directory(config["PATH_KB"])
-                response = 200
+                response = -200
             except FileNotFoundError:
-                response = 404
+                response = -404
     return(response)

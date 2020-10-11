@@ -71,7 +71,7 @@ def delete_by_id(id: int, config: Dict[str, str],db_id):
         artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
     artifact = db.get_artifact_by_id(conn, artifact_id)
     if not artifact:
-        return "404"
+        return -404
     db.delete_artifact_by_id(conn, artifact_id)
     category_path = Path(config["PATH_KB_DATA"], artifact.category)
 
@@ -82,7 +82,7 @@ def delete_by_id(id: int, config: Dict[str, str],db_id):
     if fs.count_files(category_path) == 0:
         fs.remove_directory(category_path)
 
-    return(str(id))
+    return(id)
 
 
 def delete_by_name(title: str, category: str, config: Dict[str, str]):
@@ -106,8 +106,8 @@ def delete_by_name(title: str, category: str, config: Dict[str, str]):
     if len(artifacts) == 1:
         artifact = artifacts.pop()
         db.delete_artifact_by_id(conn, artifact.id)
-        return "200"
+        return -200
     elif len(artifacts) > 1:
-        return("301Multi")
+        return(-301)
     else:
-        return("301None")
+        return(-302)

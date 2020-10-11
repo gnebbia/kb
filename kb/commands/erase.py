@@ -36,13 +36,13 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
             "Are you sure you want to erase the kb database ? [YES/NO]")
         if answer.lower() == "yes":
             response = erase_kb("db",config)
-            if response == 200:
+            if response == -200:
                 print("kb database deleted successfully!")
     else:
         answer = input(
             "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]")
         if answer.lower() == "yes":
             response = erase_kb("all",config)
-            if response == 200:
+            if response == -200:
                 print("kb knowledge base deleted successfully!")
     

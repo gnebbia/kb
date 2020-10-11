@@ -31,7 +31,7 @@ def export(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-    fname=export_kb(args, config=config)
+    fname = export_kb(args, config=config)
 
     return(fname)
     

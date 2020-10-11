@@ -16,8 +16,11 @@ sys.path.append('kb')
 
 import io
 
-# Use the flask framework
+# Use the flask framework, as well as the authentication framework
 from flask import Flask, jsonify, abort, make_response, request,send_file
+from flask_httpauth import HTTPBasicAuth
+auth = HTTPBasicAuth()
+
 
 # Import the API functions
 from kb.api.search import search
@@ -106,7 +109,25 @@ def constructResponse(results):
 
 """
 
+"""
+    Security framework 
+"""
+@auth.get_password
+def get_password(username):
+    if username == 'kbuser':
+        return 'kbuser'
+    return None
+
+@auth.error_handler
+def unauthorized():
+    return make_response(jsonify({'Error': 'Unauthorized access'}), 401)
+"""
+    Security framework 
+"""
+
+
 @app.route('/list', methods=['GET'])
+@auth.login_required
 def getAll():
     results = search(parameters, config=DEFAULT_CONFIG)    
     if len(results) == 0:
@@ -117,6 +138,7 @@ def getAll():
         
 
 @app.route('/list/category/<category>', methods=['GET'])
+@auth.login_required
 def getCategory(category = ''):
 
     parameters["category"]=category
@@ -128,6 +150,7 @@ def getCategory(category = ''):
         return (make_response(jsonify({'Knowledge': constructResponse(results)}), 200))
 
 @app.route('/list/tags/<tags>', methods=['GET'])
+@auth.login_required
 def getTags(tags = ''):
     parameters["tags"]=tags
     results = search( parameters, config=DEFAULT_CONFIG)
@@ -138,6 +161,7 @@ def getTags(tags = ''):
 
 
 @app.route('/add', methods=['POST'])
+@auth.login_required
 def addItem():
     parameters["title"] = request.form.get("title","")
     parameters["category"] = request.form.get("category","")
@@ -156,6 +180,7 @@ def addItem():
 
 
 @app.route('/erase/<component>', methods=['POST'])
+@auth.login_required
 def eraseDB(component = 'all'):
     if component == 'db':
         erase_what = "db"
@@ -175,6 +200,7 @@ def eraseDB(component = 'all'):
 
 
 @app.route('/delete/id/<id>', methods=['POST'])
+@auth.login_required
 def deleteItemByID(id = ''):
     parameters["id"] = id 
     results = delete(parameters, config=DEFAULT_CONFIG)
@@ -188,6 +214,7 @@ def deleteItemByID(id = ''):
 
 
 @app.route('/delete/ids/<ids>', methods=['POST'])
+@auth.login_required
 def deleteItemsByID(ids = ''):
     deleted = []      
     list_of_IDs = ids.split(",")
@@ -205,6 +232,7 @@ def deleteItemsByID(ids = ''):
         return (make_response(jsonify({'Deleted': 'All artifacts were deleted: '+ ', '.join(deleted)}), 200))
      
 @app.route('/delete/name/<title>', methods=['POST'])
+@auth.login_required
 def deleteItemByName(title = ''):
     parameters["title"] = title 
     results = delete(parameters, config=DEFAULT_CONFIG)
@@ -215,6 +243,7 @@ def deleteItemByName(title = ''):
 
 
 @app.route('/export/data', methods=['GET'])
+@auth.login_required
 def exportKnowledgebaseDATA():
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms = dict()
@@ -230,6 +259,7 @@ def exportKnowledgebaseDATA():
             )
         
 @app.route('/export/all', methods=['GET'])
+@auth.login_required
 def exportKnowledgebaseALL():
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms = dict()

@@ -35,6 +35,36 @@ once the image is built, it can be run with:
 
 `docker run -p 5000:5000 -ti kb_kb  sh -c "sh"`
 
+## Security
+
+The server is protected by a small security framework which required login details to be passed in each call (as per REST convention).
+In this initial release, there is a simple user defined: `kbuser`  with a password of `kbuser`. This will be expanded in future releases.
+
+In order to use the server, some examples would be:
+
+```curl 
+curl --location --request GET 'http://localhost:5000//list' --header 'Authorization: Basic a2J1c2VyOmtidXNlcg=='
+``` 
+
+Note that the **a2J1c2VyOmtidXNlcg==** indicates the credentials for **kbuser/kbuser**
+
+an alternative curl call would be :
+```curl
+curl -u miguel:python -i http://localhost:5000/list
+```
+An Python example using  the well-known Requests library:
+
+```python
+import requests
+url = "http://localhost:5000//list"
+payload = {}
+headers = {
+  'Authorization': 'Basic a2J1c2VyOmtidXNlcg=='
+}
+response = requests.request("GET", url, headers=headers, data = payload)
+print(response.text.encode('utf8'))
+
+```
 
 
 ## Endpoints

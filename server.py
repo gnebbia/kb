@@ -199,7 +199,7 @@ def deleteItemsByID(ids = ''):
 
     if len(deleted) == 0:
         return (make_response(jsonify({'Error': 'There are no artifacts with any of those IDs'}), 404))
-    if len(deleted) != len(listofIDs):
+    if len(deleted) != len(list_of_IDs):
         return (make_response(jsonify({'Error': 'These are the only artifacts that were deleted: '+ ', '.join(deleted)}), 200))
     else:
         return (make_response(jsonify({'Deleted': 'All artifacts were deleted: '+ ', '.join(deleted)}), 200))

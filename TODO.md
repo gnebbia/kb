@@ -16,6 +16,8 @@ No guarantees can be given that a specific feature will be included in a release
 
 # Later Releases:
 
+- Include security checking and auto updates (dependabot)
+- Consider future of recent.hist file
 - Full test suite
 - Find a way to include complex artifacts
 - Write installation procedure for Windows (choco and scoop)

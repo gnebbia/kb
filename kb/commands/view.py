@@ -63,6 +63,16 @@ def view(args: Dict[str, str], config: Dict[str, str]):
             config,
             args["editor"],
             color_mode)
+    elif args["nameid"]:
+        if args["nameid"].isdigit():
+            view_by_id(args["nameid"], config, args["editor"], color_mode)
+        else:
+            view_by_name(
+                args["nameid"],
+                args["category"],
+                config,
+                args["editor"],
+                color_mode)
 
 
 def view_by_id(id: int,

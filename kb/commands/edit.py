@@ -47,6 +47,16 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
     elif args["title"]:
         edit_by_name(args["title"], args["category"], config)
 
+    # else try to guess
+    elif args["nameid"]:
+        if args["nameid"].isdigit():
+            edit_by_id(args["nameid"], config)
+        else:
+            edit_by_name(args["nameid"], args["category"], config)
+
+
+
+
 
 def edit_by_id(id: int, config: Dict[str, str]):
     """

@@ -23,12 +23,12 @@ Version: 0.1.4
 
 ## Table of Contents
 
-   * [PURPOSE](#purpose)
-   * [INSTALLATION](#installation)
-      * [INSTALLATION WITH HOMEBREW](#installation-with-homebrew)
-      * [NOTES FOR WINDOWS USERS](#notes-for-windows-users)
-   * [DOCKER](#docker)
-   * [USAGE](#usage)
+   * [Purpose](#purpose)
+   * [Installation](#installation)
+      * [Installation with homebrew](#installation-with-homebrew)
+      * [Notes for Windows users](#notes-for-windows-users)
+   * [Docker](#docker)
+   * [Usage](#usage)
       * [List artifacts](#list-artifacts)
          * [List all artifacts contained in the kb knowledge base](#list-all-artifacts-contained-in-the-kb-knowledge-base)
          * [List all artifacts containing the string "zip"](#list-all-artifacts-containing-the-string-zip)
@@ -136,9 +136,9 @@ also set the following kb bash aliases:
 ```sh
 cat <<EOF > ~/.kb_alias
 alias kbl="kb list"
-alias kbe="kb edit --id"
+alias kbe="kb edit"
 alias kba="kb add"
-alias kbv="kb view --id"
+alias kbv="kb view"
 alias kbd="kb delete --id"
 alias kbg="kb grep"
 alias kbt="kb list --tags"

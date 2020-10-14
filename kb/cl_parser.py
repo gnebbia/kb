@@ -118,6 +118,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
     # edit parser
     edit_parser.add_argument(
+        "nameid",
+        help="Title or ID of the artifact to edit",
+        type=str,
+        nargs="?",
+    )
+    edit_parser.add_argument(
         "-i", "--id",
         help="ID of the artifact to edit",
         type=str,
@@ -203,6 +209,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
 
     # view parser
+    view_parser.add_argument(
+        "nameid",
+        help="Title or ID of the artifact to view",
+        type=str,
+        nargs="?",
+    )
     view_parser.add_argument(
         "-i", "--id",
         help="ID of the artifact to visualize",

@@ -337,6 +337,8 @@ kb delete --title zap --category cheatsheet
 kb view --id 3
 # or
 kb view -i 3
+# or 
+kb view 3
 
 # or if aliases are used:
 kbv 3
@@ -348,6 +350,8 @@ kbv 3
 kb view --title "gobuster"
 # or
 kb view -t "gobuster"
+# or
+kb view gobuster
 ```
 ![](img/kb_view_title.gif)
 
@@ -378,7 +382,8 @@ variable.
 #### Edit an artifact by id
 ```sh
 kb edit --id 13
-
+# or
+kbe 13
 # or if aliases are used:
 kbe 13 
 ```
@@ -389,6 +394,8 @@ kbe 13
 kb edit --title "git" --category "cheatsheet"
 # or
 kb edit -t "git" -c "cheatsheet"
+# or if git is unique as artifact
+kb edit git
 ```
 
 ### Grep through artifacts

@@ -16,19 +16,19 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-09-29
+Date: 2020-10-16
 
-Version: 0.1.4
+Version: 0.1.5
 
 
 ## Table of Contents
 
-   * [PURPOSE](#purpose)
-   * [INSTALLATION](#installation)
-      * [INSTALLATION WITH HOMEBREW](#installation-with-homebrew)
-      * [NOTES FOR WINDOWS USERS](#notes-for-windows-users)
-   * [DOCKER](#docker)
-   * [USAGE](#usage)
+   * [Purpose](#purpose)
+   * [Installation](#installation)
+      * [Installation with homebrew](#installation-with-homebrew)
+      * [Notes for Windows users](#notes-for-windows-users)
+   * [Docker](#docker)
+   * [Usage](#usage)
       * [List artifacts](#list-artifacts)
          * [List all artifacts contained in the kb knowledge base](#list-all-artifacts-contained-in-the-kb-knowledge-base)
          * [List all artifacts containing the string "zip"](#list-all-artifacts-containing-the-string-zip)
@@ -136,9 +136,9 @@ also set the following kb bash aliases:
 ```sh
 cat <<EOF > ~/.kb_alias
 alias kbl="kb list"
-alias kbe="kb edit --id"
+alias kbe="kb edit"
 alias kba="kb add"
-alias kbv="kb view --id"
+alias kbv="kb view"
 alias kbd="kb delete --id"
 alias kbg="kb grep"
 alias kbt="kb list --tags"
@@ -337,6 +337,8 @@ kb delete --title zap --category cheatsheet
 kb view --id 3
 # or
 kb view -i 3
+# or 
+kb view 3
 
 # or if aliases are used:
 kbv 3
@@ -348,6 +350,8 @@ kbv 3
 kb view --title "gobuster"
 # or
 kb view -t "gobuster"
+# or
+kb view gobuster
 ```
 ![](img/kb_view_title.gif)
 
@@ -378,7 +382,8 @@ variable.
 #### Edit an artifact by id
 ```sh
 kb edit --id 13
-
+# or
+kbe 13
 # or if aliases are used:
 kbe 13 
 ```
@@ -389,6 +394,8 @@ kbe 13
 kb edit --title "git" --category "cheatsheet"
 # or
 kb edit -t "git" -c "cheatsheet"
+# or if git is unique as artifact
+kb edit git
 ```
 
 ### Grep through artifacts

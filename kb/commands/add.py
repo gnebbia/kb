@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.4
+# kb v0.1.5
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -88,7 +88,5 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     config["EDITOR"]) + [f]
                 call(shell_cmd)
                 args["temp_file"] = f
-
                 result = add_artifact(conn,args,config)
         return(result)
-  

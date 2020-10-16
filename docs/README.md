@@ -9,12 +9,12 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-09-22
+Date: 2020-10-16
 
-Version: 0.1.4
+Version: 0.1.5
 
 
-## PURPOSE
+## Purpose
 
 kb is a text-oriented minimalist command line knowledge base manager. kb
 can be considered a quick note collection and access tool oriented toward
@@ -49,7 +49,7 @@ In few words kb allows a user to quickly and efficiently:
 Basically, kb provides a clean text-based way to organize your knowledge.
 
 
-## INSTALLATION
+## Installation
 
 To install the most recent stable version of kb just type:
 ```sh
@@ -70,9 +70,9 @@ also set the following kb bash aliases:
 ```sh
 cat <<EOF > ~/.kb_alias
 alias kbl="kb list"
-alias kbe="kb edit --id"
+alias kbe="kb edit"
 alias kba="kb add"
-alias kbv="kb view --id"
+alias kbv="kb view"
 alias kbd="kb delete --id"
 alias kbg="kb grep"
 alias kbt="kb list --tags"
@@ -89,7 +89,7 @@ Please upgrade kb frequently by doing:
 pip install -U kb-manager
 ```
 
-## DOCKER
+## Docker
 
 A docker setup has been included to help with development.
 
@@ -107,7 +107,7 @@ To interact with the container, place (or symlink) the files on your host
 into the `./docker/data` directory, which can then be seen and used in
 the `/data` directory in the container.
 
-## USAGE
+## Usage
 
 A quick demo of a typical scenario using kb:
 
@@ -221,7 +221,8 @@ kb delete --title zap --category cheatsheet
 kb view --id 3
 # or
 kb view -i 3
-
+# or
+kb view 3
 # or if aliases are used:
 kbv 3
 ```
@@ -231,6 +232,8 @@ kbv 3
 kb view --title "gobuster"
 # or
 kb view -t "gobuster"
+# or
+kb view gobuster
 ```
 
 #### View an artifact without colors
@@ -258,7 +261,8 @@ variable.
 #### Edit an artifact by id
 ```sh
 kb edit --id 13
-
+# or
+kb edit 13
 # or if aliases are used:
 kbe 13 
 ```
@@ -268,6 +272,8 @@ kbe 13
 kb edit --title "git" --category "cheatsheet"
 # or
 kb edit -t "git" -c "cheatsheet"
+# or if git is a unique artifact
+kb edit git
 ```
 
 ### Grep through artifacts

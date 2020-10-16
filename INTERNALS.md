@@ -11,8 +11,8 @@ This section explains those return codes and their meaning. Note that this is in
 | Code | Description |
 |-------|-------|
 | -200 | The function was carried out successfully |
-| -301 | The function found more than one match for the criteeria |
-| -302 | The funcion was attempted, but could find no artifacts with the search criteria (does not include by ID) |
+| -301 | The function found more than one match for the criteria |    ** SHOULD BE USING 300 HERRE **
+| -302 | The funcion was attempted, but could find no artifacts with the search criteria (does not include by ID) | ** SHOULD BE USING 406 HERRE **
 | -404 | The function errored |
 
 
@@ -27,7 +27,8 @@ In general, the internal response codes descibed above relate to the API HTTP re
 | Code | Description |
 |-------|-------|
 | 200 | The function was carried out successfully |
-| 301 | The function found more than one match for the criteeria |
-| 302 | The funcion was attempted, but could find no artifacts with the search criteria (does not include by ID) |
+| 301 | The function found more than one match for the criteria |   ** SHOULD BE USING 300 HERRE **
+| 302 | The funcion was attempted, but could find no artifacts with the search criteria (does not include by ID) | ** SHOULD BE USING 406 HERRE **
 | 401 | Login credentials required |
 | 404 | The function errored |
+| 405 | Method not implemented

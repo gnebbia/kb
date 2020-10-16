@@ -46,6 +46,8 @@ def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
     """
 
 
+    response = -404
+
     # Check initialization
     initializer.init(config)
     # Get title for the new artifact
@@ -59,31 +61,31 @@ def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
     category_path.mkdir(parents=True, exist_ok=True)
     artifact_path = str(Path(category_path, title))
 
-    if args["body"]:
+    if 'body' in args:
         with open(artifact_path, "w+") as art_file:
             body = args["body"].replace("\\n", "\n")
             art_file.write(body)
-
-    elif args["temp_file"]:
+                
+    if 'temp_file' in args:
         for fname in args["temp_file"]:
             os.rename(fname,artifact_path)
             add_file_to_kb(conn, args, config, artifact_path)
 
-    elif args["file"]:
+    if 'file' in args:
         for fname in args["file"]:
             if fs.is_directory(fname):
                 continue
             add_file_to_kb(conn, args, config, fname)
 
-    else:
-        new_artifact = Artifact(
-            id=None, title=title, category=category,
-            path="{category}/{title}".format(category=category, title=title),
-            tags=args["tags"],
-            status=args["status"], author=args["author"])
-        id = db.insert_artifact(conn, new_artifact)
-        
-    return(id)
+    
+    new_artifact = Artifact(
+        id=None, title=title, category=category,
+        path="{category}/{title}".format(category=category, title=title),
+        tags=args["tags"],
+        status=args["status"], author=args["author"])
+    response = db.insert_artifact(conn, new_artifact)
+    print(response)
+    return(response)
 
 
 def add_file_to_kb(

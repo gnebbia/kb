@@ -28,6 +28,10 @@ from kb.api.add import add
 from kb.api.erase import erase
 from kb.api.delete import delete
 from kb.api.export import export
+from kb.api.ingest import ingest
+from kb import __version__
+
+from kb import db
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG 
@@ -38,6 +42,8 @@ from werkzeug.utils import secure_filename
 import urllib.request
 import tempfile
 import io
+import base64
+
 
 from pathlib import Path
 
@@ -77,7 +83,8 @@ parameters = dict(id="",
 
 def toJson(self):
     record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s""status":"%s""author":"%s","template":"%s"}' % (self.id,self.title,self.category,self.path,self.tags,self.status, self.author,self.template)
-    return record
+    
+    return str(record.replace('\\',''))
 
 
 """
@@ -124,6 +131,11 @@ def unauthorized():
 """
     Security framework 
 """
+
+@app.route('/version', methods=['GET'])
+@auth.login_required
+def return_version():
+    return (make_response(jsonify({'Version': str(__version__)})), 200)
 
 
 @app.route('/list', methods=['GET'])
@@ -173,6 +185,9 @@ def addItem():
     attachment = request.files['file']
     resp = add(args=parameters,config=DEFAULT_CONFIG,file=attachment)
     if resp is None:
+        return (make_response(jsonify({'Error': 'There was an issue adding the artifact'}), 404))
+
+    if resp  <= 0 :
         return (make_response(jsonify({'Error': 'There was an issue adding the artifact'}), 404))
     else:
         return (make_response(jsonify({'Added': resp}), 200))
@@ -242,6 +257,50 @@ def deleteItemByName(title = ''):
         return (make_response(jsonify({'Deleted': title}), 200))
 
 
+@app.route('/edit', methods=['GET','POST'])
+@app.route('/grep', methods=['GET'])
+@app.route('/template', methods=['GET','POST'])
+@app.route('/update', methods=['GET','POST'])
+@auth.login_required
+def methods_not_implemented():
+    response = make_response(jsonify({'Error': 'Method Not Allowed'}), 405)
+    response.allow=['add','delete','erase','export','search','version']
+    return(response)
+
+
+
+@app.route('/view/<id>', methods=['GET'])
+@auth.login_required
+def artifact(id):
+    parameters["id"] = id 
+    #results = delete(parameters, config=DEFAULT_CONFIG)
+    conn = db.create_connection(DEFAULT_CONFIG["PATH_KB_DB"])
+    artifact = db.get_artifact_by_id(conn, id)
+    # with tempfile.NamedTemporaryFile(delete=True) as f:
+    #    parms = dict()
+    #    parms["file"] = f.name
+    #    parms["only_data"] = "True" 
+    #    results = export(parms, config=DEFAULT_CONFIG)
+    #    with open(results, 'rb') as bites:
+    #        return send_file(
+    #                io.BytesIO(bites.read()),
+    #                as_attachment=True,
+    #                attachment_filename=results,
+    #                mimetype='application/gzip'
+    #        )
+    category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), str(artifact.category))
+    artifact_file = Path(str(category_path), str(artifact.title))
+
+    with open(artifact_file, "rb") as artifact_file:
+        encoded_string = base64.b64encode(artifact_file.read())
+
+  
+   
+    record = "{" + toJson(artifact)  + "{" + "content:" + str(encoded_string) + "}"
+    return (make_response(jsonify(record), 200))
+
+
+
 @app.route('/export/data', methods=['GET'])
 @auth.login_required
 def exportKnowledgebaseDATA():
@@ -273,6 +332,22 @@ def exportKnowledgebaseALL():
                     mimetype='application/gzip'
             )
 
+@app.route('/import', methods=['POST'])
+@auth.login_required
+def ingestKnowledgebase():
+        parms = dict()
+        print("here")
+        print (request.files)
+        file = request.files['f']
+
+        parms["file"] =  file.filename
+        print (parms["file"])
+        results = ingest(file,parms, config=DEFAULT_CONFIG)
+        if results == -200:
+            return (make_response(jsonify({'Imported': file.name}), 200))
+        if results == -415:
+           return (make_response(jsonify({'Error': file.name + " is not a valid kb export file."}), 415))
+     
 # Start the server
 if __name__ == '__main__':
     app.run(debug = DEBUG, host = '0.0.0.0', port = PORT)

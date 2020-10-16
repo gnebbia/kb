@@ -43,20 +43,20 @@ In this initial release, there is a simple user defined: `kbuser`  with a passwo
 In order to use the server, some examples would be:
 
 ```curl 
-curl --location --request GET 'http://localhost:5000//list' --header 'Authorization: Basic a2J1c2VyOmtidXNlcg=='
+curl --location --request GET 'http://<hostname>:5000//list' --header 'Authorization: Basic a2J1c2VyOmtidXNlcg=='
 ``` 
 
 Note that the **a2J1c2VyOmtidXNlcg==** indicates the credentials for **kbuser/kbuser**
 
 an alternative curl call would be :
 ```curl
-curl -u miguel:python -i http://localhost:5000/list
+curl -u kbuser:kbuser -i http://<hostname>:5000/list
 ```
-An Python example using  the well-known Requests library:
+A Python example using  the well-known Requests library:
 
 ```python
 import requests
-url = "http://localhost:5000//list"
+url = "http://<hostname>:5000//list"
 payload = {}
 headers = {
   'Authorization': 'Basic a2J1c2VyOmtidXNlcg=='
@@ -69,18 +69,20 @@ print(response.text.encode('utf8'))
 
 ## Endpoints
 
-| Endpoint | Method | Description|
-|----------|-|------------|
-| `http://hostname/list` | GET | Returns ALL of the artifacts in the knowledgebase as a JSON document|
-| `http://hostname/list/category/<category>`| GET | Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
-| `http://hostname/list/tags/<tags>`| GET | Returns artifacts in the knowledgebase as a JSON document which are of the requested tags|
-| `http://hostname/export/all`| GET | Export ALL the data (including files) from the knowledgebase|
-| `http://hostname/export/kb`| GET | Export JUST the data from the knowledgebase|
-| `http://hostname/add`| POST | Adds a new artifact to the knowledgebase|
-| `http://hostname/erase/db`| POST | Erase just the knowledgebase database|
-| `http://hostname/erase/all`| POST | Erase all of the knowledgebase as well as files|
-| `http://hostname/delete/id/<id>`| POST | Delete a specific Artifact by ID|
-| `http://hostname/delete/ids/<id,id,id>`| POST | Delete specific Artifacts by ID|
+| Endpoint                                    | Method | Description|
+|---------------------------------------------|-------|-------------|
+| `http://<hostname>/add`                     | POST | Adds a new artifact to the knowledgebase                                                       |
+| `http://<hostname>/delete/id/<id>`          | POST | Delete a specific Artifact by ID                                                               |
+| `http://<hostname>/delete/ids/<id,id,id>`   | POST | Delete specific Artifacts by ID                                                                |
+| `http://<hostname>/erase/db`                | POST | Erase just the knowledgebase database                                                          |
+| `http://<hostname>/erase/all`               | POST | Erase all of the knowledgebase as well as files                                                |
+| `http://<hostname>/export/all`              | GET  | Export ALL the data (including files) from the knowledgebase                                   |
+| `http://<hostname>/export/kb`               | GET  | Export JUST the data from the knowledgebase                                                    |
+| `http://<hostname>/list`                    | GET  | Returns ALL of the artifacts in the knowledgebase as a JSON document                           |
+| `http://<hostname>/list/category/<category>`| GET  | Returns artifacts in the knowledgebase as a JSON document which are of the requested category  |
+| `http://<hostname>/list/tags/<tags>`        | GET  | Returns artifacts in the knowledgebase as a JSON document which are of the requested tags      |
+| `http://<hostname>/version`                 | GET  | Returns the version of the kb software in use                                                  |
+
 
 ## Things to be aware of
 

@@ -21,7 +21,7 @@ Most of these return codes are presented to the API in the form of an HTTP respo
 
 # HTTP Response Codes #
 
-In general, the internal response codes descibed above relate to the API HTTP response codes (described below) however, some codes have additional information added to them in the description. These descriptions differ according to the function (they are documented separately).
+In general, the internal response codes described above relate to the API HTTP response codes (described below) however, some codes have additional information added to them in the description. These descriptions differ according to the function (they are documented separately).
 
 |-------|-------|
 | Code | Description |

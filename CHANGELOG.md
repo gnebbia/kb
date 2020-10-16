@@ -29,8 +29,10 @@
     * Added templates
     * Added schema migration logic
     * Updated docs with a TOC
-Draft 0.1.5
+0.1.5
     * Solved minor bug related to viewing certain escape sequences
+    * Added strings helping users for some exceptions
     * Implemented a faster edit/view functionality by guessing input id/title
     * Updated bash shortcuts
+    * Updated Documentation
 

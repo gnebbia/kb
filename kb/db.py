@@ -163,6 +163,7 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         cur.execute(sql, args)
 
     conn.commit()
+    return(last_artifact_id)
 
 def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     """
@@ -225,7 +226,6 @@ def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
     cur = conn.cursor()
     sql_query = "DELETE FROM artifacts WHERE id = ?"
-
     cur.execute(sql_query, [artifact_id])
     conn.commit()
 

@@ -1,34 +1,40 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
 
 """
-kb export command module
+kb import action  module
 
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
 
-import time
 import tarfile
 from pathlib import Path
 from typing import Dict
-from kb.actions.export import export_kb
+import kb.filesystem as fs
 
 
-def export(args: Dict[str, str], config: Dict[str, str]):
+def ingest_kb(args: Dict[str, str], config: Dict[str, str]):
     """
-    Export the entire kb knowledge base.
+    Import an entire kb knowledge base.
 
     Arguments:
     args:           - a dictionary containing the following fields:
-                      file -> a string representing the wished output
-                        filename
+                      file -> a string representing the path to the archive
+                        to be imported
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-
-    return (export_kb(args, config=config))
+    print (args["file"])
+    try:
+        fs.remove_directory(config["PATH_KB"])
+    except FileNotFoundError:
+        pass
+    tar = tarfile.open(args["file"], "r:gz")
+    tar.extractall(Path.home())
+    tar.close()
+    return -200   

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -39,22 +39,12 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_DATA      - the data directory of KB
                       PATH_KB_HIST      - the history menu path of KB
-    db_id:          - True if this is a raw DB id, 
-                      False if this is a viewed artifact IDs
     """
     initializer.init(config)
 
-    response = delete_artifacts(args, config,False)
+    response = delete_artifacts(args, config,True)
 
-    if response == -200:
-        if 'id' in args:
-            print("Artifact {id} removed!".format(args["id"]))
-        else:
-            print("Artifact {category}/{title} removed!".format(args["category"], args["title"]))
-    
-    if response == -301:
-        print("There is more than one artifact with that title, please specify a category")
-    
-    if response == -302:
-        print("There is no artifact with that name, please specify a correct artifact name")
+    return response
 
+
+  

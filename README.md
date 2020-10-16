@@ -198,10 +198,10 @@ A docker setup has been included to help with development.
 To install and start the project with docker:
 ```sh
 docker-compose up -d
-docker-compose exec kb bash
+docker-compose exec kb ash
 ```
 
-The container has the aliases included in its `.bashrc` so you can use
+The container has the aliases included in its `.profile` so you can use
 kb in the running container as you would if you installed it on the
 host directly.  The `./docker/data` directory on the host is bound to
 `/data` in the container, which is the image's working directly also.

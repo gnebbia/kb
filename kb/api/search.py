@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.3
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
+
 
 """
 kb search command module
@@ -11,19 +12,17 @@ kb search command module
 :License: GPLv3 (see /LICENSE).
 """
 
-from typing import Dict
-import kb.db as db
-import kb.initializer as initializer
-import kb.printer.search as printer
-import kb.history as history
-from kb.actions.search import search_kb
 import sys
 sys.path.append('kb')
+
+from typing import Dict
+from kb.actions.search import search_kb
+import kb.history as history
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
     """
-    Search artifacts within the knowledge base of kb and display the output on the terminal.
+    Search artifacts within the knowledge base of kb to return to the API.
 
     Arguments:
     args:           - a dictionary containing the following fields:
@@ -41,13 +40,6 @@ def search(args: Dict[str, str], config: Dict[str, str]):
     """
  
     artifacts = search_kb( args, config)   
-    
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)
-
-    # Print resulting list
-    color_mode = not args["no_color"]
-    if args["verbose"]:
-        printer.print_search_result_verbose(artifacts, color_mode)
-    else:
-        printer.print_search_result(artifacts, color_mode)
+    return artifacts

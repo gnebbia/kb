@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.4
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -18,6 +18,7 @@ from typing import Dict
 from kb.actions.export import export_kb
 
 
+
 def export(args: Dict[str, str], config: Dict[str, str]):
     """
     Export the entire kb knowledge base.
@@ -30,5 +31,7 @@ def export(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
+    fname = export_kb(args, config=config)
 
-    return (export_kb(args, config=config))
+    return(fname)
+    

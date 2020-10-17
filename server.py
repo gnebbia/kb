@@ -106,12 +106,12 @@ def constructResponse(results):
     for result in results:
         response = response + toJson(result) + ','
 
-    response =  response[:-1] + ']'
+    response = response[:-1] + ']'
     return response
 
 # -----------------------------------------------
 """
-    Application router for server functions 
+    Application router for server functions
     Arguments:
         Variable
 
@@ -133,7 +133,7 @@ def get_password(username):
 def unauthorized():
     return make_response(({'Error': 'Unauthorized access'}), 401)
 """
-    Security framework 
+    Security framework
 """
 
 @app.route('/version', methods=['GET'])
@@ -144,7 +144,7 @@ def return_version():
 
 @app.route('/list', methods=['GET'])
 @auth.login_required
-def getAll():
+def get_all():
     results = search(parameters, config=DEFAULT_CONFIG)    
     if len(results) == 0:
         return (make_response(({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
@@ -155,7 +155,7 @@ def getAll():
 
 @app.route('/list/category/<category>', methods=['GET'])
 @auth.login_required
-def getCategory(category = ''):
+def get_category(category = ''):
 
     parameters["category"]=category
 
@@ -167,7 +167,7 @@ def getCategory(category = ''):
 
 @app.route('/list/tags/<tags>', methods=['GET'])
 @auth.login_required
-def getTags(tags = ''):
+def get_tags(tags = ''):
     parameters["tags"]=tags
     results = search( parameters, config=DEFAULT_CONFIG)
     if len(results) == 0:
@@ -178,7 +178,7 @@ def getTags(tags = ''):
 
 @app.route('/add', methods=['POST'])
 @auth.login_required
-def addItem():
+def add_item():
     parameters["title"] = request.form.get("title","")
     parameters["category"] = request.form.get("category","")
     parameters["author"]= request.form.get("author","")
@@ -200,41 +200,47 @@ def addItem():
 
 @app.route('/erase/<string:component>', methods=['POST'])
 @auth.login_required
-def eraseDB(component = 'all'):
-    if component == 'db':
-        erase_what = "db"
-        erase_what_text = "database"
+def erase_db(component='all'):
+    component = component.lower()
+    print(component)
+    if component == 'db' or component == 'all':
+        if component == 'db':
+            erase_what = "db"
+            erase_what_text = "database"
+        else:
+            erase_what = "all"
+            erase_what_text = "whole knowledgebase"
+        # VALIDATE all/db and issue error messgage if not there
+        results = erase(erase_what, config=DEFAULT_CONFIG)
+
+        if results == -404:
+            return (make_response(({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
+
+        else:
+            return (make_response(({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200))
     else:
-        erase_what = "all"
-        erase_what_text = "whole knowledgebase"
-    # VALIDATE all/db and issue error messgage if not there
-    results = erase(erase_what, config=DEFAULT_CONFIG)
-
-    if results == -404:
-        return (make_response(({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
-
-    else:
-        return (make_response(({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200))
-
+        response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
+        response.allow = ['all', 'db']
+        return response
 
 
 @app.route('/delete/id/<id>', methods=['POST'])
 @auth.login_required
-def deleteItemByID(id = ''):
-    parameters["id"] = id 
+def delete_item_by_ID(id=''):
+    parameters["id"] = id
     results = delete(parameters, config=DEFAULT_CONFIG)
     if results == -404:
         return (make_response(({'Error': 'There is no artifact with that ID, please specify a correct artifact ID'}), 404))
     if results == -301:
-            return (make_response(({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
+        return (make_response(({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
     if results == -302:
-            return (make_response(({'Error': 'There are no artifacts with that title, please specify a title'}), 301))
+        return (make_response(({'Error': 'There are no artifacts with that title, please specify a title'}), 301))
     return (make_response(({'Deleted': results}), 200))
 
 
 @app.route('/delete/ids/<ids>', methods=['POST'])
 @auth.login_required
-def deleteItemsByID(ids = ''):
+def delete_items_by_ID(ids = ''):
     deleted = []      
     list_of_IDs = ids.split(",")
     for item in list_of_IDs:
@@ -252,7 +258,7 @@ def deleteItemsByID(ids = ''):
      
 @app.route('/delete/name/<title>', methods=['POST'])
 @auth.login_required
-def deleteItemByName(title = ''):
+def delete_item_by_name(title = ''):
     parameters["title"] = title 
     results = delete(parameters, config=DEFAULT_CONFIG)
     if results == -404:
@@ -304,7 +310,7 @@ def view_artifact_by_name(category,title):
         
 @app.route('/export/all', methods=['GET'])
 @auth.login_required
-def exportKnowledgebaseALL():
+def export_kb_all():
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms = dict()
         parms["file"] = f.name
@@ -317,7 +323,7 @@ def exportKnowledgebaseALL():
 
 @app.route('/export/data', methods=['GET'])
 @auth.login_required
-def exportKnowledgebaseDATA():
+def export_kb_data():
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms = dict()
         parms["file"] = f.name
@@ -332,7 +338,7 @@ def exportKnowledgebaseDATA():
 
 @app.route('/import', methods=['POST'])
 @auth.login_required
-def ingestKnowledgebase():
+def ingest_kb():
         parms = dict()
         print("here")
         print (request.files)

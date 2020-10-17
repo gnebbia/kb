@@ -88,5 +88,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     config["EDITOR"]) + [f]
                 call(shell_cmd)
                 args["temp_file"] = f
-                result = add_artifact(conn,args,config)
+
+        result = add_artifact(conn,args,config)
         return(result)
+  

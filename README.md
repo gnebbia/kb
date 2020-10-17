@@ -147,6 +147,23 @@ echo "source ~/.kb_alias" >> ~/.bashrc
 source ~/.kb_alias
 ```
 
+Windows user can set aliases as following:
+
+1. Run `regedit` and navigate to the key HKEY_LOCAL_MACHINE\Software\Microsoft\Command Processor
+2. Create a new string key named `AutoRun` and give it the value `%USERPROFILE%\autorun.cmd`
+3. Create a file `autorun.cmd` and add the following lines:
+
+```sh
+doskey kbl=kb list
+doskey kbe=kb edit
+doskey kba=kb add
+doskey kbv=kb view
+doskey kbd=kb delete --id
+doskey kbg=kb grep
+doskey kbt=kb list --tags
+```
+
+
 Please remember to upgrade kb frequently by doing:
 ```sh
 pip install -U kb-manager

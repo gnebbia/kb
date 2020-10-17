@@ -151,7 +151,7 @@ Windows user can set aliases as following:
 
 1. Run `regedit` and navigate to the key HKEY_LOCAL_MACHINE\Software\Microsoft\Command Processor
 2. Create a new string key named `AutoRun` and give it the value `%USERPROFILE%\autorun.cmd`
-3. Create a file `autorun.cmd` and add the following lines:
+3. Create a file `autorun.cmd` in your user folder (run `echo %USERPROFILE%` if you are not sure which folder this is) and add the following lines:
 
 ```sh
 doskey kbl=kb list

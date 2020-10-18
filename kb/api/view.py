@@ -132,5 +132,5 @@ def toJson(self):
     record = '{ "id":%i, "title":"%s", "category":"%s", "path":"%s", \
             "tags":"%s", "status":"%s", "author":"%s", "template":"%s"}' \
             % (self.id, self.title, self.category, self.path,
-            self.tags, self.status, self.author, self.template)
+               self.tags, self.status, self.author, self.template)
     return record

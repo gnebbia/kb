@@ -5,17 +5,18 @@
 # See /LICENSE for licensing information.
 
 """
-kb erase API module 
+kb erase API module
 
 :Copyright: © 2020, alshapton.
 :License: GPLv3 (see /LICENSE).
 """
 import sys
-sys.path.append('kb')
+# sys.path.append('kb')
 
 from typing import Dict
 import kb.filesystem as fs
 from kb.actions.erase import erase_kb
+
 
 def erase(erase_what, config: Dict[str, str]):
     """
@@ -32,6 +33,6 @@ def erase(erase_what, config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
     """
 
-    response = erase_kb(erase_what,config)
-    
+    response = erase_kb(erase_what, config)
+
     return(response)

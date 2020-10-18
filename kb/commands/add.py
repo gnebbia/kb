@@ -11,7 +11,7 @@ kb add command module
 :License: GPLv3 (see /LICENSE).
 """
 import sys
-sys.path.append('kb')
+# sys.path.append('kb')
 
 import shlex
 import sys
@@ -27,6 +27,7 @@ from kb.actions.add import add_artifact
 from kb.actions.add import add_file_to_kb as add_file_to_kb
 
 import tempfile
+
 
 def add(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -76,8 +77,8 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         if not db.is_artifact_existing(conn, args["title"], args["category"]):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
-            #artifact_path = str(Path(category_path, title))
-            #if args["body"]:
+            # artifact_path = str(Path(category_path, title))
+            # if args["body"]:
             #    with open(artifact_path, "w+") as art_file:
             #        body = args["body"].replace("\\n", "\n")
             #        art_file.write(body)
@@ -89,6 +90,5 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                 call(shell_cmd)
                 args["temp_file"] = f
 
-        result = add_artifact(conn,args,config)
+        result = add_artifact(conn, args, config)
         return(result)
-  

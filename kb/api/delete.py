@@ -42,7 +42,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     """
     initializer.init(config)
 
-    response = delete_artifacts(args, config,True)
+    response = delete_artifacts(args, config, True)
 
     return response
 

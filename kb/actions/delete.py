@@ -20,7 +20,7 @@ import kb.history as history
 import kb.filesystem as fs
 
 
-def delete_artifacts(args: Dict[str, str], config: Dict[str, str],db_id):
+def delete_artifacts(args: Dict[str, str], config: Dict[str, str], db_id):
     """
     Delete a list of artifacts from the kb knowledge base.
 
@@ -35,20 +35,21 @@ def delete_artifacts(args: Dict[str, str], config: Dict[str, str],db_id):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_DATA      - the data directory of KB
                       PATH_KB_HIST      - the history menu path of KB
-    db_id:          - True if this is a raw DB id, 
+    db_id:          - True if this is a raw DB id,
                       False if this is a viewed artifact IDs
     """
     initializer.init(config)
-    results = "404"  # Need to standardise on -numbers 
-    
+    results = -404  # Need to standardise on -numbers
+
     if args["id"]:
-        results = delete_by_id(args["id"], config,db_id)
+        results = delete_by_id(args["id"], config, db_id)
 
     elif args["title"]:
         results = delete_by_name(args["title"], args["category"], config)
     return(results)
 
-def delete_by_id(id: int, config: Dict[str, str],db_id):
+
+def delete_by_id(id: int, config: Dict[str, str], db_id):
     """
     Delete an artifact by id.
 
@@ -61,13 +62,13 @@ def delete_by_id(id: int, config: Dict[str, str],db_id):
                       PATH_KB_DATA      - the data directory of KB
                       PATH_KB_HIST      - the history menu path of KB
                       EDITOR            - the editor program to call
-    db_id:          - True if this is a raw DB id, 
+    db_id:          - True if this is a raw DB id,
                       False if this is a viewed artifact IDs
     """
     conn = db.create_connection(config["PATH_KB_DB"])
-    
+
     artifact_id = id
-    if  db_id == False:
+    if db_id is False:
         artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
     artifact = db.get_artifact_by_id(conn, artifact_id)
     if not artifact:

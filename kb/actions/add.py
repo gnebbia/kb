@@ -25,8 +25,7 @@ import os
 from werkzeug.utils import secure_filename
 
 
-
-def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
+def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -44,7 +43,6 @@ def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
                       PATH_KB_DATA      - the data directory of KB
                       EDITOR            - the editor program to call
     """
-
 
     response = -404
 
@@ -65,10 +63,10 @@ def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
         with open(artifact_path, "w+") as art_file:
             body = args["body"].replace("\\n", "\n")
             art_file.write(body)
-                
+
     if 'temp_file' in args:
         for fname in args["temp_file"]:
-            os.rename(fname,artifact_path)
+            os.rename(fname, artifact_path)
             add_file_to_kb(conn, args, config, artifact_path)
 
     if 'file' in args:
@@ -77,7 +75,6 @@ def add_artifact(conn,args: Dict[str, str],config: Dict[str, str]):
                 continue
             add_file_to_kb(conn, args, config, fname)
 
-    
     new_artifact = Artifact(
         id=None, title=title, category=category,
         path="{category}/{title}".format(category=category, title=title),

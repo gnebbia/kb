@@ -18,7 +18,6 @@ from typing import Dict
 from kb.actions.export import export_kb
 
 
-
 def export(args: Dict[str, str], config: Dict[str, str]):
     """
     Export the entire kb knowledge base.
@@ -34,4 +33,3 @@ def export(args: Dict[str, str], config: Dict[str, str]):
     fname = export_kb(args, config=config)
 
     return(fname)
-    

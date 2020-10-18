@@ -11,7 +11,7 @@ kb add command module
 :License: GPLv3 (see /LICENSE).
 """
 import sys
-sys.path.append('kb')
+# sys.path.append('kb')
 
 import kb.db as db
 from pathlib import Path
@@ -30,8 +30,7 @@ import os
 from werkzeug.utils import secure_filename
 
 
-
-def add(args: Dict[str, str],config: Dict[str, str],file):
+def add(args: Dict[str, str], config: Dict[str, str], file):
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -52,7 +51,7 @@ def add(args: Dict[str, str],config: Dict[str, str],file):
 
     # If there is a file to add.....
 
-    if file :
+    if file:
         # Create "category" directory if it does not exist
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
         category_path.mkdir(parents=True, exist_ok=True)
@@ -61,11 +60,13 @@ def add(args: Dict[str, str],config: Dict[str, str],file):
         filename = secure_filename(file.filename)
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
         file.save(os.path.join(category_path, filename))
-        resp = jsonify({'message' : 'File successfully uploaded'})
+        print(os.path.join(category_path, filename))
+        print(os.path.join(category_path, args["title"]))
+        os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
+        resp = jsonify({'message': 'File successfully uploaded'})
         resp.status_code = 201
-    
-    conn = db.create_connection(config["PATH_KB_DB"])
-    
-    result = add_artifact(conn,args,DEFAULT_CONFIG)
-    return (result)
 
+    conn = db.create_connection(config["PATH_KB_DB"])
+
+    result = add_artifact(conn, args, DEFAULT_CONFIG)
+    return (result)

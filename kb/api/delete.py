@@ -12,7 +12,7 @@ kb delete command module
 """
 
 import sys
-sys.path.append('kb')
+# sys.path.append('kb')
 
 import sys
 from typing import Dict
@@ -22,6 +22,7 @@ import kb.initializer as initializer
 import kb.history as history
 import kb.filesystem as fs
 from kb.actions.delete import delete_artifacts
+from flask import make_response
 
 
 def delete(args: Dict[str, str], config: Dict[str, str]):
@@ -42,9 +43,14 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     """
     initializer.init(config)
 
-    response = delete_artifacts(args, config, True)
+    results = delete_artifacts(args, config, True)
 
+    if results == -404:
+        response = (make_response(({'Error': 'There is no artifact with that ID, please specify a correct artifact ID'}), 404))
+    if results == -301:
+        response = (make_response(({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
+    if results == -302:
+        response = (make_response(({'Error': 'There are no artifacts with that title, please specify a title'}), 302))
+    if results >= 0:
+        response = (make_response(({'Deleted': results}), 200))
     return response
-
-
-  

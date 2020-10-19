@@ -20,6 +20,8 @@ import base64
 import urllib.request
 from pathlib import Path
 from werkzeug.utils import secure_filename
+from werkzeug.routing import BaseConverter
+
 
 # Use the flask framework, as well as the authentication framework
 from flask import Flask, abort, make_response, request, send_file
@@ -41,10 +43,21 @@ from kb import __version__
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
 
+
+class ListConverter(BaseConverter):
+    """
+    Custom class to convert a list from a RESTful URL into a Python list
+    """
+    def to_python(self, value):
+        print(value)
+        return value.split(',')
+
+
 # Initialisation
 
 # Initiate the Flask app
 kbapi_app = Flask(__name__)
+kbapi_app.url_map.converters['list'] = ListConverter
 
 # Initiate the authentication framework
 auth = HTTPBasicAuth()
@@ -69,7 +82,6 @@ parameters = dict(id="", title="", category="", query="", tags="", author="", st
 
 def toJson(self):
     """
-
     This function converts an Artifact object to a Json document
 
     Arguments:
@@ -125,8 +137,8 @@ def unauthorized():
 @kbapi_app.route('/grep', methods=['GET'])
 @kbapi_app.route('/template', methods=['GET', 'POST'])
 @auth.login_required
-def methods_not_implemented():
-    response = make_response(({'Error': 'Method Not Allowed'}), 405)
+def methods_not_implemented_yet():
+    response = make_response(({'Error': 'Method Not Allowed Yet'}), 405)
     response.allow = ALLOWED_METHODS
     return(response)
 
@@ -151,26 +163,20 @@ def add_item():
         return (make_response(({'Added': resp}), 200))
 
 
-@kbapi_app.route('/delete/id/<id>', methods=['POST'])
+@kbapi_app.route('/delete/<int:id>', methods=['POST'])
 @auth.login_required
 def delete_item_by_ID(id=''):
     parameters["id"] = id
     results = delete(parameters, config=DEFAULT_CONFIG)
-    if results == -404:
-        return (make_response(({'Error': 'There is no artifact with that ID, please specify a correct artifact ID'}), 404))
-    if results == -301:
-        return (make_response(({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
-    if results == -302:
-        return (make_response(({'Error': 'There are no artifacts with that title, please specify a title'}), 301))
-    return (make_response(({'Deleted': results}), 200))
+    return (response)
 
 
-@kbapi_app.route('/delete/ids/<ids>', methods=['POST'])
+@kbapi_app.route('/delete/<list:ids>', methods=['POST'])
 @auth.login_required
 def delete_items_by_ID(ids=''):
     deleted = []
-    list_of_IDs = ids.split(",")
-    for item in list_of_IDs:
+    print(ids)
+    for item in ids:
         parameters["id"] = item
         results = delete(parameters, config=DEFAULT_CONFIG)
         if results == item:
@@ -183,15 +189,12 @@ def delete_items_by_ID(ids=''):
         return (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
 
 
-@kbapi_app.route('/delete/name/<title>', methods=['POST'])
+@kbapi_app.route('/delete/name/<string:title>', methods=['POST'])
 @auth.login_required
 def delete_item_by_name(title=''):
     parameters["title"] = title
     results = delete(parameters, config=DEFAULT_CONFIG)
-    if results == -404:
-        return (make_response(({'Error': 'There are no artifacts with that title'}), 404))
-    else:
-        return (make_response(({'Deleted': title}), 200))
+    return (results)
 
 
 @kbapi_app.route('/edit', methods=['GET'])
@@ -205,24 +208,8 @@ def methods_never_implemented():
 @kbapi_app.route('/erase/<string:component>', methods=['POST'])
 @auth.login_required
 def erase_db(component='all'):
-    component = component.lower()
-    if component == 'db' or component == 'all':
-        if component == 'db':
-            erase_what = "db"
-            erase_what_text = "database"
-        else:
-            erase_what = "all"
-            erase_what_text = "whole knowledgebase"
-        # VALIDATE all/db and issue error messgage if not there
-        results = erase(erase_what, config=DEFAULT_CONFIG)
-        if results == -404:
-            return (make_response(({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
-        else:
-            return (make_response(({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200))
-    else:
-        response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
-        response.allow = ['all', 'db']
-        return response
+    results = erase(component, config=DEFAULT_CONFIG)
+    return(results)
 
 
 @kbapi_app.route('/export/all', methods=['GET'])
@@ -232,10 +219,7 @@ def export_kb_all():
         parms = dict()
         parms["file"] = f.name
         results = export(parms, config=DEFAULT_CONFIG)
-        with open(results, "rb") as export_file:
-            encoded_string = base64.b64encode(export_file.read())
-        export_content = '{"Export":"' + str(encoded_string) + '"}'
-        return (make_response((export_content), 200))
+        return(results)
 
 
 @kbapi_app.route('/export/data', methods=['GET'])
@@ -246,10 +230,7 @@ def export_kb_data():
         parms["file"] = f.name
         parms["only_data"] = "True"
         results = export(parms, config=DEFAULT_CONFIG)
-        with open(results, "rb") as export_file:
-            encoded_string = base64.b64encode(export_file.read())
-        export_content = '{"Export":"' + str(encoded_string) + '"}'
-        return (make_response((export_content), 200))
+        return(results)
 
 
 @kbapi_app.route('/list', methods=['GET'])
@@ -258,6 +239,18 @@ def get_all():
     results = search(parameters, config=DEFAULT_CONFIG)
     if len(results) == 0:
         return (make_response(({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
+    else:
+        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+
+
+@kbapi_app.route('/list/<queries>', methods=['GET'])
+@auth.login_required
+def get_query(queries=''):
+    print(queries)
+    parameters["query"] = queries
+    results = search(parameters, config=DEFAULT_CONFIG)
+    if len(results) == 0:
+        return (make_response(({'Error': 'There are no matching artifacts.'}), 404))
     else:
         return (make_response(({'Knowledge': constructResponse(results)}), 200))
 

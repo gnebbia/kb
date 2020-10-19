@@ -18,12 +18,12 @@ import kb.filesystem as fs
 from kb.actions.erase import erase_kb
 
 
-def erase(erase_what, config: Dict[str, str]):
+def erase(component, config: Dict[str, str]):
     """
     Erase the entire kb knowledge base (or only the database).
 
     Arguments:
-    args:           - a string containing what it to be deleted
+    component:      - a string containing what it to be deleted
                       if "db" then only the database will be deleted
                       otherwise everything will be deleted
     config:         - a configuration dictionary containing at least
@@ -33,6 +33,22 @@ def erase(erase_what, config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
     """
 
-    response = erase_kb(erase_what, config)
+    component = component.lower()
+    if component == 'db' or component == 'all':
+        if component == 'db':
+            erase_what = "db"
+            erase_what_text = "database"
+        else:
+            erase_what = "all"
+            erase_what_text = "whole knowledgebase"
+        results = erase_kb(erase_what, config)
+        if results == -404:
+            response = make_response(({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404)
+        else:
+            response = make_response(({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200)
+    else:
+        response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
+        response.allow = ['all', 'db']
+    return response
 
-    return(response)
+

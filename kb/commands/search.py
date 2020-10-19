@@ -39,9 +39,9 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
                       EDITOR            - the editor program to call
     """
- 
-    artifacts = search_kb( args, config)   
-    
+
+    artifacts = search_kb(args, config)
+
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)
 

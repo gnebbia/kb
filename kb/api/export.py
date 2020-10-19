@@ -15,6 +15,9 @@ import time
 import tarfile
 from pathlib import Path
 from typing import Dict
+import tempfile
+import base64
+from flask import make_response
 from kb.actions.export import export_kb
 
 
@@ -32,4 +35,9 @@ def export(args: Dict[str, str], config: Dict[str, str]):
     """
     fname = export_kb(args, config=config)
 
-    return(fname)
+    with open(fname, "rb") as export_file:
+        encoded_string = base64.b64encode(export_file.read())
+    export_content = '{"Export":"' + str(encoded_string) + '"}'
+    resp = make_response((export_content), 200)
+
+    return(resp)

@@ -30,19 +30,18 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_HIST      - the history menu path of KB
     """
-    
+
     if args["db"]:
         answer = input(
             "Are you sure you want to erase the kb database ? [YES/NO]")
         if answer.lower() == "yes":
-            response = erase_kb("db",config)
+            response = erase_kb("db", config)
             if response == -200:
                 print("kb database deleted successfully!")
     else:
         answer = input(
             "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]")
         if answer.lower() == "yes":
-            response = erase_kb("all",config)
+            response = erase_kb("all", config)
             if response == -200:
                 print("kb knowledge base deleted successfully!")
-    

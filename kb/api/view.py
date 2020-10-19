@@ -40,7 +40,7 @@ def view_by_id(conn, id, DEFAULT_CONFIG):
     if id:
         artifact = get_artifact_by_id(conn, id)
         if artifact is None:
-            return (make_response(({'Error': 'There is no artifacts with the ID of ' + id}), 404))
+            return (make_response(({'Error': 'There is no artifact with the ID of ' + str(id)}), 404))
 
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), str(artifact.category))
         artifact_file = Path(str(category_path), str(artifact.title))

@@ -33,6 +33,7 @@ from kb.api.delete import delete
 from kb.api.export import export
 from kb.api.ingest import ingest
 from kb.api.search import search
+from kb.api.update import update
 from kb.api.view import view_by_id, view_by_title, view_by_name
 from kb import db
 from kb import __version__
@@ -52,6 +53,9 @@ auth = HTTPBasicAuth()
 DEBUG = True
 PORT = 5000
 HOST = '0.0.0.0'
+
+# Methods allowed:
+ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'search', 'update', 'version', 'view']
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
 # query -> filter for the title field of the artifact
@@ -118,44 +122,13 @@ def unauthorized():
 """
 
 
-@kbapi_app.route('/version', methods=['GET'])
+@kbapi_app.route('/grep', methods=['GET'])
+@kbapi_app.route('/template', methods=['GET', 'POST'])
 @auth.login_required
-def return_version():
-    return (make_response(({'Version': str(__version__)})), 200)
-
-
-@kbapi_app.route('/list', methods=['GET'])
-@auth.login_required
-def get_all():
-    results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
-    else:
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
-
-
-@kbapi_app.route('/list/category/<category>', methods=['GET'])
-@auth.login_required
-def get_category(category=''):
-
-    parameters["category"] = category
-
-    results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no artifacts with this category.'}), 404))
-    else:
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
-
-
-@kbapi_app.route('/list/tags/<tags>', methods=['GET'])
-@auth.login_required
-def get_tags(tags=''):
-    parameters["tags"] = tags
-    results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no artifacts with these tags.'}), 404))
-    else:
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+def methods_not_implemented():
+    response = make_response(({'Error': 'Method Not Allowed'}), 405)
+    response.allow = ALLOWED_METHODS
+    return(response)
 
 
 @kbapi_app.route('/add', methods=['POST'])
@@ -172,35 +145,10 @@ def add_item():
     resp = add(args=parameters, config=DEFAULT_CONFIG, file=attachment)
     if resp is None:
         return (make_response(({'Error': 'There was an issue adding the artifact'}), 404))
-
     if resp <= 0:
         return (make_response(({'Error': 'There was an issue adding the artifact'}), 404))
     else:
         return (make_response(({'Added': resp}), 200))
-
-
-@kbapi_app.route('/erase/<string:component>', methods=['POST'])
-@auth.login_required
-def erase_db(component='all'):
-    component = component.lower()
-    if component == 'db' or component == 'all':
-        if component == 'db':
-            erase_what = "db"
-            erase_what_text = "database"
-        else:
-            erase_what = "all"
-            erase_what_text = "whole knowledgebase"
-        # VALIDATE all/db and issue error messgage if not there
-        results = erase(erase_what, config=DEFAULT_CONFIG)
-
-        if results == -404:
-            return (make_response(({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
-        else:
-            return (make_response(({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200))
-    else:
-        response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
-        response.allow = ['all', 'db']
-        return response
 
 
 @kbapi_app.route('/delete/id/<id>', methods=['POST'])
@@ -227,7 +175,6 @@ def delete_items_by_ID(ids=''):
         results = delete(parameters, config=DEFAULT_CONFIG)
         if results == item:
             deleted.append(item)
-
     if len(deleted) == 0:
         return (make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404))
     if len(deleted) != len(list_of_IDs):
@@ -247,22 +194,115 @@ def delete_item_by_name(title=''):
         return (make_response(({'Deleted': title}), 200))
 
 
-@kbapi_app.route('/grep', methods=['GET'])
-@kbapi_app.route('/template', methods=['GET', 'POST'])
-@kbapi_app.route('/update', methods=['GET', 'POST'])
-@auth.login_required
-def methods_not_implemented():
-    response = make_response(({'Error': 'Method Not Allowed'}), 405)
-    response.allow = ['add', 'delete', 'erase', 'export', 'search', 'version', 'view']
-    return(response)
-
-
 @kbapi_app.route('/edit', methods=['GET'])
 @auth.login_required
 def methods_never_implemented():
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
-    response.allow = ['add', 'delete', 'erase', 'export', 'search', 'version', 'view']
+    response.allow = ALLOWED_METHODS
     return(response)
+
+
+@kbapi_app.route('/erase/<string:component>', methods=['POST'])
+@auth.login_required
+def erase_db(component='all'):
+    component = component.lower()
+    if component == 'db' or component == 'all':
+        if component == 'db':
+            erase_what = "db"
+            erase_what_text = "database"
+        else:
+            erase_what = "all"
+            erase_what_text = "whole knowledgebase"
+        # VALIDATE all/db and issue error messgage if not there
+        results = erase(erase_what, config=DEFAULT_CONFIG)
+        if results == -404:
+            return (make_response(({'Error': 'The ' + erase_what_text + ' has not been erased.'}), 404))
+        else:
+            return (make_response(({'OK': 'The ' + erase_what_text + ' has been erased.'}), 200))
+    else:
+        response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
+        response.allow = ['all', 'db']
+        return response
+
+
+@kbapi_app.route('/export/all', methods=['GET'])
+@auth.login_required
+def export_kb_all():
+    with tempfile.NamedTemporaryFile(delete=True) as f:
+        parms = dict()
+        parms["file"] = f.name
+        results = export(parms, config=DEFAULT_CONFIG)
+        with open(results, "rb") as export_file:
+            encoded_string = base64.b64encode(export_file.read())
+        export_content = '{"Export":"' + str(encoded_string) + '"}'
+        return (make_response((export_content), 200))
+
+
+@kbapi_app.route('/export/data', methods=['GET'])
+@auth.login_required
+def export_kb_data():
+    with tempfile.NamedTemporaryFile(delete=True) as f:
+        parms = dict()
+        parms["file"] = f.name
+        parms["only_data"] = "True"
+        results = export(parms, config=DEFAULT_CONFIG)
+        with open(results, "rb") as export_file:
+            encoded_string = base64.b64encode(export_file.read())
+        export_content = '{"Export":"' + str(encoded_string) + '"}'
+        return (make_response((export_content), 200))
+
+
+@kbapi_app.route('/list', methods=['GET'])
+@auth.login_required
+def get_all():
+    results = search(parameters, config=DEFAULT_CONFIG)
+    if len(results) == 0:
+        return (make_response(({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
+    else:
+        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+
+
+@kbapi_app.route('/list/category/<category>', methods=['GET'])
+@auth.login_required
+def get_category(category=''):
+    parameters["category"] = category
+    results = search(parameters, config=DEFAULT_CONFIG)
+    if len(results) == 0:
+        return (make_response(({'Error': 'There are no artifacts with this category.'}), 404))
+    else:
+        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+
+
+@kbapi_app.route('/list/tags/<tags>', methods=['GET'])
+@auth.login_required
+def get_tags(tags=''):
+    parameters["tags"] = tags
+    results = search(parameters, config=DEFAULT_CONFIG)
+    if len(results) == 0:
+        return (make_response(({'Error': 'There are no artifacts with these tags.'}), 404))
+    else:
+        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+
+
+@kbapi_app.route('/update/<int:id>', methods=['PUT'])
+@auth.login_required
+def update_artifact(id):
+    parameters["title"] = request.form.get("title", "")
+    parameters["category"] = request.form.get("category", "")
+    parameters["author"] = request.form.get("author", "")
+    parameters["status"] = request.form.get("status", "")
+    parameters["tags"] = request.form.get("tags", "")
+    parameters["file"] = ""
+    parameters["id"] = id
+    attachment = request.files['file']
+    resp = update(args=parameters, config=DEFAULT_CONFIG, attachment=attachment)
+    return(resp)
+
+
+@kbapi_app.route('/version', methods=['GET'])
+@auth.login_required
+def return_version():
+    return (make_response(({'Version': str(__version__)})), 200)
 
 
 @kbapi_app.route('/view/<int:id>', methods=['GET'])
@@ -286,35 +326,6 @@ def view_artifact_by_name(category, title):
     return (view_by_name(conn, title, category, DEFAULT_CONFIG))
 
 
-@kbapi_app.route('/export/all', methods=['GET'])
-@auth.login_required
-def export_kb_all():
-    with tempfile.NamedTemporaryFile(delete=True) as f:
-        parms = dict()
-        parms["file"] = f.name
-        results = export(parms, config=DEFAULT_CONFIG)
-        with open(results, "rb") as export_file:
-            encoded_string = base64.b64encode(export_file.read())
-
-        export_content = '{"Export":"' + str(encoded_string) + '"}"'
-        return (make_response((export_content), 200))
-
-
-@kbapi_app.route('/export/data', methods=['GET'])
-@auth.login_required
-def export_kb_data():
-    with tempfile.NamedTemporaryFile(delete=True) as f:
-        parms = dict()
-        parms["file"] = f.name
-        parms["only_data"] = "True"
-        results = export(parms, config=DEFAULT_CONFIG)
-        with open(results, "rb") as export_file:
-            encoded_string = base64.b64encode(export_file.read())
-
-        export_content = '{"Export":"' + str(encoded_string) + '"}"'
-        return (make_response((export_content), 200))
-
-
 @kbapi_app.route('/import', methods=['POST'])
 @auth.login_required
 def ingest_kb():
@@ -322,7 +333,6 @@ def ingest_kb():
     print("here")
     print(request.files)
     file = request.files['f']
-
     parms["file"] = file.filename
     print(parms["file"])
     results = ingest(file, parms, config=DEFAULT_CONFIG)

@@ -33,6 +33,7 @@ from kb.api.add import add
 from kb.api.erase import erase
 from kb.api.delete import delete
 from kb.api.export import export
+from kb.api.grep import grep
 from kb.api.ingest import ingest
 from kb.api.search import search
 from kb.api.update import update
@@ -57,7 +58,7 @@ class ListConverter(BaseConverter):
 
 # Initiate the Flask app
 kbapi_app = Flask(__name__)
-kbapi_app.url_map.converters['list'] = ListConverter
+kbapi_app.url_map.converters['list'] = ListConverter  # Add custom converter for lists
 
 # Initiate the authentication framework
 auth = HTTPBasicAuth()
@@ -134,7 +135,6 @@ def unauthorized():
 """
 
 
-@kbapi_app.route('/grep', methods=['GET'])
 @kbapi_app.route('/template', methods=['GET', 'POST'])
 @auth.login_required
 def methods_not_implemented_yet():
@@ -168,14 +168,13 @@ def add_item():
 def delete_item_by_ID(id=''):
     parameters["id"] = id
     results = delete(parameters, config=DEFAULT_CONFIG)
-    return (response)
+    return (results)
 
 
 @kbapi_app.route('/delete/<list:ids>', methods=['POST'])
 @auth.login_required
 def delete_items_by_ID(ids=''):
     deleted = []
-    print(ids)
     for item in ids:
         parameters["id"] = item
         results = delete(parameters, config=DEFAULT_CONFIG)
@@ -183,7 +182,7 @@ def delete_items_by_ID(ids=''):
             deleted.append(item)
     if len(deleted) == 0:
         return (make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404))
-    if len(deleted) != len(list_of_IDs):
+    if len(deleted) != len(ids):
         return (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
     else:
         return (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
@@ -231,6 +230,19 @@ def export_kb_data():
         parms["only_data"] = "True"
         results = export(parms, config=DEFAULT_CONFIG)
         return(results)
+
+
+@kbapi_app.route('/grep/<string:regex>', methods=['GET'])
+@auth.login_required
+def grep_artifacts(regex):
+    parms = dict()
+    parms["regex"] = regex
+    parms["case_insensitive"] = False
+    parms["no_color"] = False
+    parms["verbose"] = True
+    
+    results = grep(parms, config=DEFAULT_CONFIG)
+    return(make_response(constructResponse(results)), 200)
 
 
 @kbapi_app.route('/list', methods=['GET'])

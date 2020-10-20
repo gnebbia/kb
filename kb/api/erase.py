@@ -16,6 +16,7 @@ import sys
 from typing import Dict
 import kb.filesystem as fs
 from kb.actions.erase import erase_kb
+from flask import make_response
 
 
 def erase(component, config: Dict[str, str]):
@@ -50,5 +51,3 @@ def erase(component, config: Dict[str, str]):
         response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
         response.allow = ['all', 'db']
     return response
-
-

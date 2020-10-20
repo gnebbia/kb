@@ -134,15 +134,14 @@ To set the "EDITOR" Environment variable by using cmd.exe, just issue
 the following commands, after having inserted the path to your desired
 text editor instead of the placeholder:
 ```sh
-setx EDITOR "\"C:\path\to\editor\here.exe\""
 set EDITOR="C:\path\to\editor\here.exe"
+setx EDITOR "\"C:\path\to\editor\here.exe\""
 ```
 
 To set the "EDITOR" Environment variable by using Powershell, just issue
 the following commands, after having inserted the path to your desired
 text editor instead of the placeholder:
 ```sh
-Setting EDITOR Environment variable with powershell:
 $env:EDITOR="C:\path\to\editor\here.exe"
 [System.Environment]::SetEnvironmentVariable('EDITOR','"C:\path\to\editor\here.exe"', [System.EnvironmentVariableTarget]::User)
 ```

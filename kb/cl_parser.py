@@ -404,7 +404,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     add_template_parser.add_argument(
-        "-t","--title",
+        "-t", "--title",
         help="The title to assign to the template added from a file to kb",
         type=str,
     )
@@ -475,7 +475,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     apply_template_parser.add_argument(
-        "-m","--extended-match",
+        "-m", "--extended-match",
         help="""
         Perform application query not on a strict match,
         for example:

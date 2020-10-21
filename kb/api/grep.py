@@ -51,6 +51,7 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     file_list = [Path(config["PATH_KB_DATA"], r.category, r.title)
                  for r in rows]
 
+    print(args)
     # Grep in the files
     results = fs.grep_in_files(
         file_list,
@@ -91,7 +92,7 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     history.write(config["PATH_KB_HIST"], grep_artifacts)
 
     print(grep_artifacts)
-    #color_mode = not args["no_color"]
+    # color_mode = not args["no_color"]
     # if args["verbose"]:
     #     printer.print_grep_result_verbose(
     #         grep_artifacts, grep_hits, color_mode)

@@ -24,7 +24,7 @@ from werkzeug.routing import BaseConverter
 
 
 # Use the flask framework, as well as the authentication framework
-from flask import Flask, abort, make_response, request, send_file
+from flask import Flask, abort, make_response, request, send_file, jsonify
 from flask_httpauth import HTTPBasicAuth
 
 # Import the API functions
@@ -36,6 +36,7 @@ from kb.api.export import export
 from kb.api.grep import grep
 from kb.api.ingest import ingest
 from kb.api.search import search
+from kb.api.template import search as search_templates
 from kb.api.update import update
 from kb.api.view import view_by_id, view_by_title, view_by_name
 from kb import db
@@ -91,7 +92,7 @@ def toJson(self):
     Returns:
     A Json document
     """
-    record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s""status":"%s""author":"%s","template":"%s"}' % \
+    record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s","status":"%s","author":"%s","template":"%s"}' % \
         (self.id, self.title, self.category, self.path, self.tags, self.status, self.author, self.template)
     return record
 
@@ -133,14 +134,6 @@ def unauthorized():
 """
     Security framework
 """
-
-
-@kbapi_app.route('/template', methods=['GET', 'POST'])
-@auth.login_required
-def methods_not_implemented_yet():
-    response = make_response(({'Error': 'Method Not Allowed Yet'}), 405)
-    response.allow = ALLOWED_METHODS
-    return(response)
 
 
 @kbapi_app.route('/add', methods=['POST'])
@@ -240,7 +233,6 @@ def grep_artifacts(regex):
     parms["case_insensitive"] = False
     parms["no_color"] = False
     parms["verbose"] = True
-    
     results = grep(parms, config=DEFAULT_CONFIG)
     return(make_response(constructResponse(results)), 200)
 
@@ -287,6 +279,21 @@ def get_tags(tags=''):
         return (make_response(({'Error': 'There are no artifacts with these tags.'}), 404))
     else:
         return (make_response(({'Knowledge': constructResponse(results)}), 200))
+
+
+@kbapi_app.route('/templates', methods=['GET'])
+@auth.login_required
+def list_all_templates():
+    params = dict()
+    return(search_templates(params, DEFAULT_CONFIG))
+
+
+@kbapi_app.route('/templates/<string:templates>', methods=['GET'])
+@auth.login_required
+def query_templates():
+    params = dict()
+    params["query"] = templates
+    return(search_templates(params, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/update/<int:id>', methods=['PUT'])

@@ -555,7 +555,7 @@ kb template delete lisp-cheatsheets
 
 #### Edit a template
 
-To edit the template called "listp-cheatsheets" just do:
+To edit the template called "lisp-cheatsheets" just do:
 ```sh
 kb template edit lisp-cheatsheets
 ```

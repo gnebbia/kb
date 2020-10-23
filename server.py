@@ -40,7 +40,8 @@ from kb.api.template import search as search_templates
 from kb.api.template import add as add_template
 from kb.api.template import new as new_template
 from kb.api.template import delete as delete_template
-from kb.api.template import get_template
+from kb.api.template import apply_on_set as apply_template
+from kb.api.template import get_template, update_template
 from kb.api.update import update
 from kb.api.view import view_by_id, view_by_title, view_by_name
 from kb import db
@@ -297,7 +298,22 @@ def list_all_templates():
 def kb_query_templates(templates):
     params = dict()
     params["query"] = templates
-    return(search_template(params, DEFAULT_CONFIG))
+    return(search_templates(params, DEFAULT_CONFIG))
+
+
+@kbapi_app.route('/template/apply/<string:title>', methods=['PUT'])
+@auth.login_required
+def kb_apply_template(title):
+    params = dict()
+    params["title"] = request.form.get("title", "")
+
+    params["category"] = request.form.get("category", "")
+    params["author"] = request.form.get("author", "")
+    params["status"] = request.form.get("status", "")
+    params["tags"] = request.form.get("tags", "")
+    params["extended_match"] = request.form.get("extended_match", "")
+
+    return (apply_template(params, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/template/new/<string:template>', methods=['POST'])
@@ -329,6 +345,13 @@ def kb_delete_template(template):
 @auth.login_required
 def kb_get_template(title):
     return (get_template(title, DEFAULT_CONFIG))
+
+
+@kbapi_app.route('/template/update/<string:title>', methods=['PUT'])
+@auth.login_required
+def kb_update_template(title):
+    attachment = request.files['file']
+    return (update_template(title, DEFAULT_CONFIG, attachment))
 
 
 @kbapi_app.route('/update/<int:id>', methods=['PUT'])

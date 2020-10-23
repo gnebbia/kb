@@ -91,8 +91,9 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
         status=args["status"],
         author=args["author"],
         is_strict=is_query_strict)
-
+    rows_updated = 0
     for artifact in rows:
+        rows_updated = rows_updated + 1
         updated_artifact = Artifact(
             id=artifact.id,
             title=artifact.title,
@@ -102,7 +103,13 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
             status=artifact.status,
             template=args["template"])
         db.update_artifact_by_id(conn, artifact.id, updated_artifact)
-
+    if rows_updated == 0:
+        resp_content = '{"Error":"' + "No matching artifacts to apply template" + '"}'
+        resp = make_response((resp_content), 404)
+    else:
+        resp_content = '{"OK":"' + str(rows_updated) + " artifacts updated" + '"}'
+        resp = make_response((resp_content), 200)
+    return(resp)
 
 def new(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -159,7 +166,6 @@ def add(args: Dict[str, str], config: Dict[str, str], filecontent):
                                                   are stored
     """
 
-
     # Get the filename
     templates_path = Path(config["PATH_KB_TEMPLATES"])
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["title"])
@@ -168,11 +174,38 @@ def add(args: Dict[str, str], config: Dict[str, str], filecontent):
         resp = make_response((resp_content), 409)
         return(resp)
 
-    # template_path = Path(config["PATH_KB_DATA"], args["title"])
     filecontent.save(os.path.join(templates_path, args["title"]))
-    # os.rename(os.path.join(template_path, filename), os.path.join(template_path, args["title"]))
     resp = jsonify({'OK': 'Template successfully uploaded'})
     resp.status_code = 200
+    return (resp)
+
+
+def update_template(title: str, config: Dict[str, str], filecontent):
+    """
+    Updates an existing template.
+
+    Arguments:
+    title:           - a string containing the title of the existing kb template
+    config:         - a configuration dictionary containing at least
+                      the following key:
+                      PATH_KB_TEMPLATES         - the path to where the templates of KB
+                                                  are stored
+    attachment      - The template file itself
+    """
+
+    # Get the filename
+    templates_path = Path(config["PATH_KB_TEMPLATES"])
+    template_path = str(Path(config["PATH_KB_TEMPLATES"]) / title)
+    if not fs.is_file(template_path):
+        resp_content = '{"Error":"' + "Template does not exist" + '"}'
+        resp = make_response((resp_content), 404)
+        resp.mimetype = 'application/json'
+        return(resp)
+
+    filecontent.save(os.path.join(templates_path, title))
+    resp_content = '{"OK":"' + "Template successfully updated" + '"}'
+    resp = make_response((resp_content), 200)
+    resp.mimetype = 'application/json'
     return (resp)
 
 

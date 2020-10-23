@@ -54,6 +54,16 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
 """
     initializer.init(config)
 
+    template_name = args.get("template", "")
+    if template_name != "":
+        templates_path = Path(config["PATH_KB_TEMPLATES"])
+        template_path = str(Path(config["PATH_KB_TEMPLATES"]) / title)
+        if not fs.is_file(template_path):
+            resp_content = '{"Error":"' + "Named template does not exist" + '"}'
+            resp = make_response((resp_content), 404)
+            resp.mimetype = 'application/json'
+            return(resp)
+
     conn = db.create_connection(config["PATH_KB_DB"])
     # if an ID is specified, load artifact with that ID
     if args["id"]:
@@ -61,6 +71,7 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
         old_artifact = get_artifact_by_id(conn, id)
         if old_artifact is None:
             resp = make_response(({'Error': 'The artifact does not exist'}), 404)
+            resp.mimetype = 'application/json'
             return(resp)
         updated_artifact = Artifact(
             id=None,
@@ -85,5 +96,8 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
 
             fs.move_file(Path(old_category_path, old_artifact.title), Path(
                 new_category_path, args["title"] or old_artifact.title))
+        resp = make_response(({'Updated': id}), 200)
+        resp.mimetype = 'application/json'
 
-    return(make_response(({'Updated': id}), 200))
+    return(resp)
+    

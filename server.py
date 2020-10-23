@@ -37,6 +37,10 @@ from kb.api.grep import grep
 from kb.api.ingest import ingest
 from kb.api.search import search
 from kb.api.template import search as search_templates
+from kb.api.template import add as add_template
+from kb.api.template import new as new_template
+from kb.api.template import delete as delete_template
+from kb.api.template import get_template
 from kb.api.update import update
 from kb.api.view import view_by_id, view_by_title, view_by_name
 from kb import db
@@ -290,10 +294,41 @@ def list_all_templates():
 
 @kbapi_app.route('/templates/<string:templates>', methods=['GET'])
 @auth.login_required
-def query_templates():
+def kb_query_templates(templates):
     params = dict()
     params["query"] = templates
-    return(search_templates(params, DEFAULT_CONFIG))
+    return(search_template(params, DEFAULT_CONFIG))
+
+
+@kbapi_app.route('/template/new/<string:template>', methods=['POST'])
+def kb_new_template(template):
+    params = dict()
+    params["template"] = template
+    resp = new_template(params, DEFAULT_CONFIG)
+    return(resp)
+
+
+@kbapi_app.route('/template/add/<string:title>', methods=['POST'])
+@auth.login_required
+def kb_add_template(title):
+    params = dict()
+    params["title"] = title
+    attachment = request.files['file']
+    return(add_template(params, DEFAULT_CONFIG, attachment))
+
+
+@kbapi_app.route('/template/delete/<string:template>', methods=['POST'])
+def kb_delete_template(template):
+    params = dict()
+    params["title"] = template
+    resp = delete_template(params, DEFAULT_CONFIG)
+    return(resp)
+
+
+@kbapi_app.route('/template/get/<string:title>', methods=['GET'])
+@auth.login_required
+def kb_get_template(title):
+    return (get_template(title, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/update/<int:id>', methods=['PUT'])

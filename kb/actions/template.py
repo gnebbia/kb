@@ -42,7 +42,7 @@ def get_templates(templates_path: str) -> List[str]:
     return fs.list_files(templates_path)
 
 
-def search(args: Dict[str, str], config: Dict[str, str]):
+# def search(args: Dict[str, str], config: Dict[str, str]):
     """
     Search templates installed in kb.
 
@@ -54,7 +54,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_TEMPLATES     - the path to where the templates of KB
                                               are stored
     """
-    return(get_templates(config["PATH_KB_TEMPLATES"]))
+    # return(get_templates(config["PATH_KB_TEMPLATES"]))
     
 
 def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
@@ -90,13 +90,7 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
             status=artifact.status,
             template=args["template"])
         db.update_artifact_by_id(conn, artifact.id, updated_artifact)
-    if rows_updated == 0:
-        resp_content = '{"Error":"' + "No matching artifacts to apply template" + '"}'
-        resp = make_response((resp_content), 404)
-    else:
-        resp_content = '{"OK":"' + str(rows_updated) + " artifacts updated" + '"}'
-        resp = make_response((resp_content), 200)
-    return(resp)
+    return(rows_updated)
 
 
 def new(args: Dict[str, str], config: Dict[str, str]):
@@ -120,6 +114,7 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     if fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template already exists" + '"}'
         resp = make_response((resp_content), 409)
+        resp.mimetype = 'application/json'
         return(resp)
 
     #    print("ERROR: The template you inserted corresponds to an existing one. ",
@@ -137,6 +132,7 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     # call(shell_cmd)
     resp_content = '{"OK":"' + "Default template content added" + '"}'
     resp = make_response((resp_content), 200)
+    resp.mimetype = 'application/json'
     return(resp)
 
 
@@ -160,11 +156,13 @@ def add(args: Dict[str, str], config: Dict[str, str], filecontent):
     if fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template already exists" + '"}'
         resp = make_response((resp_content), 409)
+        resp.mimetype = 'application/json'
         return(resp)
 
     filecontent.save(os.path.join(templates_path, args["title"]))
     resp = jsonify({'OK': 'Template successfully uploaded'})
     resp.status_code = 200
+    resp.mimetype = 'application/json'
     return (resp)
 
 
@@ -232,11 +230,11 @@ def get_template(template, DEFAULT_CONFIG):
     response = -404
     template_name = (Path(DEFAULT_CONFIG["PATH_KB_TEMPLATES"]) / template)
     if not fs.is_file(template_name):
-        return(resp)
+        return(response)
 
     with open(template_name, "rb") as tp_file:
-        encoded_string = base64.b64encode(tp_file.read())
-    return(encoded_string)
+        response = base64.b64encode(tp_file.read())
+    return(response)
 
 
 def edit(args: Dict[str, str], config: Dict[str, str]):

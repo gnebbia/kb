@@ -28,20 +28,9 @@ import kb.printer.template as printer
 from werkzeug.utils import secure_filename
 import base64
 from kb.actions.template import delete as delete_template
-
-
-def get_templates(templates_path: str) -> List[str]:
-    """
-    Get the list of available templates.
-
-    Arguments:
-    templates_path      - the path where all templates are stored
-
-    Returns:
-    A list of strings representing the available templates
-    """
-    return (actions(templates_path))
-    # return fs.list_files(templates_path)
+from kb.actions.template import update_template as update_a_template
+from kb.actions.template import get_templates
+from kb.actions.template import apply_on_set as apply_templates
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -78,42 +67,17 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
     """
     Apply the specified template to all the filtered artifacts
     """
-    # Check initialization
-    initializer.init(config)
-
-    tags_list = None
-    if args["tags"] and args["tags"] != "":
-        tags_list = args["tags"].split(';')
-
-    conn = db.create_connection(config["PATH_KB_DB"])
-    is_query_strict = not args["extended_match"]
-    rows = db.get_artifacts_by_filter(
-        conn,
-        title=args["title"],
-        category=args["category"],
-        tags=tags_list,
-        status=args["status"],
-        author=args["author"],
-        is_strict=is_query_strict)
-    rows_updated = 0
-    for artifact in rows:
-        rows_updated = rows_updated + 1
-        updated_artifact = Artifact(
-            id=artifact.id,
-            title=artifact.title,
-            category=artifact.category,
-            tags=artifact.tags,
-            author=artifact.author,
-            status=artifact.status,
-            template=args["template"])
-        db.update_artifact_by_id(conn, artifact.id, updated_artifact)
+    rows_updated = apply_templates(args, config)
     if rows_updated == 0:
         resp_content = '{"Error":"' + "No matching artifacts to apply template" + '"}'
         resp = make_response((resp_content), 404)
+        resp.mimetype = 'application/json'
     else:
         resp_content = '{"OK":"' + str(rows_updated) + " artifacts updated" + '"}'
-        resp = make_response((resp_content), 200)
+        resp = make_response((resp_content), 200) 
+        resp.mimetype = 'application/json'
     return(resp)
+
 
 def new(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -132,10 +96,10 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     """
 
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
-    print(template_path)
     if fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template already exists" + '"}'
         resp = make_response((resp_content), 409)
+        resp.mimetype = 'application/json'
         return(resp)
 
     #    print("ERROR: The template you inserted corresponds to an existing one. ",
@@ -153,6 +117,7 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     # call(shell_cmd)
     resp_content = '{"OK":"' + "Default template content added" + '"}'
     resp = make_response((resp_content), 200)
+    resp.mimetype = 'application/json'
     return(resp)
 
 
@@ -194,22 +159,9 @@ def update_template(title: str, config: Dict[str, str], filecontent):
                       the following key:
                       PATH_KB_TEMPLATES         - the path to where the templates of KB
                                                   are stored
-    attachment      - The template file itself
+    filecontent      - The template file itself
     """
-
-    # Get the filename
-    templates_path = Path(config["PATH_KB_TEMPLATES"])
-    template_path = str(Path(config["PATH_KB_TEMPLATES"]) + "/" + title)
-    if not fs.is_file(template_path):
-        resp_content = '{"Error":"' + "Template does not exist" + '"}'
-        resp = make_response((resp_content), 404)
-        resp.mimetype = 'application/json'
-        return(resp)
-
-    filecontent.save(os.path.join(templates_path, title))
-    resp_content = '{"OK":"' + "Template successfully updated" + '"}'
-    resp = make_response((resp_content), 200)
-    resp.mimetype = 'application/json'
+    resp = update_a_template(title, config, filecontent)
     return (resp)
 
 
@@ -229,10 +181,12 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     if results == -404:
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
+        resp.mimetype = 'application/json'
         return(resp)
-    if results = -200:
+    if results == -200:
         resp_content = '{"OK":"' + "Template Removed" + '"}'
         resp = make_response((resp_content), 200)
+        resp.mimetype = 'application/json'
         return(resp)
 
 
@@ -248,12 +202,14 @@ def get_template(template, DEFAULT_CONFIG):
     """
 
     results = get_template(template_name)
-    if results == -404
+    if results == -404:
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
+        resp.mimetype = 'application/json'
         return(resp)
     else:
         record = '{"Template":"' + template + '","Content":"' + str(encoded_string) + '"}'
-        response = (make_response((record), 200))
-        return(response)
+        resp = (make_response((record), 200))
+        resp.mimetype = 'text/plain;charset=UTF-8'
+        return(resp)
 

@@ -75,7 +75,7 @@ PORT = 5000
 HOST = '0.0.0.0'
 
 # Methods allowed:
-ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'search', 'update', 'version', 'view']
+ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'search', 'template', 'update', 'version', 'view']
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
 # query -> filter for the title field of the artifact
@@ -140,7 +140,16 @@ def unauthorized():
     Security framework
 """
 
+@kbapi_app.route('/edit', methods=['GET'])
+@kbapi_app.route('/template/edit', methods=['GET'])
+@auth.login_required
+def method_never_implemented():
+    response = make_response(({'Error': 'Method Never Allowed'}), 405)
+    response.allow = ALLOWED_METHODS
+    response.mimetype = 'application/json'
+    return(response)
 
+    
 @kbapi_app.route('/add', methods=['POST'])
 @auth.login_required
 def add_item():
@@ -192,15 +201,6 @@ def delete_item_by_name(title=''):
     parameters["title"] = title
     results = delete(parameters, config=DEFAULT_CONFIG)
     return (results)
-
-
-@kbapi_app.route('/edit', methods=['GET'])
-@auth.login_required
-def methods_never_implemented():
-    response = make_response(({'Error': 'Method Never Allowed'}), 405)
-    response.allow = ALLOWED_METHODS
-    response.mimetype = 'application/json'
-    return(response)
 
 
 @kbapi_app.route('/erase/<string:component>', methods=['POST'])
@@ -307,13 +307,11 @@ def kb_query_templates(templates):
 def kb_apply_template(title):
     params = dict()
     params["title"] = request.form.get("title", "")
-
     params["category"] = request.form.get("category", "")
     params["author"] = request.form.get("author", "")
     params["status"] = request.form.get("status", "")
     params["tags"] = request.form.get("tags", "")
     params["extended_match"] = request.form.get("extended_match", "")
-
     return (apply_template(params, DEFAULT_CONFIG))
 
 
@@ -321,8 +319,7 @@ def kb_apply_template(title):
 def kb_new_template(template):
     params = dict()
     params["template"] = template
-    resp = new_template(params, DEFAULT_CONFIG)
-    return(resp)
+    return(new_template(params, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/template/add/<string:title>', methods=['POST'])

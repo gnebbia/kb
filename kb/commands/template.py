@@ -118,7 +118,6 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                 "Please specify another name for the new template")
         sys.exit(1)
 
-    
     fs.create_directory(Path(template_path).parent)
     # fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
 
@@ -168,7 +167,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     results = delete_template(args, config)
     if results == -404:
         print("ERROR: The template you want to delete does not exist. "
-                "Please specify a valid template to edit or create a new one")
+              "Please specify a valid template to edit or create a new one")
         sys.exit(1)
 
 

@@ -57,7 +57,7 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
     template_name = args.get("template", "")
     if template_name != "":
         templates_path = Path(config["PATH_KB_TEMPLATES"])
-        template_path = str(Path(config["PATH_KB_TEMPLATES"]) / title)
+        template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["title"])
         if not fs.is_file(template_path):
             resp_content = '{"Error":"' + "Named template does not exist" + '"}'
             resp = make_response((resp_content), 404)

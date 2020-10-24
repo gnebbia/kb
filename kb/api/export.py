@@ -39,5 +39,5 @@ def export(args: Dict[str, str], config: Dict[str, str]):
         encoded_string = base64.b64encode(export_file.read())
     export_content = '{"Export":"' + str(encoded_string) + '"}'
     resp = make_response((export_content), 200)
-
+    resp.mimetype = 'text/plain;charset=UTF-8'
     return(resp)

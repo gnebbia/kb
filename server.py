@@ -199,6 +199,7 @@ def delete_item_by_name(title=''):
 def methods_never_implemented():
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
     response.allow = ALLOWED_METHODS
+    response.mimetype = 'application/json'
     return(response)
 
 
@@ -337,8 +338,7 @@ def kb_add_template(title):
 def kb_delete_template(template):
     params = dict()
     params["title"] = template
-    resp = delete_template(params, DEFAULT_CONFIG)
-    return(resp)
+    return(delete_template(params, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/template/get/<string:title>', methods=['GET'])

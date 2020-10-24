@@ -65,6 +65,8 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
         os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
         resp = jsonify({'message': 'File successfully uploaded'})
         resp.status_code = 201
+        resp.mimetype = 'application/json'
+
 
     conn = db.create_connection(config["PATH_KB_DB"])
 

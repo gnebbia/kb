@@ -50,4 +50,5 @@ def erase(component, config: Dict[str, str]):
     else:
         response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
         response.allow = ['all', 'db']
+        response.mimetype = 'application/json'
     return response

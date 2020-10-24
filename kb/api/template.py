@@ -27,6 +27,7 @@ from flask import jsonify, make_response
 import kb.printer.template as printer
 from werkzeug.utils import secure_filename
 import base64
+from kb.actions.template import delete as delete_template
 
 
 def get_templates(templates_path: str) -> List[str]:
@@ -39,7 +40,8 @@ def get_templates(templates_path: str) -> List[str]:
     Returns:
     A list of strings representing the available templates
     """
-    return fs.list_files(templates_path)
+    return (actions(templates_path))
+    # return fs.list_files(templates_path)
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -54,20 +56,22 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_TEMPLATES     - the path to where the templates of KB
                                               are stored
     """
-    # template_list = fs.list_files(config["PATH_KB_TEMPLATES"])
     template_list = get_templates(config["PATH_KB_TEMPLATES"])
     if not template_list:
-        return (make_response(({'Error': 'No Templates Exist'}), 404))
+        resp = make_response(({'Error': 'No Templates Exist'}), 404)
+        resp.mimetype = 'application/json'
+        return (resp)
 
     if args.get("query", "") == "":
-        return make_response(jsonify(template_list), 200)
+        resp = make_response(jsonify(template_list), 200)
+        resp.mimetype = 'application/json'
+        return (resp)
 
     if args["query"]:
         template_list = [x for x in template_list if args["query"] in x]
-        return make_response(jsonify(template_list), 200)
-
-    # color_mode = not args["no_color"]
-    # printer.print_template_search_result(template_list, color_mode)
+        resp = make_response(jsonify(template_list), 200)
+        resp.mimetype = 'application/json'
+        return (resp)
 
 
 def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
@@ -195,7 +199,7 @@ def update_template(title: str, config: Dict[str, str], filecontent):
 
     # Get the filename
     templates_path = Path(config["PATH_KB_TEMPLATES"])
-    template_path = str(Path(config["PATH_KB_TEMPLATES"]) / title)
+    template_path = str(Path(config["PATH_KB_TEMPLATES"]) + "/" + title)
     if not fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
@@ -221,13 +225,12 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_TEMPLATES         - the path to where the templates of KB
                                                   are stored
     """
-    template_name = (Path(config["PATH_KB_TEMPLATES"]) / args["title"])
-    if not fs.is_file(template_name):
+    results = delete_template(args, config)
+    if results == -404:
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
         return(resp)
-    else:
-        fs.remove_file(Path(template_name))
+    if results = -200:
         resp_content = '{"OK":"' + "Template Removed" + '"}'
         resp = make_response((resp_content), 200)
         return(resp)
@@ -244,43 +247,13 @@ def get_template(template, DEFAULT_CONFIG):
                       PATH_KB_TEMPLATES - directory where the templates are located
     """
 
-    # Default response is an error
-    resp = (make_response(({'Error': 'Template does not exist'}), 404))
-
-    template_name = (Path(DEFAULT_CONFIG["PATH_KB_TEMPLATES"]) / template)
-    if not fs.is_file(template_name):
+    results = get_template(template_name)
+    if results == -404
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
         return(resp)
+    else:
+        record = '{"Template":"' + template + '","Content":"' + str(encoded_string) + '"}'
+        response = (make_response((record), 200))
+        return(response)
 
-    with open(template_name, "rb") as tp_file:
-        encoded_string = base64.b64encode(tp_file.read())
-    record = '{"Template":"' + template + '","Content":"' + str(encoded_string) + '"}'
-    response = (make_response((record), 200))
-
-    return(response)
-
-
-def edit(args: Dict[str, str], config: Dict[str, str]):
-    """
-    Edit a template from the kb templates.
-
-    Arguments:
-    args:           - a dictionary containing the following fields:
-                      template -> the name of the template to edit
-    config:         - a configuration dictionary containing at least
-                      the following keys:
-                      PATH_KB_TEMPLATES  - the path to where the templates of KB
-                                           are stored
-                      EDITOR             - the editor program to call
-    """
-    template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
-
-    if not fs.is_file(template_path):
-        print("ERROR: The template you want to edit does not exist. "
-              "Please specify a valid template to edit or create a new one")
-        sys.exit(1)
-
-    shell_cmd = shlex.split(
-        config["EDITOR"]) + [template_path]
-    call(shell_cmd)

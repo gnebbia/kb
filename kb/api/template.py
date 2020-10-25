@@ -27,6 +27,7 @@ from flask import jsonify, make_response
 import kb.printer.template as printer
 from werkzeug.utils import secure_filename
 import base64
+from kb.actions.template import get_template as get_a_template
 from kb.actions.template import delete as delete_template
 from kb.actions.template import update_template as update_a_template
 from kb.actions.template import get_templates
@@ -195,20 +196,20 @@ def get_template(template, DEFAULT_CONFIG):
     Retrieve a template
 
     Arguments:
-    args:           - template name
+    template:       - template name
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB_TEMPLATES - directory where the templates are located
     """
 
-    results = get_template(template_name)
+    results = get_a_template(template, DEFAULT_CONFIG)
     if results == -404:
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
         resp.mimetype = 'application/json'
         return(resp)
     else:
-        record = '{"Template":"' + template + '","Content":"' + str(encoded_string) + '"}'
+        record = '{"Template":"' + template + '","Content":"' + str(results) + '"}'
         resp = (make_response((record), 200))
         resp.mimetype = 'text/plain;charset=UTF-8'
         return(resp)

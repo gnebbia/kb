@@ -185,13 +185,13 @@ def update_template(title: str, config: Dict[str, str], filecontent):
     if not fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
 
     filecontent.save(os.path.join(templates_path, title))
     resp_content = '{"OK":"' + "Template successfully updated" + '"}'
     resp = make_response((resp_content), 200)
-    resp.mimetype = 'application/json'
+    resp.mimetype = MIME_TYPE['json']
     return (resp)
 
 

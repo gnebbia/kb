@@ -16,6 +16,7 @@ This section explains those return codes and their meaning. Note that this is in
 | -404 | The function errored |
 
 
+
 Most of these return codes are presented to the API in the form of an HTTP response code.
 
 
@@ -31,4 +32,5 @@ In general, the internal response codes described above relate to the API HTTP r
 | 302 | The function was attempted, but could find no artifacts with the search criteria (does not include by ID) | ** SHOULD BE USING 406 HERRE **
 | 401 | Login credentials required |
 | 404 | The function errored |
-| 405 | Method not implemented
+| 405 | Method not implemented |
+| 409 | Resource already exists |

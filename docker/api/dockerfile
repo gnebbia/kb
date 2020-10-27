@@ -3,7 +3,7 @@
 FROM python:alpine3.8
 
 LABEL maintainer="alshapton@gmail.com"
-LABEL version="0.1.4"
+LABEL version="0.1.5"
 
 RUN apk update && \
     apk add nano vim && \
@@ -16,7 +16,9 @@ WORKDIR /app
 # Update the base image, install dependencies and create the aliases file
 
 RUN pip install -r requirements.txt && \
-    python setup.py install 
+#    pip install gunicorn && \
+    python setup.py install
+
 
 
 # Open port 5000

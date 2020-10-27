@@ -49,19 +49,15 @@ def search(args: Dict[str, str], config: Dict[str, str]):
     template_list = get_templates(config["PATH_KB_TEMPLATES"])
     if not template_list:
         resp = make_response(({'Error': 'No Templates Exist'}), 404)
-        resp.mimetype = 'application/json'
-        return (resp)
-
-    if args.get("query", "") == "":
-        resp = make_response(jsonify(template_list), 200)
-        resp.mimetype = 'application/json'
-        return (resp)
-
-    if args["query"]:
-        template_list = [x for x in template_list if args["query"] in x]
-        resp = make_response(jsonify(template_list), 200)
-        resp.mimetype = 'application/json'
-        return (resp)
+    else:
+        if args.get("query", "") == "":
+            resp = make_response(jsonify(template_list), 200)
+        else:
+            if args["query"]:
+                template_list = [x for x in template_list if args["query"] in x]
+                resp = make_response(jsonify(template_list), 200)
+    resp.mimetype = MIME_TYPE['json']
+    return (resp)
 
 
 def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
@@ -72,11 +68,11 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
     if rows_updated == 0:
         resp_content = '{"Error":"' + "No matching artifacts to apply template" + '"}'
         resp = make_response((resp_content), 404)
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
     else:
         resp_content = '{"OK":"' + str(rows_updated) + " artifacts updated" + '"}'
         resp = make_response((resp_content), 200) 
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
     return(resp)
 
 
@@ -100,7 +96,7 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     if fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template already exists" + '"}'
         resp = make_response((resp_content), 409)
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
 
     #    print("ERROR: The template you inserted corresponds to an existing one. ",
@@ -118,7 +114,7 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     # call(shell_cmd)
     resp_content = '{"OK":"' + "Default template content added" + '"}'
     resp = make_response((resp_content), 200)
-    resp.mimetype = 'application/json'
+    resp.mimetype = MIME_TYPE['json']
     return(resp)
 
 
@@ -142,11 +138,13 @@ def add(args: Dict[str, str], config: Dict[str, str], filecontent):
     if fs.is_file(template_path):
         resp_content = '{"Error":"' + "Template already exists" + '"}'
         resp = make_response((resp_content), 409)
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
 
     filecontent.save(os.path.join(templates_path, args["title"]))
     resp = jsonify({'OK': 'Template successfully uploaded'})
     resp.status_code = 200
+    resp.mimetype = MIME_TYPE['json']
     return (resp)
 
 
@@ -163,6 +161,7 @@ def update_template(title: str, config: Dict[str, str], filecontent):
     filecontent      - The template file itself
     """
     resp = update_a_template(title, config, filecontent)
+    resp.mimetype = MIME_TYPE['json']
     return (resp)
 
 
@@ -182,12 +181,12 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     if results == -404:
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
     if results == -200:
         resp_content = '{"OK":"' + "Template Removed" + '"}'
         resp = make_response((resp_content), 200)
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
 
 
@@ -206,11 +205,11 @@ def get_template(template, DEFAULT_CONFIG):
     if results == -404:
         resp_content = '{"Error":"' + "Template does not exist" + '"}'
         resp = make_response((resp_content), 404)
-        resp.mimetype = 'application/json'
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
     else:
         record = '{"Template":"' + template + '","Content":"' + str(results) + '"}'
         resp = (make_response((record), 200))
-        resp.mimetype = 'text/plain;charset=UTF-8'
+        resp.mimetype = MIME_TYPE['utf8']
         return(resp)
 

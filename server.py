@@ -17,6 +17,7 @@ import os
 import io
 import tempfile
 import base64
+import json
 import urllib.request
 from pathlib import Path
 from werkzeug.utils import secure_filename
@@ -76,6 +77,9 @@ HOST = '0.0.0.0'
 
 # Methods allowed:
 ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'search', 'template', 'update', 'version', 'view']
+
+# Dictionary of MIME types:
+MIME_TYPE = dict(json="application/json", utf8="text/plain;charset=UTF-8")
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
 # query -> filter for the title field of the artifact
@@ -146,10 +150,10 @@ def unauthorized():
 def method_never_implemented():
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
     response.allow = ALLOWED_METHODS
-    response.mimetype = 'application/json'
+    response.mimetype = MIME_TYPE['json']
     return(response)
 
-    
+
 @kbapi_app.route('/add', methods=['POST'])
 @auth.login_required
 def add_item():
@@ -369,8 +373,12 @@ def update_artifact(id):
 @kbapi_app.route('/version', methods=['GET'])
 @auth.login_required
 def return_version():
-    return (make_response(({'Version': str(__version__)})), 200)
-
+    """
+    Returns current version of the kb software
+    """
+    response = make_response(({'Version': str(__version__)}), 200)
+    response.mimetype = MIME_TYPE['json']
+    return(response)
 
 @kbapi_app.route('/view/<int:id>', methods=['GET'])
 @auth.login_required

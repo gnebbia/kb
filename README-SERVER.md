@@ -9,7 +9,7 @@ should  NOT be used in production environments.**
 
 The kbAPI server is a component of the kb project which exposes the knowledge base as a REST API.
 
-It does this by wrapping the core functionality of kb using the [Bottle framework](http://bottlepy.org)
+It does this by wrapping the core functionality of kb using the [Flask framework](https://flask.palletsprojects.com/en/1.1.x/)
 
 ## Starting the server (MacOS and Linux)
 
@@ -79,7 +79,6 @@ print(response.text.encode('utf8'))
 | `http://<hostname>/erase/all`                | POST | Erase all of the knowledgebase as well as files |
 | `http://<hostname>/export/all`               | GET  | Export ALL the data (including files) from the knowledgebase |
 | `http://<hostname>/export/kb`                | GET  | Export JUST the data from the knowledgebase |
-| `http://<hostname>/edit.....`                |      | Method not allowed |
 | `http://<hostname>/grep/<regex>`             | GET  | Returns ALL of the artifacts in the knowledgebase using the regex|
 | `http://<hostname>/list`                     | GET  | Returns ALL of the artifacts in the knowledgebase |
 | `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the knowledgebase in the requested category |
@@ -89,9 +88,7 @@ print(response.text.encode('utf8'))
 | `http://<hostname>/template/add/<template>`  | POST | Create a new template with the content specified in the file uploaded with it |
 | `http://<hostname>/template/apply/<template>`| GET  | Apply the template to a set of artifacts whose criteria meet those 
 | `http://<hostname>/template/delete/<template>`| POST  | Delete the specified template |
-| `http://<hostname>/template/edit.....`       |      | Method not allowed |
-| `http://<hostname>/template/get/<template>`  | GET  | Returns the named template |
-specified in the body of the HTTP request |
+| `http://<hostname>/template/get/<template>`  | GET  | Returns the named template specified in the body of the HTTP request |
 | `http://<hostname>/template/new/<template>`  | POST | Create a new named template containing the default template  |
 | `http://<hostname>/template/update/<template>`| PUT  | Update the specified template |
 | `http://<hostname>/update/<id>`              | PUT  | Updates an artifact by ID |
@@ -99,6 +96,31 @@ specified in the body of the HTTP request |
 | `http://<hostname>/view/<title>`             | GET  | View an artifact by title  |
 | `http://<hostname>/view/<category>/<name>`   | GET  | View an artifact by its name  |
 | `http://<hostname>/version`                  | GET  | Returns the version of the kb software in use  |
+
+## Endpoints which do NOT exist
+
+The following endpoints **look like they should exist but do NOT**
+
+| Endpoint                               | Description      |
+|----------------------------------------|------------------|
+| `http://<hostname>/template/edit.....` | Edit an artifact |
+| `http://<hostname>/edit.....`          | Edit a template  |
+
+
+All of these endpoints will return a 
+```json
+{
+  "Method Never Allowed"
+}
+```
+
+with an HTTP response code of `405`
+
+This is due to the paradigm of the kb-API being different to the CLI-based kb i.e. there is nowhere to edit an artifact or template. The "edit" operation is effected by using a combination of `get` and `update` methods.
+
+## API Documentation (Postman)
+
+The complete API documentation can be found [here](https://documenter.getpostman.com/view/12840256/TVRrWQnq#intro)
 
 
 ## Things to be aware of
@@ -111,6 +133,6 @@ when writing, so if there are lots of concurrent writes it is not a suitable
 database for the application (usually the time the database is locked is a few
 milliseconds - so for most uses this does not matter). But it is very well tested
 and very stable (and widely used) so it can be trusted.
-
-This means that there **may** be occasions when a write operation will fail,
+>
+>This means that there **may** be occasions when a write operation will fail,
 so this should be catered for in any application using this REST API

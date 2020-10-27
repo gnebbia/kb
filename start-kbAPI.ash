@@ -19,6 +19,7 @@ echo "Starting Server"
 
 # Start the server
 python ./server.py
+# gunicorn -w 4 server:kbapi_app --bind localhost:5000
 
 # Ensure correct data directory is current
 cd /data

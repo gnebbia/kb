@@ -66,6 +66,21 @@ print(response.text.encode('utf8'))
 
 ```
 
+## Production Servers
+
+The Docker image supplied uses the default Flask WSGI server. This is not recommended for use in production environments.
+Several options are out there to replace the default server, but a recommended option is 
+
+[![alt text][1]][2]
+
+[1]: img/gunicornlogo.png
+[2]: https://gunicorn.org/
+
+To deploy kb-API as a gunicorn-based server, simply use:
+
+```gunicorn -w 4 server:kbapi_app --bind "localhost:5000"```
+
+>Note that following the gunicorn documentation, you can configure the number of worker threads, bind address, memory usage etc.
 
 ## Endpoints
 

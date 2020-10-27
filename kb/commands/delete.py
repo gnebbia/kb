@@ -12,7 +12,7 @@ kb delete command module
 """
 
 import sys
-sys.path.append('kb')
+
 
 import sys
 from typing import Dict
@@ -44,7 +44,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     """
     initializer.init(config)
 
-    response = delete_artifacts(args, config,False)
+    response = delete_artifacts(args, config, False)
 
     if response == -200:
         if 'id' in args:

@@ -108,7 +108,7 @@ def toJson(self):
 
 def constructResponse(results):
     """
-        This function constructs a response from thee results obtained by a core function
+        Constructs a response from thee results obtained by a core function
         Arguments:
         result   - Set of results
 
@@ -177,6 +177,14 @@ def add_item():
 @kbapi_app.route('/delete/<int:id>', methods=['POST'])
 @auth.login_required
 def delete_item_by_ID(id=''):
+    """
+    Delete a single artifact from the kb knowledge base.
+
+    Arguments:
+    args:           -  id -> a database ID associated with
+                            the artifact to be deleted
+    """
+  
     parameters["id"] = id
     results = delete(parameters, config=DEFAULT_CONFIG)
     return (results)
@@ -185,6 +193,13 @@ def delete_item_by_ID(id=''):
 @kbapi_app.route('/delete/<list:ids>', methods=['POST'])
 @auth.login_required
 def delete_items_by_ID(ids=''):
+    """
+    Delete a list of artifacts from the kb knowledge base.
+
+    Arguments:
+    args:           -  id -> a list of database IDs associated with
+                                the artifacts to be deleted
+    """
     deleted = []
     for item in ids:
         parameters["id"] = item
@@ -192,12 +207,17 @@ def delete_items_by_ID(ids=''):
         if results == item:
             deleted.append(item)
     if len(deleted) == 0:
-        return (make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404))
+        resp = make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404)
+        resp.mimetype = MIME_TYPE['json']  
+        return(resp)
     if len(deleted) != len(ids):
-        return (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
+        resp = (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
+        resp.mimetype = MIME_TYPE['json'] 
+        return(resp)
     else:
-        return (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
-
+        resp = (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
+        resp.mimetype = MIME_TYPE['json'] 
+        return(resp)
 
 @kbapi_app.route('/delete/name/<string:title>', methods=['POST'])
 @auth.login_required

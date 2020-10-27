@@ -51,8 +51,11 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
         response = (make_response(({'Error': 'There is more than one artifact with that title, please specify a category'}), 301))
     if results == -302:
         response = (make_response(({'Error': 'There are no artifacts with that title, please specify a title'}), 302))
-    if results >= 0:
-        response = (make_response(({'Deleted': results}), 200))
+    if type(results) is int:
+        if results >= 0:
+            response = (make_response(({'Deleted': results}), 200))
+    else:
+        response = (make_response(({'OK': results}), 200))
     response.mimetype = 'application/json'
 
     return response

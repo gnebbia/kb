@@ -10,13 +10,13 @@ kb erase API module
 :Copyright: © 2020, alshapton.
 :License: GPLv3 (see /LICENSE).
 """
-import sys
-# sys.path.append('kb')
 
 from typing import Dict
-import kb.filesystem as fs
-from kb.actions.erase import erase_kb
+
 from flask import make_response
+
+from kb.actions.erase import erase_kb
+from kb.api.constants import MIME_TYPE
 
 
 def erase(component, config: Dict[str, str]):
@@ -50,5 +50,5 @@ def erase(component, config: Dict[str, str]):
     else:
         response = make_response(({'Error': 'Invalid Parameter'}), 406)  # 'Not Acceptable'
         response.allow = ['all', 'db']
-        response.mimetype = 'application/json'
+    response.mimetype = MIME_TYPE['json']    
     return response

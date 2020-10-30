@@ -4,24 +4,15 @@
 
 |  |Chopped | Code Documented | PM Documented |
 |-----|-----|----|--|
-| Add |    |   |    
+| Add |Yes    | Yes  |    
 | Delete | Yes   | Yes  | |
 | Edit | N/A   | N/A  | N/A|
-| Erase |    |   |
-| Export |    |   |
+| Erase |  Yes  | Yes  |
+| Export | Yes   | Yes  |
 | Grep *|    |   |
-| Ingest |    |   |
-| Search |    |   |
-| Templates |    |   |
-|  T:List   | | |
-|  T:List by Name   | | |
-|  T:Apply  | | |
-|  T:Edit  | N/A   | N/A  | N/A|
-|  T:New | | |
-|  T:Add  | | |
-|  T:Delete  | | |
-|  T:Get  | | |
-|  T:Update  | | |
-| Update |    |   |
-| View |    |   |
+| Ingest +|    |   |
+| Search | Yes   | Yes  |
+| Templates | Yes   | Yes  |
+| Update | Yes   | Yes  |
+| View |  Yes  | Yes  |
 | Version | N/A |  Yes | N/A |     

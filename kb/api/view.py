@@ -13,8 +13,7 @@ kb view API module
 import sys
 from flask import make_response
 from pathlib import Path
-from typing import Dict
-import kb.filesystem as fs
+from kb.api.constants import MIME_TYPE
 from kb.db import get_artifact_by_id, get_artifacts_by_filter
 import base64
 sys.path.append('kb')
@@ -40,8 +39,9 @@ def view_by_id(conn, id, DEFAULT_CONFIG):
     if id:
         artifact = get_artifact_by_id(conn, id)
         if artifact is None:
-            return (make_response(({'Error': 'There is no artifact with the ID of ' + str(id)}), 404))
-
+            response = make_response(({'Error': 'There is no artifact with the ID of ' + str(id)}), 404)
+            response.mimetype = MIME_TYPE('json')    
+            return response
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), str(artifact.category))
         artifact_file = Path(str(category_path), str(artifact.title))
 
@@ -49,7 +49,7 @@ def view_by_id(conn, id, DEFAULT_CONFIG):
             encoded_string = base64.b64encode(artifact_file.read())
         record = toJson(artifact)[:-1] + ',"Content":"' + str(encoded_string) + '"}'
         response = (make_response((record), 200))
-
+        response.mimetype = MIME_TYPE('utf8')
     return(response)
 
 
@@ -58,7 +58,7 @@ def view_by_title(conn, title, DEFAULT_CONFIG):
     Retrieve an artifact by title
 
     Arguments:
-    conn:           - an opoen DB connection
+    conn:           - an open DB connection
     title:          - title of the artifact to view
     config:         - a configuration dictionary containing at least
                       the following keys:
@@ -73,15 +73,17 @@ def view_by_title(conn, title, DEFAULT_CONFIG):
 
     if len(artifact) > 1:
         response = make_response(({'Error': 'There is more than one artifact with the title of ' + title}), 301)
+        response.mimetype = MIME_TYPE('json')        
     if len(artifact) == 0:
         response = (make_response(({'Error': 'There are no artifacts with the title of ' + title}), 404))
+        response.mimetype = MIME_TYPE('json')    
     if len(artifact) == 1:
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), artifact[0].category)
         artifact_file = Path(str(category_path), str(artifact[0].title))
         with open(artifact_file, "rb") as artifact_file:
             encoded_string = base64.b64encode(artifact_file.read())
         record = toJson(artifact[0])[:-1] + ',"Content":"' + str(encoded_string) + '"}'
-
+        response.mimetype = MIME_TYPE('utf8')
         response = (make_response((record), 200))
     return (response)
 
@@ -106,8 +108,10 @@ def view_by_name(conn, title, category, DEFAULT_CONFIG):
 
     if len(artifact) > 1:
         response = make_response(({'Error': 'There is more than one artifact with the name of ' + category + "/" + title}), 301)
+        response.mimetype = MIME_TYPE('json')
     if len(artifact) == 0:
         response = (make_response(({'Error': 'There are no artifacts with the name of ' + category + "/" + title}), 404))
+        response.mimetype = MIME_TYPE('json')
     if len(artifact) == 1:
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), artifact[0].category)
         artifact_file = Path(str(category_path), str(artifact[0].title))
@@ -115,6 +119,7 @@ def view_by_name(conn, title, category, DEFAULT_CONFIG):
             encoded_string = base64.b64encode(artifact_file.read())
         record = toJson(artifact[0])[:-1] + ',"Content":"' + str(encoded_string) + '"}'
         response = (make_response((record), 200))
+        response.mimetype = MIME_TYPE('utf8')
     return (response)
 
 

@@ -11,14 +11,13 @@ kb export command module
 :License: GPLv3 (see /LICENSE).
 """
 
-import time
-import tarfile
-from pathlib import Path
 from typing import Dict
-import tempfile
 import base64
+
 from flask import make_response
+
 from kb.actions.export import export_kb
+from kb.api.constants import MIME_TYPE
 
 
 def export(args: Dict[str, str], config: Dict[str, str]):
@@ -39,5 +38,5 @@ def export(args: Dict[str, str], config: Dict[str, str]):
         encoded_string = base64.b64encode(export_file.read())
     export_content = '{"Export":"' + str(encoded_string) + '"}'
     resp = make_response((export_content), 200)
-    resp.mimetype = 'text/plain;charset=UTF-8'
+    resp.mimetype = MIME_TYPE['utf8']
     return(resp)

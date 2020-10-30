@@ -11,27 +11,22 @@ kb template api module
 :License: GPLv3 (see /LICENSE).
 """
 
-import shlex
-import sys
 import os
 import toml
 from pathlib import Path
-from subprocess import call
-from typing import Dict, List
-import kb.db as db
-import kb.initializer as initializer
-import kb.filesystem as fs
-import kb.config as conf
-from kb.entities.artifact import Artifact
+from typing import Dict
+
 from flask import jsonify, make_response
-import kb.printer.template as printer
-from werkzeug.utils import secure_filename
-import base64
+
 from kb.actions.template import get_template as get_a_template
 from kb.actions.template import delete as delete_template
 from kb.actions.template import update_template as update_a_template
 from kb.actions.template import get_templates
 from kb.actions.template import apply_on_set as apply_templates
+from kb.api.constants import MIME_TYPE
+import kb.config as conf
+from kb.entities.artifact import Artifact
+import kb.filesystem as fs
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -99,19 +94,12 @@ def new(args: Dict[str, str], config: Dict[str, str]):
         resp.mimetype = MIME_TYPE['json']
         return(resp)
 
-    #    print("ERROR: The template you inserted corresponds to an existing one. ",
-    #          "Please specify another name for the new template")
-    #    sys.exit(1)
-
     fs.create_directory(Path(template_path).parent)
 
     with open(template_path, 'w') as tmplt:
         tmplt.write("# This is an example configuration template\n\n\n")
         tmplt.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
-    # shell_cmd = shlex.split(
-    #    config["EDITOR"]) + [template_path]
-    # call(shell_cmd)
     resp_content = '{"OK":"' + "Default template content added" + '"}'
     resp = make_response((resp_content), 200)
     resp.mimetype = MIME_TYPE['json']

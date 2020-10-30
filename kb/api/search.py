@@ -12,9 +12,6 @@ kb search command module
 :License: GPLv3 (see /LICENSE).
 """
 
-import sys
-# sys.path.append('kb')
-
 from typing import Dict
 from kb.actions.search import search_kb
 import kb.history as history

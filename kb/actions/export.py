@@ -13,7 +13,6 @@ kb export action module
 
 import time
 import tarfile
-from pathlib import Path
 from typing import Dict
 
 import sys

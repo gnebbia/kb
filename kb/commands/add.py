@@ -15,13 +15,11 @@ import sys
 
 import shlex
 import sys
-from pathlib import Path
 from subprocess import call
 from typing import Dict
 import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
-from kb.entities.artifact import Artifact
 
 from kb.actions.add import add_artifact
 from kb.actions.add import add_file_to_kb as add_file_to_kb

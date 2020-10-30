@@ -10,19 +10,16 @@ kb add command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
-
-import shlex
-import sys
+import os
 from pathlib import Path
-from subprocess import call
 from typing import Dict
+
 import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
-from kb.entities.artifact import Artifact
+import kb.initializer as initializer
+x
 
-import os
-from werkzeug.utils import secure_filename
 
 
 def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):

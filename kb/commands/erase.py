@@ -12,7 +12,6 @@ kb erase command module
 """
 
 from typing import Dict
-import kb.filesystem as fs
 from kb.actions.erase import erase_kb
 
 

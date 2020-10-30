@@ -10,13 +10,12 @@ kb add command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
-import sys
-# sys.path.append('kb')
+
 
 import kb.db as db
 from pathlib import Path
 from typing import Dict
-from kb.entities.artifact import Artifact
+# from kb.entities.artifact import Artifact
 
 from kb.actions.add import add_artifact
 

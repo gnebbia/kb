@@ -12,10 +12,9 @@ kb search command module
 """
 
 from typing import Dict
+
 import kb.db as db
 import kb.initializer as initializer
-import kb.printer.search as printer
-import kb.history as history
 
 
 def search_kb(args: Dict[str, str], config: Dict[str, str]):

@@ -12,20 +12,20 @@ kbAPI server module
 """
 
 # Import system libraries
-import sys
-import os
-import io
+# import sys
+# import os
+# import io
 import tempfile
-import base64
-import json
-import urllib.request
-from pathlib import Path
-from werkzeug.utils import secure_filename
+# import base64
+# import json
+# import urllib.request
+# from pathlib import Path
+# from werkzeug.utils import secure_filename
 from werkzeug.routing import BaseConverter
 
 
 # Use the flask framework, as well as the authentication framework
-from flask import Flask, abort, make_response, request, send_file, jsonify
+from flask import Flask, make_response, request
 from flask_httpauth import HTTPBasicAuth
 
 # Import the API functions
@@ -45,6 +45,7 @@ from kb.api.template import apply_on_set as apply_template
 from kb.api.template import get_template, update_template
 from kb.api.update import update
 from kb.api.view import view_by_id, view_by_title, view_by_name
+from kb.api.constants import MIME_TYPE
 from kb import db
 from kb import __version__
 
@@ -78,8 +79,6 @@ HOST = '0.0.0.0'
 # Methods allowed:
 ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'search', 'template', 'update', 'version', 'view']
 
-# Dictionary of MIME types:
-MIME_TYPE = dict(json="application/json", utf8="text/plain;charset=UTF-8")
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
 # query -> filter for the title field of the artifact
@@ -400,6 +399,7 @@ def return_version():
     response.mimetype = MIME_TYPE['json']
     return(response)
 
+@kbapi_app.route('/get/<int:id>', methods=['GET'])
 @kbapi_app.route('/view/<int:id>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_id(id):
@@ -407,13 +407,14 @@ def view_artifact_by_id(id):
     return (view_by_id(conn, id, DEFAULT_CONFIG))
 
 
+@kbapi_app.route('/get/<string:title>', methods=['GET'])
 @kbapi_app.route('/view/<string:title>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_title(title):
     conn = db.create_connection(DEFAULT_CONFIG["PATH_KB_DB"])
     return (view_by_title(conn, title, DEFAULT_CONFIG))
 
-
+@kbapi_app.route('/get/<string:category>/<string:title>', methods=['GET'])
 @kbapi_app.route('/view/<string:category>/<string:title>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_name(category, title):

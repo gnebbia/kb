@@ -5,7 +5,7 @@
 # See /LICENSE for licensing information.
 
 """
-kb update api module
+kb update action module
 
 :Copyright: © 2020, alshapton.
 :License: GPLv3 (see /LICENSE).
@@ -19,18 +19,14 @@ from kb.db import get_artifact_by_id
 from kb.entities.artifact import Artifact
 import kb.filesystem as fs
 import kb.initializer as initializer
-from kb.actions.update import update_artifact
 
 
-# Use the flask make_response function
-from flask import make_response
-
-
-def update(args: Dict[str, str], config: Dict[str, str], attachment):
+def update_artifact(old_artifact: Artifact, args: Dict[str, str], config: Dict[str, str], attachment):
     """
     Update artifact properties within the knowledge base of kb.
 
     Arguments:
+    old_artifact:   - an object of type Artifact containing the old artifact details
     args:           - a dictionary containing the following fields:
                       id -> an id of an artifact - note - the ACTUAL db_id
                       title -> the title to be assigned to the artifact
@@ -55,30 +51,27 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
     initializer.init(config)
 
     template_name = args.get("template", "")
-    if template_name != "":
-        templates_path = Path(config["PATH_KB_TEMPLATES"])
-        template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["title"])
-        if not fs.is_file(template_path):
-            resp_content = '{"Error":"' + "Named template does not exist" + '"}'
-            resp = make_response((resp_content), 404)
-            resp.mimetype = 'application/json'
-            return(resp)
+    updated_artifact = Artifact(
+        id=None,
+        title=args.get("title", old_artifact.title),
+        category=args.get("category", old_artifact.category),
+        tags=args.get("tags", old_artifact.tags),
+        author=args.get("author", old_artifact.author),
+        status=args.get("status", old_artifact.status),
+        template=args.get("template", old_artifact.template),
+        path=args.get("category", old_artifact.category) + '/' + args.get("title", old_artifact.title)
+    )
+    db.update_artifact_by_id(conn, old_artifact.id, updated_artifact)
+    # If either title or category has been changed, we must move the file
+    if args["category"] or args["title"]:
+        old_category_path = Path(
+            config["PATH_KB_DATA"],
+            old_artifact.category)
+        new_category_path = Path(
+            config["PATH_KB_DATA"],
+            args["category"] or old_artifact.category)
+        fs.create_directory(new_category_path)
 
-    conn = db.create_connection(config["PATH_KB_DB"])
-    # if an ID is specified, load artifact with that ID
-    if args["id"]:
-        id = args["id"]
-        old_artifact = get_artifact_by_id(conn, id)
-        if old_artifact is None:
-            resp = make_response(({'Error': 'The artifact does not exist'}), 404)
-            resp.mimetype = 'application/json'
-            return(resp)
-            response = update_artifact(old_artifact, args, config, attachment)
-            if resp == -200:
-                resp = make_response(({'Updated': id}), 200)
-                resp.mimetype = 'application/json'
-            else:
-                resp = make_response(({'Error': id + " artifact not updated"}), 400)
-                resp.mimetype = 'application/json'
-
-    return(resp)
+        fs.move_file(Path(old_category_path, old_artifact.title), Path(
+            new_category_path, args["title"] or old_artifact.title))
+        return -200

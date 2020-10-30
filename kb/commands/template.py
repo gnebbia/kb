@@ -185,19 +185,6 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
                       EDITOR             - the editor program to call
     """
     edit_template(args, config)
-    """
-    template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
-
-    if not fs.is_file(template_path):
-        print("ERROR: The template you want to edit does not exist. "
-                "Please specify a valid template to edit or create a new one")
-        sys.exit(1)
-
-    shell_cmd = shlex.split(
-        config["EDITOR"]) + [template_path]
-    call(shell_cmd)
-    """
-
 
 COMMANDS = {
     'add': add,

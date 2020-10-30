@@ -11,9 +11,6 @@ kb export command module
 :License: GPLv3 (see /LICENSE).
 """
 
-import time
-import tarfile
-from pathlib import Path
 from typing import Dict
 from kb.actions.export import export_kb
 

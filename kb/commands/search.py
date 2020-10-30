@@ -10,15 +10,12 @@ kb search command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
-
-from typing import Dict
-import kb.db as db
-import kb.initializer as initializer
-import kb.printer.search as printer
-import kb.history as history
-from kb.actions.search import search_kb
 import sys
-sys.path.append('kb')
+from typing import Dict
+
+from kb.actions.search import search_kb
+import kb.history as history
+import kb.printer.search as printer
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):

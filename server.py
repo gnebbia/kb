@@ -112,6 +112,7 @@ def constructResponse(results):
     for result in results:
         response = response + toJson(result) + ','
     response = response[:-1] + ']'
+    response = response.replace('"', "'")
     return response
 
 
@@ -135,6 +136,7 @@ def unauthorized():
 """
     Security framework
 """
+
 
 @kbapi_app.route('/edit', methods=['GET'])
 @kbapi_app.route('/template/edit', methods=['GET'])
@@ -176,7 +178,6 @@ def delete_item_by_ID(id=''):
     args:           -  id -> a database ID associated with
                             the artifact to be deleted
     """
-  
     parameters["id"] = id
     results = delete(parameters, config=DEFAULT_CONFIG)
     return (results)
@@ -200,16 +201,17 @@ def delete_items_by_ID(ids=''):
             deleted.append(item)
     if len(deleted) == 0:
         resp = make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404)
-        resp.mimetype = MIME_TYPE['json']  
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
     if len(deleted) != len(ids):
         resp = (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
-        resp.mimetype = MIME_TYPE['json'] 
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
     else:
         resp = (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
-        resp.mimetype = MIME_TYPE['json'] 
+        resp.mimetype = MIME_TYPE['json']
         return(resp)
+
 
 @kbapi_app.route('/delete/name/<string:title>', methods=['POST'])
 @auth.login_required
@@ -393,6 +395,7 @@ def return_version():
     response.mimetype = MIME_TYPE['json']
     return(response)
 
+
 @kbapi_app.route('/get/<int:id>', methods=['GET'])
 @kbapi_app.route('/view/<int:id>', methods=['GET'])
 @auth.login_required
@@ -407,6 +410,7 @@ def view_artifact_by_id(id):
 def view_artifact_by_title(title):
     conn = db.create_connection(DEFAULT_CONFIG["PATH_KB_DB"])
     return (view_by_title(conn, title, DEFAULT_CONFIG))
+
 
 @kbapi_app.route('/get/<string:category>/<string:title>', methods=['GET'])
 @kbapi_app.route('/view/<string:category>/<string:title>', methods=['GET'])

@@ -21,7 +21,7 @@ import kb.filesystem as fs
 import kb.initializer as initializer
 
 
-def update_artifact(old_artifact: Artifact, args: Dict[str, str], config: Dict[str, str], attachment):
+def update_artifact(conn, old_artifact: Artifact, args: Dict[str, str], config: Dict[str, str], attachment):
     """
     Update artifact properties within the knowledge base of kb.
 

@@ -52,5 +52,4 @@ def search_kb(args: Dict[str, str], config: Dict[str, str]):
         author=args["author"])
 
     artifacts = sorted(rows, key=lambda x: x.title)
-
     return artifacts

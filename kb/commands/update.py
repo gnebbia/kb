@@ -63,7 +63,7 @@ def update(args: Dict[str, str], config: Dict[str, str]):
             print("The artifact you are trying to update does not exist! "
                   "Please insert a valid ID...")
             return None
-        response = update_artifact(old_artifact, args, config, attachment)
+        response = update_artifact(conn, old_artifact, args, config, "")
     # else if a title is specified
     elif args["title"]:
         artifact = db.get_uniq_artifact_by_filter(conn, title=args["title"],

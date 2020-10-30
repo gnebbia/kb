@@ -73,7 +73,7 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
             resp = make_response(({'Error': 'The artifact does not exist'}), 404)
             resp.mimetype = 'application/json'
             return(resp)
-            response = update_artifact(old_artifact, args, config, attachment)
+            response = update_artifact(conn,old_artifact, args, config, attachment)
             if resp == -200:
                 resp = make_response(({'Updated': id}), 200)
                 resp.mimetype = 'application/json'

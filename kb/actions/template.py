@@ -18,15 +18,18 @@ import toml
 from pathlib import Path
 from subprocess import call
 from typing import Dict, List
-import kb.db as db
-import kb.initializer as initializer
-import kb.filesystem as fs
-import kb.config as conf
-from kb.entities.artifact import Artifact
-from flask import jsonify, make_response
-import kb.printer.template as printer
-from werkzeug.utils import secure_filename
 import base64
+
+from flask import jsonify, make_response
+from werkzeug.utils import secure_filename
+
+from kb.api.constants import MIME_TYPE
+import kb.config as conf
+import kb.db as db
+from kb.entities.artifact import Artifact
+import kb.filesystem as fs
+import kb.initializer as initializer
+import kb.printer.template as printer
 
 
 def get_templates(templates_path: str) -> List[str]:

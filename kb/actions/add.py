@@ -18,8 +18,7 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 import kb.initializer as initializer
-x
-
+from kb.entities import artifact
 
 
 def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):

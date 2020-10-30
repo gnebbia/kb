@@ -12,24 +12,14 @@ kbAPI server module
 """
 
 # Import system libraries
-# import sys
-# import os
-# import io
 import tempfile
-# import base64
-# import json
-# import urllib.request
-# from pathlib import Path
-# from werkzeug.utils import secure_filename
 from werkzeug.routing import BaseConverter
-
 
 # Use the flask framework, as well as the authentication framework
 from flask import Flask, make_response, request
 from flask_httpauth import HTTPBasicAuth
 
 # Import the API functions
-
 from kb.api.add import add
 from kb.api.erase import erase
 from kb.api.delete import delete
@@ -100,8 +90,11 @@ def toJson(self):
     Returns:
     A Json document
     """
+    # record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s","status":"%s","author":"%s","template":"%s"}' % \
+    #    (self.id, self.title, self.category, self.path, self.tags, self.status, self.author, self.template)
     record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s","status":"%s","author":"%s","template":"%s"}' % \
         (self.id, self.title, self.category, self.path, self.tags, self.status, self.author, self.template)
+
     return record
 
 
@@ -273,6 +266,7 @@ def get_all():
     if len(results) == 0:
         return (make_response(({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
     else:
+        print(constructResponse(results))
         return (make_response(({'Knowledge': constructResponse(results)}), 200))
 
 

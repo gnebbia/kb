@@ -5,24 +5,27 @@
 # See /LICENSE for licensing information.
 
 """
-kb import command module
+kb import api module
 
-:Copyright: © 2020, gnc.
+:Copyright: © 2020, alshapton.
 :License: GPLv3 (see /LICENSE).
 """
 import sys
-sys.path.append('kb')
-
+import os
 import tarfile
 from pathlib import Path
 from typing import Dict
-import kb.filesystem as fs
-from kb.actions.ingest import ingest_kb
 
-import os
 from werkzeug.utils import secure_filename
 
-def ingest(file,args: Dict[str, str], config: Dict[str, str]):
+from flask import make_response
+
+from kb.actions.ingest import ingest_kb
+from kb.api.constants import MIME_TYPE
+import kb.filesystem as fs
+
+
+def ingest(f, args: Dict[str, str], config: Dict[str, str]):
     """
     Import an entire kb knowledge base.
 
@@ -34,23 +37,46 @@ def ingest(file,args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-    print (args["file"])
-    if args["file"].endswith(".tar.gz"):
-        filename = secure_filename(file.filename)
+
+    if f.filename.endswith(".tar.gz"):
         home_path = Path(config["PATH_KB"]+'/')
-        print("made dir")
         home_path.mkdir(parents=True, exist_ok=True)
-        print("saving file")
-        print (str(home_path))  
-        print(filename)
-        file.save(os.path.join(home_path, filename))
-        print ("saved file")
-        print (home_path)
-        print (filename)
-        args["file"] = str(home_path) + "/" + str(filename)
-        print (args["file"])
-        results = ingest_kb(args,config)
+        f.save(os.path.join(home_path, f.filename))
+        args["file"] = str(home_path) + "/" + str(f.filename)
+
+        try:
+            fs.remove_directory(config["PATH_KB_DATA"])
+        except FileNotFoundError:
+            pass
+        try:
+            fs.remove_directory(config["PATH_KB_TEMPLATES"])
+        except FileNotFoundError:
+            pass
+        try:
+            fs.remove_file(config["PATH_KB_DB"])
+        except FileNotFoundError:
+            pass
+        try:
+            fs.remove_file(config["PATH_KB_HIST"])
+        except FileNotFoundError:
+            pass
+        try:
+            fs.remove_file(config["PATH_KB_CONFIG"])
+        except FileNotFoundError:
+            pass
+
+        results = ingest_kb(args, config)
+
+        try:
+            fs.remove_file(Path(args["file"]))
+        except FileNotFoundError:
+            pass
+
         if results == -200:
-            return -200
+            response = make_response(({'Imported': f.filename}), 200)
+            response.mimetype = MIME_TYPE['json']
+            return response
     else:
-        return -415
+        response = make_response(({'Error': f.filename + " is not a valid kb export file."}), 415)
+        response.mimetype = MIME_TYPE['json']
+        return response

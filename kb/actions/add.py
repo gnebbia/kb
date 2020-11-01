@@ -18,7 +18,7 @@ import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
 import kb.initializer as initializer
-from kb.entities import artifact
+from kb.entities.artifact import Artifact
 
 
 def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
@@ -77,7 +77,6 @@ def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
         tags=args["tags"],
         status=args["status"], author=args["author"])
     response = db.insert_artifact(conn, new_artifact)
-    print(response)
     return(response)
 
 

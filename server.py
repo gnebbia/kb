@@ -58,6 +58,7 @@ class ListConverter(BaseConverter):
 kbapi_app = Flask(__name__)
 kbapi_app.url_map.converters['list'] = ListConverter  # Add custom converter for lists
 
+
 # Initiate the authentication framework
 auth = HTTPBasicAuth()
 
@@ -424,16 +425,8 @@ def view_artifact_by_name(category, title):
 @auth.login_required
 def ingest_kb():
     parms = dict()
-    print("here")
-    print(request.files)
-    file = request.files['f']
-    parms["file"] = file.filename
-    print(parms["file"])
-    results = ingest(file, parms, config=DEFAULT_CONFIG)
-    if results == -200:
-        return (make_response(({'Imported': file.name}), 200))
-    if results == -415:
-        return (make_response(({'Error': file.name + " is not a valid kb export file."}), 415))
+    f = request.files['file']
+    return (ingest(f, parms, config=DEFAULT_CONFIG))
 
 
 # Start the server

@@ -5,7 +5,7 @@
 # See /LICENSE for licensing information.
 
 """
-kb import action  module
+kb import action module
 
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
@@ -14,6 +14,7 @@ kb import action  module
 import tarfile
 from pathlib import Path
 from typing import Dict
+
 import kb.filesystem as fs
 
 
@@ -29,12 +30,9 @@ def ingest_kb(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-    print (args["file"])
-    try:
-        fs.remove_directory(config["PATH_KB"])
-    except FileNotFoundError:
-        pass
+
     tar = tarfile.open(args["file"], "r:gz")
     tar.extractall(Path.home())
     tar.close()
-    return -200   
+
+    return -200

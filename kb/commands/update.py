@@ -15,6 +15,8 @@ import shlex
 from subprocess import call
 from typing import Dict
 from pathlib import Path
+
+from kb.actions.update import update_artifact
 import kb.db as db
 import kb.initializer as initializer
 import kb.history as history

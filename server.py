@@ -35,6 +35,8 @@ from kb.api.template import apply_on_set as apply_template
 from kb.api.template import get_template, update_template
 from kb.api.update import update
 from kb.api.view import view_by_id, view_by_title, view_by_name
+
+# Import supporting functions
 from kb.api.constants import MIME_TYPE
 from kb import db
 from kb import __version__
@@ -68,7 +70,7 @@ PORT = 5000
 HOST = '0.0.0.0'
 
 # Methods allowed:
-ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'search', 'template', 'update', 'version', 'view']
+ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'template', 'update', 'version', 'view']
 
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
@@ -139,8 +141,8 @@ def unauthorized():
 """
 
 
-@kbapi_app.route('/edit', methods=['GET'])
-@kbapi_app.route('/template/edit', methods=['GET'])
+@kbapi_app.route('/edit', methods=['GET', 'PUT', 'POST'])
+@kbapi_app.route('/template/edit', methods=['GET', 'PUT', 'POST'])
 @auth.login_required
 def method_never_implemented():
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
@@ -158,15 +160,9 @@ def add_item():
     parameters["status"] = request.form.get("status", "")
     parameters["tags"] = request.form.get("tags", "")
     parameters["file"] = ""
-
     attachment = request.files['file']
     resp = add(args=parameters, config=DEFAULT_CONFIG, file=attachment)
-    if resp is None:
-        return (make_response(({'Error': 'There was an issue adding the artifact'}), 404))
-    if resp <= 0:
-        return (make_response(({'Error': 'There was an issue adding the artifact'}), 404))
-    else:
-        return (make_response(({'Added': resp}), 200))
+    return(resp)
 
 
 @kbapi_app.route('/delete/<int:id>', methods=['POST'])

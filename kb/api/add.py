@@ -60,14 +60,23 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
         file.save(os.path.join(category_path, filename))
         print(os.path.join(category_path, filename))
-        print(os.path.join(category_path, args["title"]))
+        print(os.path.join(category_path, args["tite"]))
         os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
         resp = jsonify({'message': 'File successfully uploaded'})
         resp.status_code = 201
         resp.mimetype = 'application/json'
 
-
     conn = db.create_connection(config["PATH_KB_DB"])
 
     result = add_artifact(conn, args, DEFAULT_CONFIG)
-    return (result)
+    if result > 1:
+        resp = make_response(({'Added': resp}), 200)
+        resp.mimetype = MIME_TYPE['json']
+    if resp is None:
+        resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
+        resp.mimetype = MIME_TYPE['json']
+    if resp <= 0:
+        resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
+        resp.mimetype = MIME_TYPE['json']
+
+    return (resp)

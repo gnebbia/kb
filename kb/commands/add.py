@@ -62,24 +62,8 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                 continue
             add_file_to_kb(conn, args, config, fname)
     else:
-        # Get title for the new artifact
-        # title = args["title"]
-
-        # Assign a "default" category if not provided
-        # category = args["category"] or "default"
-
-        # Create "category" directory if it does not exist
-        # category_path = Path(config["PATH_KB_DATA"], category)
-        # category_path.mkdir(parents=True, exist_ok=True)
 
         if not db.is_artifact_existing(conn, args["title"], args["category"]):
-            # If a file is provided, copy the file to kb directory
-            # otherwise open up the editor and create some content
-            # artifact_path = str(Path(category_path, title))
-            # if args["body"]:
-            #    with open(artifact_path, "w+") as art_file:
-            #        body = args["body"].replace("\\n", "\n")
-            #        art_file.write(body)
             pass
         else:
             with tempfile.NamedTemporaryFile(delete=True) as f:

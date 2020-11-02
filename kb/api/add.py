@@ -11,12 +11,14 @@ kb add command module
 :License: GPLv3 (see /LICENSE).
 """
 
-import kb.db as db
+
+import os
 from pathlib import Path
 from typing import Dict
 
 from kb.actions.add import add_artifact
 from kb.api.constants import MIME_TYPE
+import kb.db as db
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
@@ -24,7 +26,6 @@ from kb.config import DEFAULT_CONFIG
 # Use the flask framework
 from flask import make_response
 
-import os
 from werkzeug.utils import secure_filename
 
 
@@ -58,21 +59,19 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
         filename = secure_filename(file.filename)
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
         file.save(os.path.join(category_path, filename))
-        print(os.path.join(category_path, filename))
-        print(os.path.join(category_path, args["tite"]))
         os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
 
     conn = db.create_connection(config["PATH_KB_DB"])
 
     result = add_artifact(conn, args, DEFAULT_CONFIG)
     if result > 1:
-        resp = make_response(({'Added': resp}), 200)
-        resp.mimetype = MIME_TYPE['json']
+        resp = make_response(({'Added': result}), 200)
+
     if resp is None:
         resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
-        resp.mimetype = MIME_TYPE['json']
+
     if resp <= 0:
         resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
-        resp.mimetype = MIME_TYPE['json']
 
+    resp.mimetype = MIME_TYPE['json']
     return (resp)

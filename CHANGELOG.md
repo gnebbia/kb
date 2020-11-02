@@ -4,7 +4,7 @@
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2020-08-09
-:Version: 0.1.1
+:Version: 0.1.5
 
 ## Version History
 

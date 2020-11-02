@@ -1,9 +1,7 @@
 # kbAPI Server
 
 
-> **This   document refers to the Alpha  deployment
-of the kbAPI  server which  is NOT complete and
-should  NOT be used in production environments.**
+> **This document refers to the Alpha  deployment of the kbAPI  server which  is NOT complete and should NOT be used in production environments.**
 
 ## What is the kbAPI Server ?
 
@@ -43,20 +41,20 @@ In this initial release, there is a simple user defined: `kbuser`  with a passwo
 In order to use the server, some examples would be:
 
 ```curl 
-curl --location --request GET 'http://<hostname>:5000//list' --header 'Authorization: Basic a2J1c2VyOmtidXNlcg=='
+curl --location --request GET 'http://<hostname>:<port>//list' --header 'Authorization: Basic a2J1c2VyOmtidXNlcg=='
 ``` 
 
 Note that the **a2J1c2VyOmtidXNlcg==** indicates the credentials for **kbuser/kbuser**
 
 an alternative curl call would be :
 ```curl
-curl -u kbuser:kbuser -i http://<hostname>:5000/list
+curl -u kbuser:kbuser -i http://<hostname>:<port>/list
 ```
 A Python example using  the well-known Requests library:
 
 ```python
 import requests
-url = "http://<hostname>:5000//list"
+url = "http://<hostname>:<port>//list"
 payload = {}
 headers = {
   'Authorization': 'Basic a2J1c2VyOmtidXNlcg=='
@@ -95,6 +93,7 @@ To deploy kb-API as a gunicorn-based server, simply use:
 | `http://<hostname>/export/all`               | GET  | Export ALL the data (including files) from the knowledgebase |
 | `http://<hostname>/export/kb`                | GET  | Export JUST the data from the knowledgebase |
 | `http://<hostname>/grep/<regex>`             | GET  | Returns ALL of the artifacts in the knowledgebase using the regex|
+| `http://<hostname>/import   `                | POST | Remove the existing knowledgebase and replace with the content of the  import file |
 | `http://<hostname>/list`                     | GET  | Returns ALL of the artifacts in the knowledgebase |
 | `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the knowledgebase in the requested category |
 | `http://<hostname>/list/tags/<tags>`         | GET  | Returns artifacts in the knowledgebase which have the requested tags |
@@ -140,14 +139,9 @@ The complete API documentation can be found [here](https://documenter.getpostman
 
 ## Things to be aware of
 
-Since kb uses SQLite to store artifacts, there is a small limitation which should
-be noted:
+Since kb uses SQLite to store artifacts, there are small limitations which should be noted:
 
-> SQLite can support multiple users at once. It does however lock the whole database
-when writing, so if there are lots of concurrent writes it is not a suitable
-database for the application (usually the time the database is locked is a few
-milliseconds - so for most uses this does not matter). But it is very well tested
-and very stable (and widely used) so it can be trusted.
->
->This means that there **may** be occasions when a write operation will fail,
-so this should be catered for in any application using this REST API
+> 1 - SQLite can support multiple users at once. It does however lock the whole database when writing, so if there are lots of concurrent writes it is not a suitable database for the application (usually the time the database is locked is a few  milliseconds - so for most uses this does not matter). But it is very well tested and very stable (and widely used) so it can be trusted.
+This means that there **may** be occasions when a write operation will fail, so this should be catered for in any application using this REST API
+
+> 2 - If the `.../import` method is used, and the knowledgebase is being used as a multi-user scenario, then ALL the artifacts will be removed, and the knowledgebase will be reset to whatever is in the import file for **everyone** 

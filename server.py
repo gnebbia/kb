@@ -22,7 +22,7 @@ from flask_httpauth import HTTPBasicAuth
 # Import the API functions
 from kb.api.add import add
 from kb.api.erase import erase
-from kb.api.delete import delete
+from kb.api.delete import delete, delete_list_of_items_by_ID
 from kb.api.export import export
 from kb.api.grep import grep
 from kb.api.ingest import ingest
@@ -50,7 +50,9 @@ class ListConverter(BaseConverter):
     Custom class to convert a list from a RESTful URL into a Python list
     """
     def to_python(self, value):
-        print(value)
+        """
+        Split on commas
+        """
         return value.split(',')
 
 
@@ -85,16 +87,8 @@ parameters = dict(id="", title="", category="", query="", tags="", author="", st
 
 def toJson(self):
     """
-    This function converts an Artifact object to a Json document
-
-    Arguments:
-    self   - Artifact object
-
-    Returns:
-    A Json document
+    Convert an artifct object to a JSON string
     """
-    # record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s","status":"%s","author":"%s","template":"%s"}' % \
-    #    (self.id, self.title, self.category, self.path, self.tags, self.status, self.author, self.template)
     record = '{"id":%i,"title":"%s", "category":"%s","path":"%s","tags":"%s","status":"%s","author":"%s","template":"%s"}' % \
         (self.id, self.title, self.category, self.path, self.tags, self.status, self.author, self.template)
 
@@ -103,13 +97,7 @@ def toJson(self):
 
 def constructResponse(results):
     """
-        Constructs a response from thee results obtained by a core function
-        Arguments:
-        result   - Set of results
-
-        Returns:
-        Fully fledged Json response
-
+    Constructs a response from the results obtained by a core function
     """
     response = '['
     for result in results:
@@ -119,13 +107,28 @@ def constructResponse(results):
     return response
 
 
+def construct_search_response(results, error_text):
+    """
+    Constructs a good/badresponse from the results obtained by a search function
+    """
+    if len(results) == 0:
+        response = make_response(({'Error': error_text}), 404)
+    else:
+        response = make_response(({'Knowledge': constructResponse(results)}), 200)
+    response.mimetype = MIME_TYPE['json']
+    return(response)
+
+
 """
-    Security framework
+Security framework
 """
 
 
 @auth.get_password
 def get_password(username):
+    """
+    Return password for username (default).
+    """
     if username == 'kbuser':
         return 'kbuser'
     return None
@@ -133,11 +136,16 @@ def get_password(username):
 
 @auth.error_handler
 def unauthorized():
-    return make_response(({'Error': 'Unauthorized access'}), 401)
+    """
+    Unauthorised access to the API.
+    """
+    resp = make_response(({'Error': 'Unauthorized access'}), 401)
+    resp.mimetype = MIME_TYPE['json']
+    return (resp)
 
 
 """
-    Security framework
+Routing
 """
 
 
@@ -145,6 +153,9 @@ def unauthorized():
 @kbapi_app.route('/template/edit', methods=['GET', 'PUT', 'POST'])
 @auth.login_required
 def method_never_implemented():
+    """
+    Methods from the command line NEVER to be implemented as the do not fit the paradigm of an API
+    """
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
     response.allow = ALLOWED_METHODS
     response.mimetype = MIME_TYPE['json']
@@ -154,6 +165,9 @@ def method_never_implemented():
 @kbapi_app.route('/add', methods=['POST'])
 @auth.login_required
 def add_item():
+    """
+    Add a neew artifact to the knowledge base.
+    """
     parameters["title"] = request.form.get("title", "")
     parameters["category"] = request.form.get("category", "")
     parameters["author"] = request.form.get("author", "")
@@ -170,10 +184,6 @@ def add_item():
 def delete_item_by_ID(id=''):
     """
     Delete a single artifact from the kb knowledge base.
-
-    Arguments:
-    args:           -  id -> a database ID associated with
-                            the artifact to be deleted
     """
     parameters["id"] = id
     results = delete(parameters, config=DEFAULT_CONFIG)
@@ -185,34 +195,16 @@ def delete_item_by_ID(id=''):
 def delete_items_by_ID(ids=''):
     """
     Delete a list of artifacts from the kb knowledge base.
-
-    Arguments:
-    args:           -  id -> a list of database IDs associated with
-                                the artifacts to be deleted
     """
-    deleted = []
-    for item in ids:
-        parameters["id"] = item
-        results = delete(parameters, config=DEFAULT_CONFIG)
-        if results == item:
-            deleted.append(item)
-    if len(deleted) == 0:
-        resp = make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404)
-        resp.mimetype = MIME_TYPE['json']
-        return(resp)
-    if len(deleted) != len(ids):
-        resp = (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
-        resp.mimetype = MIME_TYPE['json']
-        return(resp)
-    else:
-        resp = (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
-        resp.mimetype = MIME_TYPE['json']
-        return(resp)
+    return(delete_list_of_items_by_ID(ids, config=DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/delete/name/<string:title>', methods=['POST'])
 @auth.login_required
 def delete_item_by_name(title=''):
+    """
+    Delete an artifact from the knowledgebase by name.
+    """
     parameters["title"] = title
     results = delete(parameters, config=DEFAULT_CONFIG)
     return (results)
@@ -221,6 +213,9 @@ def delete_item_by_name(title=''):
 @kbapi_app.route('/erase/<string:component>', methods=['POST'])
 @auth.login_required
 def erase_db(component='all'):
+    """
+    Erase the whole knowledgebase
+    """
     results = erase(component, config=DEFAULT_CONFIG)
     return(results)
 
@@ -228,6 +223,9 @@ def erase_db(component='all'):
 @kbapi_app.route('/export/all', methods=['GET'])
 @auth.login_required
 def export_kb_all():
+    """
+    Export the whole knowledgebase to a file
+    """
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms = dict()
         parms["file"] = f.name
@@ -238,6 +236,9 @@ def export_kb_all():
 @kbapi_app.route('/export/data', methods=['GET'])
 @auth.login_required
 def export_kb_data():
+    """
+    Export just the data to a file
+    """
     with tempfile.NamedTemporaryFile(delete=True) as f:
         parms = dict()
         parms["file"] = f.name
@@ -249,63 +250,84 @@ def export_kb_data():
 @kbapi_app.route('/grep/<string:regex>', methods=['GET'])
 @auth.login_required
 def grep_artifacts(regex):
+    """
+    Grep the whole knowledgebase
+    """
     parms = dict()
     parms["regex"] = regex
     parms["case_insensitive"] = False
     parms["no_color"] = False
     parms["verbose"] = True
     results = grep(parms, config=DEFAULT_CONFIG)
-    return(make_response(constructResponse(results)), 200)
+    response = make_response(constructResponse(results), 200)
+    response.mimetype = MIME_TYPE['json']
+    return(response)
+
+
+@kbapi_app.route('/import', methods=['POST'])
+@auth.login_required
+def ingest_kb():
+    """
+    Import a kb export file
+    """
+    parms = dict()
+    f = request.files['file']
+    return (ingest(f, parms, config=DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/list', methods=['GET'])
 @auth.login_required
 def get_all():
+    """
+    List all  the artifacts in the knowledgebase
+    """
     results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no artifacts within the knowledgebase.'}), 404))
-    else:
-        print(constructResponse(results))
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+    response = construct_search_response(results, 'There are no artifacts in the knowledgebase.')
+    return(response)
 
 
 @kbapi_app.route('/list/<queries>', methods=['GET'])
 @auth.login_required
 def get_query(queries=''):
-    print(queries)
+    """
+    List the artifacts matching the query
+    """
     parameters["query"] = queries
     results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no matching artifacts.'}), 404))
-    else:
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+    response = construct_search_response(results, 'There are no matching artifacts.')
+    return(response)
 
 
 @kbapi_app.route('/list/category/<category>', methods=['GET'])
 @auth.login_required
 def get_category(category=''):
+    """
+    List the artifacts in a category
+    """
     parameters["category"] = category
     results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no artifacts with this category.'}), 404))
-    else:
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+    response = construct_search_response(results, 'There are no artifacts with this category.')
+    return(response)
 
 
 @kbapi_app.route('/list/tags/<tags>', methods=['GET'])
 @auth.login_required
 def get_tags(tags=''):
+    """
+    List the artifacts with the given tags
+    """
     parameters["tags"] = tags
     results = search(parameters, config=DEFAULT_CONFIG)
-    if len(results) == 0:
-        return (make_response(({'Error': 'There are no artifacts with these tags.'}), 404))
-    else:
-        return (make_response(({'Knowledge': constructResponse(results)}), 200))
+    response = construct_search_response(results, 'There are no artifacts with these tags.')
+    return(response)
 
 
 @kbapi_app.route('/templates', methods=['GET'])
 @auth.login_required
 def list_all_templates():
+    """
+    List all the available templates
+    """
     params = dict()
     return(search_templates(params, DEFAULT_CONFIG))
 
@@ -313,6 +335,9 @@ def list_all_templates():
 @kbapi_app.route('/templates/<string:templates>', methods=['GET'])
 @auth.login_required
 def kb_query_templates(templates):
+    """
+    List the templates matching a query string
+    """
     params = dict()
     params["query"] = templates
     return(search_templates(params, DEFAULT_CONFIG))
@@ -321,6 +346,9 @@ def kb_query_templates(templates):
 @kbapi_app.route('/template/apply/<string:title>', methods=['PUT'])
 @auth.login_required
 def kb_apply_template(title):
+    """
+    Apply a template to specific artifacts
+    """
     params = dict()
     params["title"] = request.form.get("title", "")
     params["category"] = request.form.get("category", "")
@@ -333,6 +361,9 @@ def kb_apply_template(title):
 
 @kbapi_app.route('/template/new/<string:template>', methods=['POST'])
 def kb_new_template(template):
+    """
+    Create a new template with the default template content
+    """
     params = dict()
     params["template"] = template
     return(new_template(params, DEFAULT_CONFIG))
@@ -341,6 +372,9 @@ def kb_new_template(template):
 @kbapi_app.route('/template/add/<string:title>', methods=['POST'])
 @auth.login_required
 def kb_add_template(title):
+    """
+    Add a new template with custom content
+    """
     params = dict()
     params["title"] = title
     attachment = request.files['file']
@@ -349,20 +383,30 @@ def kb_add_template(title):
 
 @kbapi_app.route('/template/delete/<string:template>', methods=['POST'])
 def kb_delete_template(template):
+    """
+    Delete a named template
+    """
     params = dict()
     params["title"] = template
     return(delete_template(params, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/template/get/<string:title>', methods=['GET'])
+@kbapi_app.route('/template/view/<string:title>', methods=['GET'])
 @auth.login_required
 def kb_get_template(title):
+    """
+    Get/View a template
+    """
     return (get_template(title, DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/template/update/<string:title>', methods=['PUT'])
 @auth.login_required
 def kb_update_template(title):
+    """
+    Update a named template (with content)
+    """
     attachment = request.files['file']
     return (update_template(title, DEFAULT_CONFIG, attachment))
 
@@ -370,6 +414,9 @@ def kb_update_template(title):
 @kbapi_app.route('/update/<int:id>', methods=['PUT'])
 @auth.login_required
 def update_artifact(id):
+    """
+    Update an artifact
+    """
     parameters["title"] = request.form.get("title", "")
     parameters["category"] = request.form.get("category", "")
     parameters["author"] = request.form.get("author", "")
@@ -397,6 +444,9 @@ def return_version():
 @kbapi_app.route('/view/<int:id>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_id(id):
+    """
+    Get/View an artifact by ID
+    """
     conn = db.create_connection(DEFAULT_CONFIG["PATH_KB_DB"])
     return (view_by_id(conn, id, DEFAULT_CONFIG))
 
@@ -405,6 +455,9 @@ def view_artifact_by_id(id):
 @kbapi_app.route('/view/<string:title>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_title(title):
+    """
+    Get/View an artifact by title
+    """
     conn = db.create_connection(DEFAULT_CONFIG["PATH_KB_DB"])
     return (view_by_title(conn, title, DEFAULT_CONFIG))
 
@@ -413,16 +466,11 @@ def view_artifact_by_title(title):
 @kbapi_app.route('/view/<string:category>/<string:title>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_name(category, title):
+    """
+    Get/View an artifact by category/title
+    """
     conn = db.create_connection(DEFAULT_CONFIG["PATH_KB_DB"])
     return (view_by_name(conn, title, category, DEFAULT_CONFIG))
-
-
-@kbapi_app.route('/import', methods=['POST'])
-@auth.login_required
-def ingest_kb():
-    parms = dict()
-    f = request.files['file']
-    return (ingest(f, parms, config=DEFAULT_CONFIG))
 
 
 # Start the server

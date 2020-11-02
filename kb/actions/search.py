@@ -5,7 +5,7 @@
 # See /LICENSE for licensing information.
 
 """
-kb search command module
+kb search action module
 
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).

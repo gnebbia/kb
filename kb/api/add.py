@@ -11,19 +11,18 @@ kb add command module
 :License: GPLv3 (see /LICENSE).
 """
 
-
 import kb.db as db
 from pathlib import Path
 from typing import Dict
-# from kb.entities.artifact import Artifact
 
 from kb.actions.add import add_artifact
+from kb.api.constants import MIME_TYPE
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
 
 # Use the flask framework
-from flask import jsonify
+from flask import make_response
 
 import os
 from werkzeug.utils import secure_filename
@@ -62,9 +61,6 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
         print(os.path.join(category_path, filename))
         print(os.path.join(category_path, args["tite"]))
         os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
-        resp = jsonify({'message': 'File successfully uploaded'})
-        resp.status_code = 201
-        resp.mimetype = 'application/json'
 
     conn = db.create_connection(config["PATH_KB_DB"])
 

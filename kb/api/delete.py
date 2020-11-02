@@ -17,12 +17,46 @@ import sys
 import sys
 from typing import Dict
 from pathlib import Path
-import kb.db as db
-import kb.initializer as initializer
-import kb.history as history
-import kb.filesystem as fs
-from kb.actions.delete import delete_artifacts
+
 from flask import make_response
+
+
+import kb.db as db
+import kb.filesystem as fs
+import kb.history as history
+import kb.initializer as initializer
+
+from kb.actions.delete import delete_artifacts
+from kb.api.constants import MIME_TYPE
+
+
+def delete_list_of_items_by_ID(ids, config: Dict[str, str]):
+    """
+    Delete a list of artifacts from the kb knowledge base.
+
+    Arguments:
+    args:           -  id -> a list of database IDs associated with
+                                the artifacts to be deleted
+    """
+    deleted = []
+    parameters = dict()
+    for item in ids:
+        parameters["id"] = item
+        results = delete(parameters, config)
+        if results == item:
+            deleted.append(item)
+    if len(deleted) == 0:
+        resp = make_response(({'Error': 'There are no artifacts with any of those IDs'}), 404)
+        resp.mimetype = MIME_TYPE['json']
+        return(resp)
+    if len(deleted) != len(ids):
+        resp = (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
+        resp.mimetype = MIME_TYPE['json']
+        return(resp)
+    else:
+        resp = (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
+        resp.mimetype = MIME_TYPE['json']
+        return(resp)
 
 
 def delete(args: Dict[str, str], config: Dict[str, str]):

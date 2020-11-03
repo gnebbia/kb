@@ -7,7 +7,7 @@
 """
 kbAPI server module
 
-:Copyright: © 2020, alshaptons.
+:Copyright: © 2020, alshapton.
 :License: GPLv3 (see /LICENSE).
 """
 
@@ -440,8 +440,8 @@ def return_version():
     return(response)
 
 
-@kbapi_app.route('/get/<int:id>', methods=['GET'])
 @kbapi_app.route('/view/<int:id>', methods=['GET'])
+@kbapi_app.route('/get/<int:id>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_id(id):
     """
@@ -451,8 +451,8 @@ def view_artifact_by_id(id):
     return (view_by_id(conn, id, DEFAULT_CONFIG))
 
 
-@kbapi_app.route('/get/<string:title>', methods=['GET'])
 @kbapi_app.route('/view/<string:title>', methods=['GET'])
+@kbapi_app.route('/get/<string:title>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_title(title):
     """
@@ -462,8 +462,8 @@ def view_artifact_by_title(title):
     return (view_by_title(conn, title, DEFAULT_CONFIG))
 
 
-@kbapi_app.route('/get/<string:category>/<string:title>', methods=['GET'])
 @kbapi_app.route('/view/<string:category>/<string:title>', methods=['GET'])
+@kbapi_app.route('/get/<string:category>/<string:title>', methods=['GET'])
 @auth.login_required
 def view_artifact_by_name(category, title):
     """

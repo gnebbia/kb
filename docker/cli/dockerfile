@@ -1,4 +1,4 @@
-# Start with the base image
+# Start with the base image (for the cli)
 
 FROM python:alpine3.8
 
@@ -14,7 +14,7 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt && \
     python setup.py install && \
-    cat /app/docker/aliases >> /etc/profile
+    cat /app/docker/cli/aliases >> /etc/profile
 
 ENV ENV="/etc/profile"
 

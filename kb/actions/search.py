@@ -5,13 +5,18 @@
 # See /LICENSE for licensing information.
 
 """
+<<<<<<< HEAD
 kb search command module
+=======
+kb search action module
+>>>>>>> feature/better-docker
 
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
 
 from typing import Dict
+<<<<<<< HEAD
 import kb.db as db
 import kb.initializer as initializer
 import kb.printer.search as printer
@@ -19,6 +24,14 @@ import kb.history as history
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
+=======
+
+import kb.db as db
+import kb.initializer as initializer
+
+
+def search_kb(args: Dict[str, str], config: Dict[str, str]):
+>>>>>>> feature/better-docker
     """
     Search artifacts within the knowledge base of kb.
 
@@ -53,7 +66,11 @@ def search(args: Dict[str, str], config: Dict[str, str]):
         author=args["author"])
 
     artifacts = sorted(rows, key=lambda x: x.title)
+<<<<<<< HEAD
 
     return artifacts
 
     
+=======
+    return artifacts
+>>>>>>> feature/better-docker

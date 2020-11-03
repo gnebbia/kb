@@ -3,7 +3,7 @@
 :Author: gnc <nebbionegiuseppe@gmail.com>
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
-:Date: 2020-09-29
+:Date: 2020-10-16
 :Version: 0.1.1
 
 ## Version History

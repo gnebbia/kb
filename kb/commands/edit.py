@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.4
+# kb v0.1.5
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -46,6 +46,16 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
     # else if a title is specified
     elif args["title"]:
         edit_by_name(args["title"], args["category"], config)
+
+    # else try to guess
+    elif args["nameid"]:
+        if args["nameid"].isdigit():
+            edit_by_id(args["nameid"], config)
+        else:
+            edit_by_name(args["nameid"], args["category"], config)
+
+
+
 
 
 def edit_by_id(id: int, config: Dict[str, str]):

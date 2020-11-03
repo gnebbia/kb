@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.4
+# kb v0.1.5
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -118,6 +118,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
     # edit parser
     edit_parser.add_argument(
+        "nameid",
+        help="Title or ID of the artifact to edit",
+        type=str,
+        nargs="?",
+    )
+    edit_parser.add_argument(
         "-i", "--id",
         help="ID of the artifact to edit",
         type=str,
@@ -203,6 +209,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
 
     # view parser
+    view_parser.add_argument(
+        "nameid",
+        help="Title or ID of the artifact to view",
+        type=str,
+        nargs="?",
+    )
     view_parser.add_argument(
         "-i", "--id",
         help="ID of the artifact to visualize",
@@ -392,7 +404,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     add_template_parser.add_argument(
-        "-t","--title",
+        "-t", "--title",
         help="The title to assign to the template added from a file to kb",
         type=str,
     )
@@ -463,7 +475,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     apply_template_parser.add_argument(
-        "-m","--extended-match",
+        "-m", "--extended-match",
         help="""
         Perform application query not on a strict match,
         for example:

@@ -4,7 +4,7 @@
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2020-08-09
-:Version: 0.1.1
+:Version: 0.1.5
 
 ## Version History
 
@@ -29,6 +29,10 @@
     * Added templates
     * Added schema migration logic
     * Updated docs with a TOC
-0.1.5 (WIP)
-    * Removed a debug print in template new command
-    * Added --body to the update command
+0.1.5
+    * Solved minor bug related to viewing certain escape sequences
+    * Added strings helping users for some exceptions
+    * Implemented a faster edit/view functionality by guessing input id/title
+    * Updated bash shortcuts
+    * Updated Documentation
+

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.4
+# kb v0.1.5
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -10,13 +10,12 @@ kb search command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
-
+import sys
 from typing import Dict
-import kb.db as db
-import kb.initializer as initializer
-import kb.printer.search as printer
+
+from kb.actions.search import search_kb
 import kb.history as history
-import kb.actions.search as actions
+import kb.printer.search as printer
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -37,9 +36,8 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
                       EDITOR            - the editor program to call
     """
- 
-    artifacts = actions.search( args, config)   
 
+    artifacts = search_kb(args, config)
 
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)

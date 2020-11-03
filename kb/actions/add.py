@@ -10,6 +10,7 @@ kb add command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
+<<<<<<< HEAD
 
 import shlex
 import sys
@@ -27,6 +28,20 @@ from werkzeug.utils import secure_filename
 
 
 def add(args: Dict[str, str],config: Dict[str, str]):
+=======
+import os
+from pathlib import Path
+from typing import Dict
+
+import kb.db as db
+import kb.initializer as initializer
+import kb.filesystem as fs
+import kb.initializer as initializer
+from kb.entities.artifact import Artifact
+
+
+def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
+>>>>>>> feature/better-docker
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -45,16 +60,46 @@ def add(args: Dict[str, str],config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
 
+<<<<<<< HEAD
 
     # Check initialization
     initializer.init(config)
 
     conn = db.create_connection(config["PATH_KB_DB"])
     if args["file"]:
+=======
+    response = -404
+
+    # Check initialization
+    initializer.init(config)
+    # Get title for the new artifact
+    title = args["title"]
+
+    # Assign a "default" category if not provided
+    category = args["category"] or "default"
+
+    # Create "category" directory if it does not exist
+    category_path = Path(config["PATH_KB_DATA"], category)
+    category_path.mkdir(parents=True, exist_ok=True)
+    artifact_path = str(Path(category_path, title))
+
+    if 'body' in args:
+        with open(artifact_path, "w+") as art_file:
+            body = args["body"].replace("\\n", "\n")
+            art_file.write(body)
+
+    if 'temp_file' in args:
+        for fname in args["temp_file"]:
+            os.rename(fname, artifact_path)
+            add_file_to_kb(conn, args, config, artifact_path)
+
+    if 'file' in args:
+>>>>>>> feature/better-docker
         for fname in args["file"]:
             if fs.is_directory(fname):
                 continue
             add_file_to_kb(conn, args, config, fname)
+<<<<<<< HEAD
     else:
         # Get title for the new artifact
         title = args["title"]
@@ -89,6 +134,16 @@ def add(args: Dict[str, str],config: Dict[str, str]):
         db.insert_artifact(conn, new_artifact)
     return("OK")
 
+=======
+
+    new_artifact = Artifact(
+        id=None, title=title, category=category,
+        path="{category}/{title}".format(category=category, title=title),
+        tags=args["tags"],
+        status=args["status"], author=args["author"])
+    response = db.insert_artifact(conn, new_artifact)
+    return(response)
+>>>>>>> feature/better-docker
 
 
 def add_file_to_kb(

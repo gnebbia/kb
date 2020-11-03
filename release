@@ -91,7 +91,9 @@ date=$(date '+%Y-%m-%d')
 
 status 'Replacing versions and dates in files...'
 sed "s/Version: .*/Version: $version/g" README.md -i
+sed "s/Version: .*/Version: $version/g" docs/README.md -i
 sed "s/Date: .*/Date: $date/g" README.md -i
+sed "s/Date: .*/Date: $date/g" docs/README.md -i
 sed "s/version=.*/version='$version',/g" setup.py -i
 sed "s/version = .*/version = '$version'/g" docs/conf.py -i
 sed "s/release = .*/release = '$version'/g" docs/conf.py -i

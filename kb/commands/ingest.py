@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.4
+# kb v0.1.5
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -15,6 +15,7 @@ import tarfile
 from pathlib import Path
 from typing import Dict
 import kb.filesystem as fs
+from kb.actions.ingest import ingest_kb
 
 
 def ingest(args: Dict[str, str], config: Dict[str, str]):
@@ -39,9 +40,13 @@ def ingest(args: Dict[str, str], config: Dict[str, str]):
                 fs.remove_directory(config["PATH_KB"])
             except FileNotFoundError:
                 pass
-            tar = tarfile.open(args["file"], "r:gz")
-            tar.extractall(Path.home())
-            tar.close()
-            print("kb archive {fname} imported".format(fname=args["file"]))
+
+            results = ingest_kb(args, config)
+
+            if results == -200:
+                print("kb archive {fname} imported".format(fname=args["file"]))
+            else:
+                print("There was an error importing kb archive {fname}".format(fname=args["file"]))
+
     else:
         print("Please provide a file exported through kb with kb.tar.gz extension")

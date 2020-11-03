@@ -9,12 +9,12 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-09-22
+Date: 2020-10-16
 
-Version: 0.1.4
+Version: 0.1.5
 
 
-## PURPOSE
+## Purpose
 
 kb is a text-oriented minimalist command line knowledge base manager. kb
 can be considered a quick note collection and access tool oriented toward
@@ -49,7 +49,9 @@ In few words kb allows a user to quickly and efficiently:
 Basically, kb provides a clean text-based way to organize your knowledge.
 
 
-## INSTALLATION
+## Installation
+
+**You should have Python 3.6 or above installed.**
 
 To install the most recent stable version of kb just type:
 ```sh
@@ -63,6 +65,9 @@ git clone https://github.com/gnebbia/kb
 cd kb
 pip install -r requirements.txt
 python setup.py install
+
+# or with pip
+pip install -U git+https://github.com/gnebbia/kb
 ```
 
 **Tip** for GNU/Linux and MacOS users: For a better user experience,
@@ -70,9 +75,9 @@ also set the following kb bash aliases:
 ```sh
 cat <<EOF > ~/.kb_alias
 alias kbl="kb list"
-alias kbe="kb edit --id"
+alias kbe="kb edit"
 alias kba="kb add"
-alias kbv="kb view --id"
+alias kbv="kb view"
 alias kbd="kb delete --id"
 alias kbg="kb grep"
 alias kbt="kb list --tags"
@@ -81,15 +86,101 @@ echo "source ~/.kb_alias" >> ~/.bashrc
 source ~/.kb_alias
 ```
 
-**Tip** for Windows users: Do not use notepad as %EDITOR%, kb is not
-compatible with notepad, a reasonable alternative is notepad++.
-
-Please upgrade kb frequently by doing:
+Please remember to upgrade kb frequently by doing:
 ```sh
 pip install -U kb-manager
 ```
 
-## DOCKER
+### Installation with homebrew
+
+To install using homebrew, use:
+```sh
+brew tap gnebbia/kb https://github.com/gnebbia/kb.git
+brew install gnebbia/kb/kb
+```
+
+To upgrade with homebrew:
+```sh
+brew update
+brew upgrade gnebbia/kb/kb
+```
+
+### Installation from AUR
+
+Arch Linux users can install [python-kb](https://aur.archlinux.org/packages/python-kb) or [python-kb-git](https://aur.archlinux.org/packages/python-kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
+
+Stable:
+```sh
+yay -S python-kb
+```
+
+Dev:
+```sh
+yay -S python-kb-git
+```
+
+### Notes for Windows users
+
+Windows users should keep in mind these things:
+- DO NOT USE notepad as %EDITOR%, kb is not compatible with notepad,
+  a reasonable alternative is notepad++;
+- %EDITOR% variable should ALWAYS be enclosed within double quotes;
+```sh
+EDITOR=C:\Program Files\Editor\my cool editor.exe      -> WRONG!
+EDITOR="C:\Program Files\Editor\my cool editor.exe"    -> OK!
+```
+
+To set the "EDITOR" Environment variable by using cmd.exe, just issue
+the following commands, after having inserted the path to your desired
+text editor instead of the placeholder:
+```sh
+set EDITOR="C:\path\to\editor\here.exe"
+setx EDITOR "\"C:\path\to\editor\here.exe\""
+```
+
+To set the "EDITOR" Environment variable by using Powershell, just issue
+the following commands, after having inserted the path to your desired
+text editor instead of the placeholder:
+```sh
+$env:EDITOR="C:\path\to\editor\here.exe"
+[System.Environment]::SetEnvironmentVariable('EDITOR','"C:\path\to\editor\here.exe"', [System.EnvironmentVariableTarget]::User)
+```
+
+#### Setting Aliases for cmd
+
+Open a cmd.exe terminal with administrative rights and paste
+the following commands:
+```sh
+reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Command Processor" /v "AutoRun" /t REG_EXPAND_SZ /d "%USERPROFILE%\autorun.cmd"
+(
+echo @echo off
+echo doskey kbl=kb list $*
+echo doskey kbe=kb edit $*
+echo doskey kba=kb add $*
+echo doskey kbv=kb view $*
+echo doskey kbd=kb delete --id $*
+echo doskey kbg=kb grep $*
+echo doskey kbt=kb list --tags $*
+)> %USERPROFILE%\autorun.cmd
+```
+
+#### Setting Aliases for Powershell
+
+Open a Powershell terminal and paste the following commands:
+```sh
+@'
+function kbl { kb list $args }
+function kbe { kb edit $args }
+function kba { kb add  $args }
+function kbv { kb view $args }
+function kbd { kb delete --id $args }
+function kbg { kb grep $args }
+function kbt { kb list --tags $args }
+'@ >  $env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1
+```
+
+
+## Docker
 
 A docker setup has been included to help with development.
 
@@ -107,7 +198,7 @@ To interact with the container, place (or symlink) the files on your host
 into the `./docker/data` directory, which can then be seen and used in
 the `/data` directory in the container.
 
-## USAGE
+## Usage
 
 A quick demo of a typical scenario using kb:
 
@@ -221,7 +312,8 @@ kb delete --title zap --category cheatsheet
 kb view --id 3
 # or
 kb view -i 3
-
+# or
+kb view 3
 # or if aliases are used:
 kbv 3
 ```
@@ -231,6 +323,8 @@ kbv 3
 kb view --title "gobuster"
 # or
 kb view -t "gobuster"
+# or
+kb view gobuster
 ```
 
 #### View an artifact without colors
@@ -258,7 +352,8 @@ variable.
 #### Edit an artifact by id
 ```sh
 kb edit --id 13
-
+# or
+kb edit 13
 # or if aliases are used:
 kbe 13 
 ```
@@ -268,6 +363,8 @@ kbe 13
 kb edit --title "git" --category "cheatsheet"
 # or
 kb edit -t "git" -c "cheatsheet"
+# or if git is a unique artifact
+kb edit git
 ```
 
 ### Grep through artifacts

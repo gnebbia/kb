@@ -17,4 +17,6 @@ __all__ = ()
 # Dictionary of MIME types:
 MIME_TYPE = dict(json="application/json", utf8="text/plain;charset=UTF-8")
 
+# API Version
+API_VERSION = "0.1.0"
 

@@ -5,7 +5,7 @@
 # See /LICENSE for licensing information.
 
 """
-kb export command module
+kb stats api module
 
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
@@ -16,13 +16,13 @@ import base64
 
 from flask import make_response
 
-from kb.actions.export import export_kb
+from kb.actions.stats import kb_stats
 from kb.api.constants import MIME_TYPE
 
 
-def export(args: Dict[str, str], config: Dict[str, str]):
+def stats(config: Dict[str, str]):
     """
-    Export the entire kb knowledge base.
+    Get statistics about the database
 
     Arguments:
     args:           - a dictionary containing the following fields:
@@ -32,11 +32,10 @@ def export(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-    fname = export_kb(args, config=config)
+    
+    stats_content = kb_stats(config)
 
-    with open(fname, "rb") as export_file:
-        encoded_string = base64.b64encode(export_file.read())
-    export_content = '{"Export":"' + str(encoded_string) + '"}'
-    resp = make_response((export_content), 200)
-    resp.mimetype = MIME_TYPE['utf8']
+    resp = make_response(stats_content  , 200)
+    resp.mimetype = MIME_TYPE['json']
     return(resp)
+

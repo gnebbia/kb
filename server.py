@@ -27,6 +27,7 @@ from kb.api.export import export
 from kb.api.grep import grep
 from kb.api.ingest import ingest
 from kb.api.search import search
+from kb.api.stats import stats
 from kb.api.template import search as search_templates
 from kb.api.template import add as add_template
 from kb.api.template import new as new_template
@@ -72,7 +73,7 @@ PORT = 5000
 HOST = '0.0.0.0'
 
 # Methods allowed:
-ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'template', 'update', 'version', 'view']
+ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'stats', 'template', 'update', 'version', 'view']
 
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
@@ -319,6 +320,17 @@ def get_tags(tags=''):
     parameters["tags"] = tags
     results = search(parameters, config=DEFAULT_CONFIG)
     response = construct_search_response(results, 'There are no artifacts with these tags.')
+    return(response)
+
+
+@kbapi_app.route('/stats', methods=['GET'])
+@auth.login_required
+def return_stats():
+    """
+    Returns statistics about the knowledgebase
+    """
+    response = stats(DEFAULT_CONFIG)
+    response.mimetype = MIME_TYPE['json']
     return(response)
 
 

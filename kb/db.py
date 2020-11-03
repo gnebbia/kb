@@ -641,3 +641,39 @@ def migrate_v0_to_v1(conn):
     cur.execute(sql_query)
     conn.commit()
     set_schema_version(conn, 1)
+
+
+def count_artifacts(conn):
+    """
+    Counts the number of artifacts in the database
+
+    Arguments:
+    conn            - the sqlite3 connection object
+    
+    Returns:
+    Number of artifacts in the database
+    """
+    cur = conn.cursor()
+    cur.execute("""SELECT COUNT(*)
+                   FROM artifacts""")
+
+    result = cur.fetchone()
+    return int(str(result).replace(')', "").replace('(', "").replace(',', ""))
+
+
+def count_tags(conn):
+    """
+    Counts the number of unique tags in the database
+
+    Arguments:
+    conn            - the sqlite3 connection object
+    
+    Returns:
+    Number of unique tags in the database
+    """
+    cur = conn.cursor()
+    cur.execute("""SELECT COUNT(DISTINCT tag)
+                   FROM tags WHERE tag IS NOT NULL""")
+
+    result = cur.fetchone()
+    return int(str(result).replace(')', "").replace('(', "").replace(',', ""))

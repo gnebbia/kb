@@ -10,25 +10,6 @@ kb add command module
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """
-<<<<<<< HEAD
-
-import shlex
-import sys
-from pathlib import Path
-from subprocess import call
-from typing import Dict
-import kb.db as db
-import kb.initializer as initializer
-import kb.filesystem as fs
-from kb.entities.artifact import Artifact
-
-import os
-from werkzeug.utils import secure_filename
-
-
-
-def add(args: Dict[str, str],config: Dict[str, str]):
-=======
 import os
 from pathlib import Path
 from typing import Dict
@@ -41,7 +22,6 @@ from kb.entities.artifact import Artifact
 
 
 def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
->>>>>>> feature/better-docker
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -60,14 +40,6 @@ def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
 
-<<<<<<< HEAD
-
-    # Check initialization
-    initializer.init(config)
-
-    conn = db.create_connection(config["PATH_KB_DB"])
-    if args["file"]:
-=======
     response = -404
 
     # Check initialization
@@ -94,47 +66,10 @@ def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
             add_file_to_kb(conn, args, config, artifact_path)
 
     if 'file' in args:
->>>>>>> feature/better-docker
         for fname in args["file"]:
             if fs.is_directory(fname):
                 continue
             add_file_to_kb(conn, args, config, fname)
-<<<<<<< HEAD
-    else:
-        # Get title for the new artifact
-        title = args["title"]
-
-        # Assign a "default" category if not provided
-        category = args["category"] or "default"
-
-        # Create "category" directory if it does not exist
-        category_path = Path(config["PATH_KB_DATA"], category)
-        category_path.mkdir(parents=True, exist_ok=True)
-
-        #if not db.is_artifact_existing(conn, title, category):
-            # If a file is provided, copy the file to kb directory
-            # otherwise open up the editor and create some content
-        #    artifact_path = str(Path(category_path, title))
-
-
-#            if args["body"] :
-#                    body = args["body"].replace("\\n", "\n")
-#                with open(artifact_path, "w+") as art_file:
-#                    art_file.write(body)
-#            else:
-#                shell_cmd = shlex.split(
-#                    config["EDITOR"]) + [artifact_path]
-#                call(shell_cmd)
-
-        new_artifact = Artifact(
-            id=None, title=title, category=category,
-            path="{category}/{title}".format(category=category, title=title),
-            tags=args["tags"],
-            status=args["status"], author=args["author"])
-        db.insert_artifact(conn, new_artifact)
-    return("OK")
-
-=======
 
     new_artifact = Artifact(
         id=None, title=title, category=category,
@@ -143,7 +78,6 @@ def add_artifact(conn, args: Dict[str, str], config: Dict[str, str]):
         status=args["status"], author=args["author"])
     response = db.insert_artifact(conn, new_artifact)
     return(response)
->>>>>>> feature/better-docker
 
 
 def add_file_to_kb(

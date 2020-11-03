@@ -4,10 +4,7 @@
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
 
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/better-docker
 """
 kb search command module
 
@@ -16,13 +13,9 @@ kb search command module
 """
 
 from typing import Dict
-<<<<<<< HEAD
-import kb.actions.search as actions
-=======
 from kb.api.constants import MIME_TYPE
 from kb.actions.search import search_kb
 import kb.history as history
->>>>>>> feature/better-docker
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -43,15 +36,8 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
                       EDITOR            - the editor program to call
     """
-<<<<<<< HEAD
- 
-    artifacts = actions.search( args, config)   
-
-    return artifacts
-=======
 
     artifacts = search_kb(args, config)
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)
     return artifacts
->>>>>>> feature/better-docker

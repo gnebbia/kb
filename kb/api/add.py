@@ -12,12 +12,6 @@ kb add command module
 """
 
 
-<<<<<<< HEAD
-from pathlib import Path
-from typing import Dict
-from kb.entities.artifact import Artifact
-import kb.actions.add as actions
-=======
 import os
 from pathlib import Path
 from typing import Dict
@@ -25,29 +19,17 @@ from typing import Dict
 from kb.actions.add import add_artifact
 from kb.api.constants import MIME_TYPE
 import kb.db as db
->>>>>>> feature/better-docker
 
 # Get the configuration for the knowledgebase
 from kb.config import DEFAULT_CONFIG
 
 # Use the flask framework
-<<<<<<< HEAD
-from flask import jsonify
-
-import os
-from werkzeug.utils import secure_filename
-#import urllib.request
-
-
-def addArtifact(args: Dict[str, str],file,config: Dict[str, str]):
-=======
 from flask import make_response
 
 from werkzeug.utils import secure_filename
 
 
 def add(args: Dict[str, str], config: Dict[str, str], file):
->>>>>>> feature/better-docker
     """
     Adds a list of artifacts to the knowledge base of kb.
 
@@ -66,13 +48,9 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
                       EDITOR            - the editor program to call
     """
 
-<<<<<<< HEAD
-    if file :
-=======
     # If there is a file to add.....
 
     if file:
->>>>>>> feature/better-docker
         # Create "category" directory if it does not exist
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
         category_path.mkdir(parents=True, exist_ok=True)
@@ -81,14 +59,6 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
         filename = secure_filename(file.filename)
         category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
         file.save(os.path.join(category_path, filename))
-<<<<<<< HEAD
-        resp = jsonify({'message' : 'File successfully uploaded'})
-        resp.status_code = 201
-        
-    result = actions.add(args,config=DEFAULT_CONFIG)
-    return (result)
-
-=======
         os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
 
     conn = db.create_connection(config["PATH_KB_DB"])
@@ -105,4 +75,3 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
 
     resp.mimetype = MIME_TYPE['json']
     return (resp)
->>>>>>> feature/better-docker

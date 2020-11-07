@@ -12,11 +12,10 @@ kb stats api module
 """
 
 from typing import Dict
-import base64
 
 from flask import make_response
 
-from kb.actions.stats import kb_stats
+from kb.actions.kbinfo import kb_stats
 from kb.api.constants import MIME_TYPE
 
 

@@ -1,31 +1,12 @@
 # kbAPI Server
 
 
-<<<<<<< HEAD
-> **This   document refers to the Alpha  deployment
-of the kbAPI  server which  is NOT complete and
-should  NOT be used in production environments.**
-=======
 > **This document refers to the Alpha  deployment of the kbAPI  server which  is NOT complete and should NOT be used in production environments.**
->>>>>>> feature/better-docker
 
 ## What is the kbAPI Server ?
 
 The kbAPI server is a component of the kb project which exposes the knowledge base as a REST API.
 
-<<<<<<< HEAD
-It does this by wrapping the core functionality of kb using the [Bottle framework](http://bottlepy.org)
-
-## Starting the server (MacOS and Linux)
-
-To start the kbAPI server, simply navigate to the  directory containing the server.py module and type
-
-`python3 server.py`
-
-or, to run it in the background  as a detached process (thus allowing you to log out and have the server running in the background)
-
-`nohup python3 server.py &`
-=======
 It does this by wrapping the core functionality of kb using the [Flask framework](https://flask.palletsprojects.com/en/1.1.x/)
 
 ## Starting the server (MacOS and Linux)
@@ -37,20 +18,11 @@ To start the kbAPI server, simply navigate to the directory containing the `serv
 or, to run it in the background as a detached process (thus allowing you to have the server running in the background)
 
 `python3 server.py &`
->>>>>>> feature/better-docker
 
 ## Starting the server (Windows)
 
 TODO
 
-<<<<<<< HEAD
-## Endpoints
-
-| Endpoint | Description|
-|----------|------------|
-| `http://hostname/list` | Returns ALL of the artifacts in the knowledgebase as a JSON document|
-|`http://hostname/list/category/category`|Returns artifacts in the knowledgebase as a JSON document which are of the requested category|
-=======
 ## DOCKER container
 
 The kbAPI serer is also available as a DOCKER container. To construct the image, use:
@@ -125,6 +97,7 @@ To deploy kb-API as a gunicorn-based server, simply use:
 | `http://<hostname>/list`                     | GET  | Returns ALL of the artifacts in the knowledgebase |
 | `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the knowledgebase in the requested category |
 | `http://<hostname>/list/tags/<tags>`         | GET  | Returns artifacts in the knowledgebase which have the requested tags |
+| `http://<hostname>/stats`                    | GET  | Return a JSON string of information about the knowledgebase |
 | `http://<hostname>/templates`                | GET  | Return a list of all the templates available |
 | `http://<hostname>/template/<query>`         | GET  | Returns the list of templates that comply with the query specified as a regex |
 | `http://<hostname>/template/add/<template>`  | POST | Create a new template with the content specified in the file uploaded with it |
@@ -163,28 +136,13 @@ This is due to the paradigm of the kb-API being different to the CLI-based kb i.
 ## API Documentation (Postman)
 
 The complete API documentation can be found [here](https://documenter.getpostman.com/view/12840256/TVRrWQnq#intro)
->>>>>>> feature/better-docker
 
 
 ## Things to be aware of
 
-<<<<<<< HEAD
-Since kb uses SQLite to store artifacts, there is a small limitation which should
-be noted:
-
-> SQLite can support multiple users at once. It does however lock the whole database
-when writing, so if there are lots of concurrent writes it is not a suitable
-database for the application (usually the time the database is locked is a few
-milliseconds - so for most uses this does not matter). But it is very well tested
-and very stable (and widely used) so it can be trusted.
-
-This means that there **may** be occasions when a write operation will fail,
-so this should be catered for in any application using this REST API
-=======
 Since kb uses SQLite to store artifacts, there are small limitations which should be noted:
 
 > 1 - SQLite can support multiple users at once. It does however lock the whole database when writing, so if there are lots of concurrent writes it is not a suitable database for the application (usually the time the database is locked is a few  milliseconds - so for most uses this does not matter). But it is very well tested and very stable (and widely used) so it can be trusted.
 This means that there **may** be occasions when a write operation will fail, so this should be catered for in any application using this REST API
 
 > 2 - If the `.../import` method is used, and the knowledgebase is being used as a multi-user scenario, then ALL the artifacts will be removed, and the knowledgebase will be reset to whatever is in the import file for **everyone** 
->>>>>>> feature/better-docker

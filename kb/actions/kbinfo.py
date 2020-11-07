@@ -14,7 +14,7 @@ kb stats action module
 from typing import Dict
 import filesystem as fs
 import initializer
-from kb.api.constants import MIME_TYPE, API_VERSION
+from api.constants import MIME_TYPE, API_VERSION
 import db
 from kb import __version__
 

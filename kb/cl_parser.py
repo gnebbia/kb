@@ -35,7 +35,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(prog='kb',
                                      description='A knowledge base organizer')
-
+    
     parser.add_argument(
         "--version",
         action="version",

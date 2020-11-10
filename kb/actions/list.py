@@ -12,10 +12,10 @@ kb list action module
 """
 
 from typing import Dict
-
 import kb.db as db
 import kb.initializer as initializer
 import kb.filesystem as fs
+
 
 def list_categories(config: Dict[str, str]):
     """
@@ -33,5 +33,23 @@ def list_categories(config: Dict[str, str]):
 
     category_list = dict()
     category_list = sorted(fs.list_dirs(config["PATH_KB_DATA"]))
-    # artifacts = sorted(rows, key=lambda x: x.title)
     return category_list
+
+
+def list_tags(conn, config):
+    """
+    Returns a list of tags within the knowledge base.
+
+    Arguments:
+
+    config:         - a configuration dictionary containing at least
+                      the following keys:
+                      PATH_KB_DB        - the database path of KB
+                      PATH_KB_DATA      - the data directory of KB
+                      PATH_KB_HIST      - the history menu path of KB
+                      EDITOR            - the editor program to call
+    """
+
+    tags_list = dict()
+    tags_list = db.ldb_tags(conn)
+    return tags_list

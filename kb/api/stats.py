@@ -34,7 +34,7 @@ def stats(config: Dict[str, str]):
     
     stats_content = kb_stats(config)
 
-    resp = make_response(stats_content  , 200)
+    resp = make_response(stats_content, 200)
     resp.mimetype = MIME_TYPE['json']
     return(resp)
 

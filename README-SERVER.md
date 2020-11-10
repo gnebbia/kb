@@ -98,6 +98,7 @@ To deploy kb-API as a gunicorn-based server, simply use:
 | `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the knowledgebase in the requested category |
 | `http://<hostname>/list/tags/<tags>`         | GET  | Returns artifacts in the knowledgebase which have the requested tags |
 | `http://<hostname>/stats`                    | GET  | Return a JSON string of information about the knowledgebase |
+| `http://<hostname>/tags `                    | GET  | Return a JSON string of all the tags in the knowledgebase |
 | `http://<hostname>/templates`                | GET  | Return a list of all the templates available |
 | `http://<hostname>/template/<query>`         | GET  | Returns the list of templates that comply with the query specified as a regex |
 | `http://<hostname>/template/add/<template>`  | POST | Create a new template with the content specified in the file uploaded with it |

@@ -14,8 +14,10 @@ kb stats action module
 from typing import Dict
 import filesystem as fs
 import initializer
+from actions.list import list_categories, list_tags
 from api.constants import MIME_TYPE, API_VERSION
 import db
+import filesystem as fs
 from kb import __version__
 
 
@@ -31,36 +33,50 @@ def kb_stats(config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
     """
  
-   # Check initialization
+    # Check initialization
     initializer.init(config)
 
     conn = db.create_connection(config["PATH_KB_DB"])
 
- 
     augmented_config = dict()
     versions_config = dict()
     current_stats_config = dict()
     sizes_config = dict()
+    categories = dict()
+    artifacts = dict()
+    current_categories = dict()
+    current_tags = dict()
+    tags = dict()
 
     augmented_config["DEFAULT_CONFIG"] = config
 
-    versions_config["KB_VERSION"] = str(__version__)
-    versions_config["KB_API_VERSION"] = str(API_VERSION)
-    augmented_config["VERSIONS"] = versions_config
+    versions_config["kb"] = str(__version__)
+    versions_config["kbAPI"] = str(API_VERSION)
+    augmented_config["Versions"] = versions_config
 
-    current_stats_config["KB_CATEGORIES"] = fs.count_files(config["PATH_KB_DATA"])
-    current_stats_config["KB_TEMPLATES"] = fs.count_files(config["PATH_KB_TEMPLATES"])
-    current_stats_config["KB_TAGS"] = db.count_tags(conn)
+    current_categories = list_categories(config)
+    categories["Current"] = current_categories
+    categories["Total"] = fs.count_files(config["PATH_KB_DATA"])
+    current_stats_config["Categories"] = categories
 
-    sizes_config["KB_DB_BYTES"] = fs.get_file_size(config["PATH_KB_DB"])
-    sizes_config["KB_TOTAL_BYTES"] = fs.get_complete_size(config["PATH_KB"])
-    sizes_config["KB_TEMPLATE_BYTES"] = fs.get_complete_size(config["PATH_KB_TEMPLATES"])
-    sizes_config["KB_ARTIFACT_BYTES"] = fs.get_complete_size(config["PATH_KB_DATA"])
-    current_stats_config["SIZES"] = sizes_config
+    current_stats_config["Templates"] = fs.count_files(config["PATH_KB_TEMPLATES"])
+    current_stats_config["Tags"] = db.count_tags(conn)
 
+    current_tags = list_tags(conn, config)
+    tags["Current"] = current_tags
+    tags["Total"] = len(current_tags)
+    current_stats_config["Tags"] = current_tags
 
-    current_stats_config["KB_ARTIFACTS"] = db.count_artifacts(conn)
-    augmented_config["CURRENT_STATS"] = current_stats_config
+    sizes_config["Database"] = fs.get_file_size(config["PATH_KB_DB"])
+    sizes_config["Total"] = fs.get_complete_size(config["PATH_KB"])
+    sizes_config["Templates"] = fs.get_complete_size(config["PATH_KB_TEMPLATES"])
+    sizes_config["Artifacts"] = fs.get_complete_size(config["PATH_KB_DATA"])
+    current_stats_config["Sizes"] = sizes_config
+
+    artifacts["Total"] = db.count_artifacts(conn)
+    current_stats_config["Artifacts"] = artifacts
+
+    augmented_config["CurrentStatistics"] = current_stats_config
 
     print(augmented_config)
     return(augmented_config)

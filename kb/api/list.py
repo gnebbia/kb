@@ -23,7 +23,9 @@ from flask import make_response
 from kb.actions.ingest import ingest_kb
 from kb.api.constants import MIME_TYPE
 import kb.filesystem as fs
+import kb.db as db
 import kb.actions.list as ls
+
 
 def list_cats(config: Dict[str, str]):
     """
@@ -37,5 +39,21 @@ def list_cats(config: Dict[str, str]):
 
     categories = ls.list_categories(config)
     response = make_response(({'Categories': categories}), 200)
+    response.mimetype = MIME_TYPE['json']
+    return response
+
+
+def list_all_tags(config: Dict[str, str]):
+    """
+    List the tags.
+
+    Arguments:
+    config:         - a configuration dictionary containing at least
+                      the following keys:
+                      PATH_KB_DATA           - the main path of the DATA
+    """
+    conn = db.create_connection(config["PATH_KB_DB"])
+    tags = ls.list_tags(conn, config)
+    response = make_response(({'Tags': tags}), 200)
     response.mimetype = MIME_TYPE['json']
     return response

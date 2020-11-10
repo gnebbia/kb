@@ -215,6 +215,7 @@ def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
 
     conn.commit()
 
+
 def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
     Deletes the artifact corresponding to the provided
@@ -677,3 +678,26 @@ def count_tags(conn):
 
     result = cur.fetchone()
     return int(str(result).replace(')', "").replace('(', "").replace(',', ""))
+
+
+def ldb_tags(conn):
+    """
+    Return a list  of unique tags in the database
+
+    Arguments:
+    conn            - the sqlite3 connection object
+
+    Returns:
+    List of unique tags in the database
+    """
+    cur = conn.cursor()
+    cur.execute("""SELECT DISTINCT tag
+                   FROM tags WHERE tag IS NOT NULL""")
+
+    result = cur.fetchall()
+    tags = []
+    for row in result:
+        print(row)
+        tags.append(str(row).replace("('", "").replace("',)", ""))
+
+    return tags

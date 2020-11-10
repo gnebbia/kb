@@ -21,7 +21,7 @@ from flask_httpauth import HTTPBasicAuth
 
 # Import the API functions
 from kb.api.add import add
-from kb.api.list import list_cats
+from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
 from kb.api.export import export
@@ -342,6 +342,16 @@ def return_stats():
     response = stats(DEFAULT_CONFIG)
     response.mimetype = MIME_TYPE['json']
     return(response)
+
+
+@kbapi_app.route('/tags', methods=['GET'])
+@auth.login_required
+def list_db_tags():
+    """
+    List all  the tags
+    """
+    results = list_all_tags(config=DEFAULT_CONFIG)
+    return (results)
 
 
 @kbapi_app.route('/templates', methods=['GET'])

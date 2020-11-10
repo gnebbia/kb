@@ -21,6 +21,7 @@ from flask_httpauth import HTTPBasicAuth
 
 # Import the API functions
 from kb.api.add import add
+from kb.api.list import list_cats
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
 from kb.api.export import export
@@ -178,6 +179,15 @@ def add_item():
     attachment = request.files['file']
     resp = add(args=parameters, config=DEFAULT_CONFIG, file=attachment)
     return(resp)
+
+@kbapi_app.route('/categories', methods=['GET'])
+@auth.login_required
+def list_categories():
+    """
+    List all  the categories
+    """
+    results = list_cats(config=DEFAULT_CONFIG)
+    return (results)
 
 
 @kbapi_app.route('/delete/<int:id>', methods=['POST'])

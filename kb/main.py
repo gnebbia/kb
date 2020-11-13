@@ -28,10 +28,10 @@ from kb.commands.erase import erase
 from kb.commands.ingest import ingest
 from kb.commands.export import export
 from kb.config import DEFAULT_CONFIG
-from commands.kbinfo import kbstats
+from commands.kbinfo import kbinfo
 
 COMMANDS = {
-    'stats': kbstats,
+    'stats': kbinfo,
     'add': add,
     'delete': delete,
     'edit': edit,
@@ -56,6 +56,7 @@ def dispatch(function, *args, **kwargs):
 
 def main():
     """Main routine of kb."""
+    #print(sys.argv[1:])
     args = parse_args(sys.argv[1:])
     cmd = args.command
     cmd_params = vars(args)

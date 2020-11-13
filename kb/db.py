@@ -697,7 +697,5 @@ def ldb_tags(conn):
     result = cur.fetchall()
     tags = []
     for row in result:
-        print(row)
         tags.append(str(row).replace("('", "").replace("',)", ""))
-
     return tags

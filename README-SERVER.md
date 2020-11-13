@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="img/kbAPILogo.png?raw=true" width="200"/>
+</p>
+
 # kbAPI Server
 
 

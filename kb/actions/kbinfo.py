@@ -14,7 +14,7 @@ kb stats action module
 from typing import Dict
 import filesystem as fs
 import initializer
-from actions.list import list_categories, list_tags
+from actions.list import list_categories, list_tags, list_templates
 from api.constants import MIME_TYPE, API_VERSION
 import db
 import filesystem as fs
@@ -47,6 +47,7 @@ def kb_stats(config: Dict[str, str]):
     current_categories = dict()
     current_tags = dict()
     tags = dict()
+    templates = dict()
 
     augmented_config["DEFAULT_CONFIG"] = config
 
@@ -59,13 +60,15 @@ def kb_stats(config: Dict[str, str]):
     categories["Total"] = fs.count_files(config["PATH_KB_DATA"])
     current_stats_config["Categories"] = categories
 
-    current_stats_config["Templates"] = fs.count_files(config["PATH_KB_TEMPLATES"])
-    current_stats_config["Tags"] = db.count_tags(conn)
+    current_templates = list_templates(config)
+    templates["Current"] = current_templates
+    templates["Total"] = fs.count_files(config["PATH_KB_TEMPLATES"])
+    current_stats_config["Templates"] = templates
 
     current_tags = list_tags(conn, config)
     tags["Current"] = current_tags
     tags["Total"] = len(current_tags)
-    current_stats_config["Tags"] = current_tags
+    current_stats_config["Tags"] = tags
 
     sizes_config["Database"] = fs.get_file_size(config["PATH_KB_DB"])
     sizes_config["Total"] = fs.get_complete_size(config["PATH_KB"])
@@ -75,8 +78,7 @@ def kb_stats(config: Dict[str, str]):
 
     artifacts["Total"] = db.count_artifacts(conn)
     current_stats_config["Artifacts"] = artifacts
-
+    augmented_config["lastUpdate"] = fs.get_last_modified_time(config["PATH_KB_DB"])
     augmented_config["CurrentStatistics"] = current_stats_config
 
-    print(augmented_config)
     return(augmented_config)

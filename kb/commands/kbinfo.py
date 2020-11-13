@@ -16,6 +16,7 @@ from typing import Dict
 from actions.kbinfo import kb_stats
 from config import DEFAULT_CONFIG
 
+
 def kbinfo():
     """
     Get statistics about the database

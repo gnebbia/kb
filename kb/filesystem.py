@@ -19,6 +19,7 @@ import shutil
 import tempfile
 from pathlib import Path
 from typing import List
+from datetime import datetime
 
 
 def list_files(directory: str) -> List[str]:
@@ -83,7 +84,7 @@ def get_file_size(filename):
     return file_size
 
 
-def get_complete_size(root = '.'):
+def get_complete_size(root='.'):
     """
     Get the size of the whole knowledgebase (including data, templates, artifacts etc)
 
@@ -366,3 +367,10 @@ def grep_in_files_uniq(
             # so we don't search through binary files
             continue
     return list(set(matches))
+
+
+def get_last_modified_time(fullfilename):
+    try:
+        return datetime.utcfromtimestamp(os.path.getmtime(fullfilename)).strftime('%Y-%m-%d %H:%M:%S')
+    except OSError:
+        return None

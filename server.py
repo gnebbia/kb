@@ -101,10 +101,10 @@ def constructResponse(results):
     """
     Constructs a response from the results obtained by a core function
     """
-    response = '['
+    response = '{'
     for result in results:
         response = response + toJson(result) + ','
-    response = response[:-1] + ']'
+    response = response[:-1] + '}'
     response = response.replace('"', "'")
     return response
 
@@ -145,6 +145,14 @@ def unauthorized():
     resp.mimetype = MIME_TYPE['json']
     return (resp)
 
+@kbapi_app.errorhandler(404)
+def not_found(error):
+    """
+    Not found.
+    """
+    resp = make_response(({'Error': 'Not Found'}), 404)
+    resp.mimetype = MIME_TYPE['json']
+    return (resp)
 
 """
 Routing for URLs

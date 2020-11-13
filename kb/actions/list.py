@@ -36,6 +36,25 @@ def list_categories(config: Dict[str, str]):
     return category_list
 
 
+def list_templates(config: Dict[str, str]):
+    """
+    Returns a list of categories within the knowledge base.
+
+    Arguments:
+
+    config:         - a configuration dictionary containing at least
+                      the following keys:
+                      PATH_KB_DB        - the database path of KB
+                      PATH_KB_DATA      - the data directory of KB
+                      PATH_KB_HIST      - the history menu path of KB
+                      EDITOR            - the editor program to call
+    """
+
+    template_list = dict()
+    template_list = sorted(fs.list_files(config["PATH_KB_TEMPLATES"]))
+    return template_list
+
+
 def list_tags(conn, config):
     """
     Returns a list of tags within the knowledge base.

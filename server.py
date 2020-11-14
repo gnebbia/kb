@@ -145,14 +145,27 @@ def unauthorized():
     resp.mimetype = MIME_TYPE['json']
     return (resp)
 
+
+"""
+Error Handling
+"""
+
+
 @kbapi_app.errorhandler(404)
+@kbapi_app.errorhandler(500)
 def not_found(error):
     """
-    Not found.
+    Generic Error Handlers
     """
-    resp = make_response(({'Error': 'Not Found'}), 404)
+    error_texts = {
+        404: 'Not Found',
+        500: 'Internal Server Error'
+    }
+    error_text = error_texts.get(error.code, 'Unknown Error')
+    resp = make_response(({'Error': error_text}), error.code)
     resp.mimetype = MIME_TYPE['json']
     return (resp)
+
 
 """
 Routing for URLs
@@ -176,7 +189,7 @@ def method_never_implemented():
 @auth.login_required
 def add_item():
     """
-    Add a neew artifact to the knowledge base.
+    Add a new artifact to the knowledge base.
     """
     parameters["title"] = request.form.get("title", "")
     parameters["category"] = request.form.get("category", "")
@@ -187,6 +200,7 @@ def add_item():
     attachment = request.files['file']
     resp = add(args=parameters, config=DEFAULT_CONFIG, file=attachment)
     return(resp)
+
 
 @kbapi_app.route('/categories', methods=['GET'])
 @auth.login_required

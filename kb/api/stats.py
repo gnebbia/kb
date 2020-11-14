@@ -23,17 +23,13 @@ def stats(config: Dict[str, str]):
     """
     Get statistics about the database
 
-    Arguments:
-    args:           - a dictionary containing the following fields:
-                      file -> a string representing the wished output
-                        filename
+    Argument:
     config:         - a configuration dictionary containing at least
                       the following keys:
                       PATH_KB           - the main path of KB
     """
-    
+
     stats_content = kb_stats(config)
     resp = make_response(stats_content, 200)
     resp.mimetype = MIME_TYPE['json']
     return(resp)
-

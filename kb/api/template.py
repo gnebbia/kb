@@ -66,7 +66,7 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
         resp.mimetype = MIME_TYPE['json']
     else:
         resp_content = '{"OK":"' + str(rows_updated) + " artifacts updated" + '"}'
-        resp = make_response((resp_content), 200) 
+        resp = make_response((resp_content), 200)
         resp.mimetype = MIME_TYPE['json']
     return(resp)
 
@@ -200,4 +200,3 @@ def get_template(template, DEFAULT_CONFIG):
         resp = (make_response((record), 200))
         resp.mimetype = MIME_TYPE['utf8']
         return(resp)
-

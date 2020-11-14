@@ -12,13 +12,14 @@ kb grep API module
 """
 
 import sys
+
 from pathlib import Path
 from typing import Dict
+
 import kb.db as db
-import kb.initializer as initializer
-import kb.printer.grep as printer
-import kb.history as history
 import kb.filesystem as fs
+import kb.history as history
+import kb.initializer as initializer
 
 
 def grep(args: Dict[str, str], config: Dict[str, str]):
@@ -62,11 +63,6 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     artifact_names = [fs.get_filename_parts_wo_prefix(
         res[0], config["PATH_KB_DATA"]) for res in results]
 
-    # If user specified --matches -> just show matching lines and exit
-    # if args["matches"]:
-    #    printer.print_grep_matches(artifact_names)
-    #    sys.exit(0)
-
     # Get the set of uniq artifacts
     uniq_artifact_names = set(artifact_names)
 
@@ -90,16 +86,6 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
 
     # Write to history file
     history.write(config["PATH_KB_HIST"], grep_artifacts)
-
-    print(grep_artifacts)
-    # color_mode = not args["no_color"]
-    # if args["verbose"]:
-    #     printer.print_grep_result_verbose(
-    #         grep_artifacts, grep_hits, color_mode)
-    # else:
-    #     printer.print_grep_result(grep_artifacts, grep_hits, color_mode)
-    #     print(grep_artifacts)
-    
     return(grep_artifacts)
 
 

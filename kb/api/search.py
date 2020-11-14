@@ -13,6 +13,7 @@ kb search command module
 """
 
 from typing import Dict
+
 from kb.api.constants import MIME_TYPE
 from kb.actions.search import search_kb
 import kb.history as history

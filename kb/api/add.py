@@ -25,7 +25,6 @@ from kb.config import DEFAULT_CONFIG
 
 # Use the flask framework
 from flask import make_response
-
 from werkzeug.utils import secure_filename
 
 

@@ -21,10 +21,10 @@ from werkzeug.utils import secure_filename
 from flask import make_response
 
 from kb.actions.ingest import ingest_kb
-from kb.api.constants import MIME_TYPE
-import kb.filesystem as fs
-import kb.db as db
 import kb.actions.list as ls
+from kb.api.constants import MIME_TYPE
+import kb.db as db
+import kb.filesystem as fs
 
 
 def list_cats(config: Dict[str, str]):

@@ -16,7 +16,9 @@ __all__ = ()
 import sys
 import argparse
 from kb import __version__
+import kb.commands.kbinfo as kbinfo
 from typing import Sequence
+from kb.config import DEFAULT_CONFIG
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -68,9 +70,26 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'erase', help='Erase the entire kb knowledgebase')
     help_parser = subparsers.add_parser(
         'help', help='Show help of a particular command')
+
     stats_parser = subparsers.add_parser(
-        'stats', help='Show statistics of the kb knowledgebase')
-               
+        'stats', help='Show stats for the knowledgebase')
+
+    # stats parser
+    stats_parser.add_argument(
+        "-v", "--verbose", 
+        help='Show stats in a verbose mode',
+        action='store_true',
+        dest='stats_verbose',
+        default=False)
+
+    stats_parser.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True,
+    )
+
     # add parser
     add_parser.add_argument(
         "file",

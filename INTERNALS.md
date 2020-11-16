@@ -2,6 +2,10 @@
 
 This section details the internal mechanisms of kb (specifically relating to the API).
 
+# High Level Architecture #
+![img](img/ApplicationArchitecture-High-Level-Architecture.png)
+
+
 # Return Codes #
 
 Within many of the functions of kb, core functionality may return a return code, indicating its' status upon completion.

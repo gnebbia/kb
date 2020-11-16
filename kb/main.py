@@ -56,8 +56,8 @@ def dispatch(function, *args, **kwargs):
 
 def main():
     """Main routine of kb."""
-    #print(sys.argv[1:])
     args = parse_args(sys.argv[1:])
     cmd = args.command
     cmd_params = vars(args)
     dispatch(cmd, cmd_params, config=DEFAULT_CONFIG)
+

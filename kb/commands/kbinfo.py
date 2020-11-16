@@ -12,20 +12,26 @@ kb stats command module
 """
 
 from typing import Dict
+from kb.printer.stats import generate_stats_header, generate_sizes, generate_lists,generate_def_config
+from kb.actions.kbinfo import kb_stats
 
-from actions.kbinfo import kb_stats
-from config import DEFAULT_CONFIG
 
-
-def kbinfo():
+def kbinfo(args: Dict[str, str], config: Dict[str, str]):
     """
     Get statistics about the database
 
     Arguments:
-    None
-
+    args        -   A dictionary containing the command line arguments
+    config      -   A dictionary containing the current configuration
     """
-
-    print(kb_stats(DEFAULT_CONFIG))
-    #return(kb_stats(DEFAULT_CONFIG))
+    statistics = kb_stats(config)
+    generate_stats_header(statistics, args.get("no_color", ""))
+    if args["stats_verbose"]:
+        print()
+        generate_sizes(statistics, args.get("no_color", ""))
+        print()
+        generate_lists(statistics, args.get("no_color", ""))
+        print()
+        generate_def_config(statistics, args.get("no_color", ""))
+    
 

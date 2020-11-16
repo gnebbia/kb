@@ -12,12 +12,11 @@ kb stats action module
 """
 
 from typing import Dict
-import filesystem as fs
+import kb.filesystem as fs
 import initializer
-from actions.list import list_categories, list_tags, list_templates
-from api.constants import MIME_TYPE, API_VERSION
+from kb.actions.list import list_categories, list_tags, list_templates
+from kb.api.constants import MIME_TYPE, API_VERSION
 import db
-import filesystem as fs
 from kb import __version__
 
 

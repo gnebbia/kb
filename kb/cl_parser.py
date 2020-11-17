@@ -227,7 +227,21 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         dest='no_color',
         default=False,
     )
-
+    list_parser.add_argument(
+        "-C", "--allcategories",
+        help="List the current categories",
+        action='store_true',
+        dest='all_categories',
+        default=False,
+    )
+    list_parser.add_argument(
+        "-G", "--alltags",
+        help="List the current tags",
+        action='store_true',
+        dest='all_tags',
+        default=False,
+    )
+    
     # view parser
     view_parser.add_argument(
         "nameid",

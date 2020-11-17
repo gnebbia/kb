@@ -30,7 +30,7 @@ def kb_stats(config: Dict[str, str]):
                       PATH_KB_DB        - the database path of KB
                       PATH_KB_HIST      - the history menu path of KB
     """
- 
+
     conn = db.create_connection(config["PATH_KB_DB"])
 
     augmented_config = dict()

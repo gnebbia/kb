@@ -19,6 +19,7 @@ import shutil
 import tempfile
 from pathlib import Path
 from typing import List
+from datetime import datetime
 
 
 def list_files(directory: str) -> List[str]:
@@ -61,6 +62,49 @@ def list_dirs(directory: str) -> List[str]:
     files = [str(f.relative_to(dirpath))
              for f in dirpath.rglob("*") if f.is_dir()]
     return files
+
+
+def get_file_size(filename):
+    """
+    Get the size of a named file
+
+    Args:
+    filename       - a string representing the path to the required file
+
+    Returns:
+    A value in bytes (or zero if the file does not exist or cannot be opened)
+    """
+    file_size = 0
+    try:
+        st = os.stat(filename)
+    except:
+        file_size = 0
+    finally:
+        file_size = st.st_size
+    return file_size
+
+
+def get_complete_size(root='.'):
+    """
+    Get the size of the whole knowledgebase (including data, templates, artifacts etc)
+
+    Args:
+    root       - a string representing the root of the knowledgebase
+
+    Returns:
+    A value in bytes (or zero if the knowledgebase does not exist or cannot be opened)
+    """
+
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(root):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+
+    return total_size
+
 
 def touch_file(filename: str):
     """
@@ -323,3 +367,10 @@ def grep_in_files_uniq(
             # so we don't search through binary files
             continue
     return list(set(matches))
+
+
+def get_last_modified_time(fullfilename):
+    try:
+        return datetime.utcfromtimestamp(os.path.getmtime(fullfilename)).strftime('%Y-%m-%d %H:%M:%S')
+    except OSError:
+        return None

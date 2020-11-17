@@ -142,6 +142,7 @@ alias kbv="kb view"
 alias kbd="kb delete --id"
 alias kbg="kb grep"
 alias kbt="kb list --tags"
+alias kbs="kb stats --verbose"
 EOF
 echo "source ~/.kb_alias" >> ~/.bashrc
 source ~/.kb_alias
@@ -222,6 +223,7 @@ echo doskey kbv=kb view $*
 echo doskey kbd=kb delete --id $*
 echo doskey kbg=kb grep $*
 echo doskey kbt=kb list --tags $*
+echo doskey kbs=kb stats --verbose $*
 )> %USERPROFILE%\autorun.cmd
 ```
 
@@ -237,6 +239,7 @@ function kbv { kb view $args }
 function kbd { kb delete --id $args }
 function kbg { kb grep $args }
 function kbt { kb list --tags $args }
+function kbs { kb stats $args }
 '@ >  $env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1
 ```
 
@@ -603,6 +606,19 @@ We can apply the template "light" to all artifacts of the category
 ```sh
 kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
+
+#### Finding out about kb knowledge base
+
+There is a command which can be used to inteerrogate the knowledgebase to see the size, number of articles etc:
+
+```sh
+kb stats
+
+# or if aliases are used:
+kbs
+```
+
+By default, this gives overall information about the knowledgebase, but adding the `--verbose` option will give more detailed information. Note that the `--no-color` option can also be used to provide a monochrome output.
 
 ## UPGRADE
 

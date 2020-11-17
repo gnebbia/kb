@@ -78,7 +78,6 @@ def create_kb_files(config):
 
     if current_schema_version == 0:
         db.migrate_v0_to_v1(conn)
-    
 
     # Create "data" directory
     fs.create_directory(data_path)
@@ -120,7 +119,6 @@ def is_initialized(config) -> bool:
     data_path = config["PATH_KB_DATA"]
     templates_path = config["PATH_KB_TEMPLATES"]
   
-
     for path in [kb_path, db_path, data_path, templates_path]:
         if not os.path.exists(path):
             return False

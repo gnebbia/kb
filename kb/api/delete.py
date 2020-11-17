@@ -12,22 +12,18 @@ kb delete command module
 """
 
 import sys
-# sys.path.append('kb')
 
-import sys
-from typing import Dict
 from pathlib import Path
+from typing import Dict
 
 from flask import make_response
 
-
+from kb.actions.delete import delete_artifacts
+from kb.api.constants import MIME_TYPE
 import kb.db as db
 import kb.filesystem as fs
 import kb.history as history
 import kb.initializer as initializer
-
-from kb.actions.delete import delete_artifacts
-from kb.api.constants import MIME_TYPE
 
 
 def delete_list_of_items_by_ID(ids, config: Dict[str, str]):
@@ -37,6 +33,11 @@ def delete_list_of_items_by_ID(ids, config: Dict[str, str]):
     Arguments:
     args:           -  id -> a list of database IDs associated with
                                 the artifacts to be deleted
+    config:         - a configuration dictionary containing at least
+                    the following keys:
+                    PATH_KB_DB        - the database path of KB
+                    PATH_KB_DATA      - the data directory of KB
+                    PATH_KB_HIST      - the history menu path of KB
     """
     deleted = []
     parameters = dict()

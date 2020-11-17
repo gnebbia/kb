@@ -11,12 +11,14 @@ kb view API module
 :License: GPLv3 (see /LICENSE).
 """
 import sys
-from flask import make_response
+
+import base64
 from pathlib import Path
+
+from flask import make_response
+
 from kb.api.constants import MIME_TYPE
 from kb.db import get_artifact_by_id, get_artifacts_by_filter
-import base64
-sys.path.append('kb')
 
 
 def view_by_id(conn, id, DEFAULT_CONFIG):

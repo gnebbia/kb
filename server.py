@@ -21,12 +21,14 @@ from flask_httpauth import HTTPBasicAuth
 
 # Import the API functions
 from kb.api.add import add
+from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
 from kb.api.export import export
 from kb.api.grep import grep
 from kb.api.ingest import ingest
 from kb.api.search import search
+from kb.api.stats import stats
 from kb.api.template import search as search_templates
 from kb.api.template import add as add_template
 from kb.api.template import new as new_template
@@ -72,7 +74,7 @@ PORT = 5000
 HOST = '0.0.0.0'
 
 # Methods allowed:
-ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'template', 'update', 'version', 'view']
+ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'stats', 'template', 'update', 'version', 'view']
 
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
@@ -99,10 +101,10 @@ def constructResponse(results):
     """
     Constructs a response from the results obtained by a core function
     """
-    response = '['
+    response = '{'
     for result in results:
         response = response + toJson(result) + ','
-    response = response[:-1] + ']'
+    response = response[:-1] + '}'
     response = response.replace('"', "'")
     return response
 
@@ -145,7 +147,28 @@ def unauthorized():
 
 
 """
-Routing
+Error Handling
+"""
+
+
+@kbapi_app.errorhandler(404)
+@kbapi_app.errorhandler(500)
+def not_found(error):
+    """
+    Generic Error Handlers
+    """
+    error_texts = {
+        404: 'Not Found',
+        500: 'Internal Server Error'
+    }
+    error_text = error_texts.get(error.code, 'Unknown Error')
+    resp = make_response(({'Error': error_text}), error.code)
+    resp.mimetype = MIME_TYPE['json']
+    return (resp)
+
+
+"""
+Routing for URLs
 """
 
 
@@ -166,7 +189,7 @@ def method_never_implemented():
 @auth.login_required
 def add_item():
     """
-    Add a neew artifact to the knowledge base.
+    Add a new artifact to the knowledge base.
     """
     parameters["title"] = request.form.get("title", "")
     parameters["category"] = request.form.get("category", "")
@@ -177,6 +200,16 @@ def add_item():
     attachment = request.files['file']
     resp = add(args=parameters, config=DEFAULT_CONFIG, file=attachment)
     return(resp)
+
+
+@kbapi_app.route('/categories', methods=['GET'])
+@auth.login_required
+def list_categories():
+    """
+    List all  the categories
+    """
+    results = list_cats(config=DEFAULT_CONFIG)
+    return (results)
 
 
 @kbapi_app.route('/delete/<int:id>', methods=['POST'])
@@ -320,6 +353,27 @@ def get_tags(tags=''):
     results = search(parameters, config=DEFAULT_CONFIG)
     response = construct_search_response(results, 'There are no artifacts with these tags.')
     return(response)
+
+
+@kbapi_app.route('/stats', methods=['GET'])
+@auth.login_required
+def return_stats():
+    """
+    Returns statistics about the knowledgebase
+    """
+    response = stats(DEFAULT_CONFIG)
+    response.mimetype = MIME_TYPE['json']
+    return(response)
+
+
+@kbapi_app.route('/tags', methods=['GET'])
+@auth.login_required
+def list_db_tags():
+    """
+    List all  the tags
+    """
+    results = list_all_tags(config=DEFAULT_CONFIG)
+    return (results)
 
 
 @kbapi_app.route('/templates', methods=['GET'])

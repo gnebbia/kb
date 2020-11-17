@@ -12,16 +12,15 @@ kb delete command module
 """
 
 import sys
-
-
-import sys
 from typing import Dict
 from pathlib import Path
-import kb.db as db
-import kb.initializer as initializer
-import kb.history as history
-import kb.filesystem as fs
+
 from kb.actions.delete import delete_artifacts
+import kb.db as db
+import kb.history as history
+import kb.initializer as initializer
+import kb.filesystem as fs
+
 
 
 def delete(args: Dict[str, str], config: Dict[str, str]):

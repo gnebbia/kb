@@ -14,12 +14,12 @@ kb update api module
 from typing import Dict
 from pathlib import Path
 
+from kb.actions.update import update_artifact
 import kb.db as db
 from kb.db import get_artifact_by_id
 from kb.entities.artifact import Artifact
 import kb.filesystem as fs
 import kb.initializer as initializer
-from kb.actions.update import update_artifact
 
 
 # Use the flask make_response function
@@ -73,7 +73,7 @@ def update(args: Dict[str, str], config: Dict[str, str], attachment):
             resp = make_response(({'Error': 'The artifact does not exist'}), 404)
             resp.mimetype = 'application/json'
             return(resp)
-            response = update_artifact(conn,old_artifact, args, config, attachment)
+            response = update_artifact(conn, old_artifact, args, config, attachment)
             if resp == -200:
                 resp = make_response(({'Updated': id}), 200)
                 resp.mimetype = 'application/json'

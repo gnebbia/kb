@@ -15,6 +15,7 @@ from typing import Dict
 
 import kb.db as db
 import kb.initializer as initializer
+import kb.actions.list as ls
 
 
 def search_kb(args: Dict[str, str], config: Dict[str, str]):
@@ -38,11 +39,22 @@ def search_kb(args: Dict[str, str], config: Dict[str, str]):
     # Check initialization
     initializer.init(config)
 
+    conn = db.create_connection(config["PATH_KB_DB"])
+
+    # List all categories
+    if args.get("all_categories", False) is True:
+        categories = ls.list_categories(config)
+        return categories
+    
+    # List all categories
+    if args.get("all_tags", False) is True:
+        all_tags = ls.list_tags(conn, config)
+        return all_tags
+
     tags_list = None
     if args["tags"] and args["tags"] != "":
         tags_list = args["tags"].split(';')
 
-    conn = db.create_connection(config["PATH_KB_DB"])
     rows = db.get_artifacts_by_filter(
         conn,
         title=args["query"],

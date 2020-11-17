@@ -16,6 +16,7 @@ from typing import Dict
 from kb.actions.search import search_kb
 import kb.history as history
 import kb.printer.search as printer
+import kb.printer.others as others
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -37,14 +38,24 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
 
-    artifacts = search_kb(args, config)
+    result = search_kb(args, config)
+
+    # List all categories
+    if args.get("all_categories", False) is True:
+        others.generate_list(args, result, 'Categories')
+        sys.exit(0)
+
+    # List all tags
+    if args.get("all_tags", False) is True:
+        others.generate_list(args, result, 'Tags')
+        sys.exit(0)
 
     # Write to history file
-    history.write(config["PATH_KB_HIST"], artifacts)
+    history.write(config["PATH_KB_HIST"], result)
 
     # Print resulting list
     color_mode = not args["no_color"]
     if args["verbose"]:
-        printer.print_search_result_verbose(artifacts, color_mode)
+        printer.print_search_result_verbose(result, color_mode)
     else:
-        printer.print_search_result(artifacts, color_mode)
+        printer.print_search_result(result, color_mode)

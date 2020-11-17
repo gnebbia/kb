@@ -92,8 +92,7 @@ def generate_sizes(
     print(header)
     print(summary)
     
-
-
+    
 def generate_lists(
         stats: str,
         color: bool = True):

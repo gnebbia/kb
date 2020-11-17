@@ -325,6 +325,14 @@ kbl -v
 ```
 ![](img/kb_list_verbose.gif)
 
+### It is also possible to list the current categories and tags stored within the knowledgebase:
+```sh
+kb list --allcategories    ( also -C can be used )
+
+kb list --alltags          ( also -G can be used )
+```
+
+The `--no-color` switch is also available.
 
 ### Add artifacts
 

@@ -12,7 +12,7 @@ kb printer for module for printers which don't fit anywhere else
 """
 
 import os
-from typing import List,Dict
+from typing import List, Dict
 
 from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 from kb.entities.artifact import Artifact

@@ -89,6 +89,7 @@ To deploy kb-API as a gunicorn-based server, simply use:
 | Endpoint                                     | Method | Description|
 |----------------------------------------------|-------|-------------|
 | `http://<hostname>/add`                      | POST | Adds a new artifact to the knowledgebase |
+| `http://<hostname>/categories`             | GET  | Lists all the current categories in the knowledgebase |
 | `http://<hostname>/delete/id/<id>`           | POST | Delete a specific Artifact by ID |
 | `http://<hostname>/delete/ids/<id,id,id>`    | POST | Delete specific Artifacts by ID |
 | `http://<hostname>/delete/<name>`            | POST | Delete a specific Artifact by name |

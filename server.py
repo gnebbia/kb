@@ -260,9 +260,9 @@ def export_kb_all():
     Export the whole knowledgebase to a file
     """
     with tempfile.NamedTemporaryFile(delete=True) as f:
-        parms = dict()
-        parms["file"] = f.name
-        results = export(parms, config=DEFAULT_CONFIG)
+        params = dict()
+        params["file"] = f.name
+        results = export(params, config=DEFAULT_CONFIG)
         return(results)
 
 
@@ -273,10 +273,10 @@ def export_kb_data():
     Export just the data to a file
     """
     with tempfile.NamedTemporaryFile(delete=True) as f:
-        parms = dict()
-        parms["file"] = f.name
-        parms["only_data"] = "True"
-        results = export(parms, config=DEFAULT_CONFIG)
+        params = dict()
+        params["file"] = f.name
+        params["only_data"] = "True"
+        results = export(params, config=DEFAULT_CONFIG)
         return(results)
 
 
@@ -286,12 +286,12 @@ def grep_artifacts(regex):
     """
     Grep the whole knowledgebase
     """
-    parms = dict()
-    parms["regex"] = regex
-    parms["case_insensitive"] = False
-    parms["no_color"] = False
-    parms["verbose"] = True
-    results = grep(parms, config=DEFAULT_CONFIG)
+    params = dict()
+    params["regex"] = regex
+    params["case_insensitive"] = False
+    params["no_color"] = False
+    params["verbose"] = True
+    results = grep(params, config=DEFAULT_CONFIG)
     response = make_response(constructResponse(results), 200)
     response.mimetype = MIME_TYPE['json']
     return(response)
@@ -303,9 +303,9 @@ def ingest_kb():
     """
     Import a kb export file
     """
-    parms = dict()
+    params = dict()
     f = request.files['file']
-    return (ingest(f, parms, config=DEFAULT_CONFIG))
+    return (ingest(f, params, config=DEFAULT_CONFIG))
 
 
 @kbapi_app.route('/list', methods=['GET'])

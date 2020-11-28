@@ -101,10 +101,10 @@ def constructResponse(results):
     """
     Constructs a response from the results obtained by a core function
     """
-    response = '{'
+    response = '['
     for result in results:
         response = response + toJson(result) + ','
-    response = response[:-1] + '}'
+    response = response[:-1] + ']'
     response = response.replace('"', "'")
     return response
 

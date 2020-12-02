@@ -18,14 +18,23 @@ from sys import platform
 from pathlib import Path
 import toml
 
+# Home base for the user
+BASE = Path.home()
+
+# Insert directory with specific knowledgebase in (picked up from global options file)
+KB_BASE = Path(BASE,".kb","home")
+
+
 DEFAULT_CONFIG = {
-    "PATH_KB": str(Path(Path.home(), ".kb")),
-    "PATH_KB_DB": str(Path(Path.home(), ".kb", "kb.db")),
-    "PATH_KB_HIST": str(Path(Path.home(), ".kb", "recent.hist")),
-    "PATH_KB_DATA": str(Path(Path.home(), ".kb", "data")),
-    "PATH_KB_CONFIG": str(Path(Path.home(), ".kb", "kb.conf.py")),  # for future use
-    "PATH_KB_TEMPLATES": str(Path(Path.home(), ".kb", "templates")),
-    "PATH_KB_DEFAULT_TEMPLATE": str(Path(Path.home(), ".kb", "templates", "default")),
+    "PATH_BASE": str(Path(BASE, ".kb")),
+    "PATH_KB": str(Path(KB_BASE)),
+    "PATH_KB_DB": str(Path(KB_BASE, "kb.db")),
+    "PATH_KB_HIST": str(Path(KB_BASE, "recent.hist")),
+    "PATH_KB_DATA": str(Path(KB_BASE, "data")),
+    "PATH_KB_CONFIG": str(Path(KB_BASE,  "kb.conf.py")),  # for future use
+    "PATH_KB_TEMPLATES": str(Path(KB_BASE,  "templates")),
+    "PATH_KB_DEFAULT_TEMPLATE": str(Path(KB_BASE, "templates", "default")),
+    "PATH_KB_INITIAL_BASES": str(Path(BASE,".kb", "bases.toml")),
     "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
     "INITIAL_CATEGORIES": ["default", ]
@@ -37,6 +46,11 @@ DEFAULT_TEMPLATE = {
     "WARNINGS": ("^!.*", "yellow"),
 }
 
+INITIAL_KNOWLEDGEBASE = {
+    'current':'default',
+    'bases': [{'name': 'default', 'description': 'Default knowledgebase'},
+    {'name': 'work', 'description': 'Work Stuff'}]
+    }
 
 def get_markers(markers_path: str):
     """

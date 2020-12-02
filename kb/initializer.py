@@ -57,6 +57,7 @@ def create_kb_files(config):
                 DB_SCHEMA_VERSION         - the database schema version
     """
     # Get paths for kb from configuration
+    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
     kb_path = config["PATH_KB"]
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
@@ -93,6 +94,10 @@ def create_kb_files(config):
     # Create markers file
     with open(default_template_path, 'w') as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
+
+    # Create default knowledgebases file
+    with open(initial_bases_path, 'w') as dkb:
+        dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
 
 
 def is_initialized(config) -> bool:

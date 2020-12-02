@@ -18,12 +18,47 @@ from sys import platform
 from pathlib import Path
 import toml
 
+def get_markers(markers_path: str):
+    """
+    Load markers file
+
+    Arguments:
+    markers_path    - the path to the toml markers file
+
+    Returns a dictionary containing markers
+    """
+    try:
+        return toml.load(markers_path)
+    except toml.TomlDecodeError:
+        print("Error: The provided file is not in the toml format")
+    except FileNotFoundError:
+        print("Error: The provided file does not exist or cannot be accessed")
+
+def get_current_base(BASE: Path):
+    """
+    Get current base knowledgebase file
+
+    Arguments:
+    BASE      - the path to the toml bases.toml file
+
+    Returns name of the current KB (or 'default')
+    """
+    bases_config = str(Path(BASE,".kb", "bases.toml"))
+    try:
+        bases_data = toml.load(bases_config)
+        current_base = bases_data['current']
+        return current_base
+    except toml.TomlDecodeError:
+        print("Error: The bases file is not in the toml format")
+    except FileNotFoundError:
+        return('default')
+
 # Home base for the user
 BASE = Path.home()
 
-# Insert directory with specific knowledgebase in (picked up from global options file)
-KB_BASE = Path(BASE,".kb","home")
+# Get the current kb or 'default'
 
+KB_BASE = Path(BASE,".kb",get_current_base(BASE))
 
 DEFAULT_CONFIG = {
     "PATH_BASE": str(Path(BASE, ".kb")),
@@ -40,7 +75,6 @@ DEFAULT_CONFIG = {
     "INITIAL_CATEGORIES": ["default", ]
 }
 
-
 DEFAULT_TEMPLATE = {
     "TITLES": ("^#.*", "blue"),
     "WARNINGS": ("^!.*", "yellow"),
@@ -48,22 +82,6 @@ DEFAULT_TEMPLATE = {
 
 INITIAL_KNOWLEDGEBASE = {
     'current':'default',
-    'bases': [{'name': 'default', 'description': 'Default knowledgebase'},
-    {'name': 'work', 'description': 'Work Stuff'}]
+    'bases': [{'name': 'default', 'description': 'Default knowledgebase'}]
     }
 
-def get_markers(markers_path: str):
-    """
-    Load markers file
-
-    Arguments:
-    markers_path    - the path to the toml markers file
-
-    Returns a dictionary containing markers
-    """
-    try:
-        return toml.load(markers_path)
-    except toml.TomlDecodeError:
-        print("Error: The provided file is not in the toml format")
-    except FileNotFoundError:
-        print("Error: The provided file does not exist or cannot be accessed")

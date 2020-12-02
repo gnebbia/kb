@@ -13,11 +13,11 @@ Command Line Parsing Module for kb
 
 __all__ = ()
 
-import sys
 import argparse
-from kb import __version__
-import kb.commands.kbinfo as kbinfo
+import sys
 from typing import Sequence
+
+from kb import __version__
 from kb.config import DEFAULT_CONFIG
 
 
@@ -48,47 +48,32 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     # Main Commands
     add_parser = subparsers.add_parser(
         'add', help='Add an artifact')
-    edit_parser = subparsers.add_parser(
-        'edit', help='Edit an artifact content')
-    list_parser = subparsers.add_parser(
-        'list', help='Search for artifacts')
-    view_parser = subparsers.add_parser(
-        'view', help='View artifacts')
-    grep_parser = subparsers.add_parser(
-        'grep', help='Grep through kb artifacts')
-    update_parser = subparsers.add_parser(
-        'update', help='Update artifact properties')
+    base_parser = subparsers.add_parser(
+        'base', help='Manage knowledge bases')    
     delete_parser = subparsers.add_parser(
         'delete', help='Delete artifacts')
-    template_parser = subparsers.add_parser(
-        'template', help='Manage templates for artifacts')
-    import_parser = subparsers.add_parser(
-        'import', help='Import a knowledge base')
-    export_parser = subparsers.add_parser(
-        'export', help='Export the knowledge base')
+    edit_parser = subparsers.add_parser(
+        'edit', help='Edit an artifact content')    
     erase_parser = subparsers.add_parser(
         'erase', help='Erase the entire kb knowledgebase')
+    export_parser = subparsers.add_parser(
+        'export', help='Export the knowledge base')
+    grep_parser = subparsers.add_parser(
+        'grep', help='Grep through kb artifacts')
     help_parser = subparsers.add_parser(
         'help', help='Show help of a particular command')
-
+    import_parser = subparsers.add_parser(
+        'import', help='Import a knowledge base')
+    list_parser = subparsers.add_parser(
+        'list', help='Search for artifacts')
     stats_parser = subparsers.add_parser(
         'stats', help='Show stats for the knowledgebase')
-
-    # stats parser
-    stats_parser.add_argument(
-        "-v", "--verbose", 
-        help='Show stats in a verbose mode',
-        action='store_true',
-        dest='stats_verbose',
-        default=False)
-
-    stats_parser.add_argument(
-        "-n", "--no-color",
-        help="Enable no-color mode",
-        action='store_false',
-        dest='no_color',
-        default=True,
-    )
+    template_parser = subparsers.add_parser(
+        'template', help='Manage templates for artifacts')
+    update_parser = subparsers.add_parser(
+        'update', help='Update artifact properties')
+    view_parser = subparsers.add_parser(
+        'view', help='View artifacts')
 
     # add parser
     add_parser.add_argument(
@@ -136,6 +121,46 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
 
+     # base parser
+    base_parser.add_argument(
+        "-b","--base",
+        help="Knowledge base to switch to",
+        type=str,
+    )
+    base_parser.add_argument(
+        "list",
+        help="List of knowledge bases",
+        type=str,
+    )
+
+    base_parser.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True,
+    )
+
+    # delete parser
+    delete_parser.add_argument(
+        "-i", "--id",
+        help="ID of the artifact",
+        type=str,
+        nargs='*',
+    )
+    delete_parser.add_argument(
+        "-t", "--title",
+        help="Title of the artifact to remove",
+        default=None,
+        type=str,
+    )
+    delete_parser.add_argument(
+        "-c", "--category",
+        help="Category associated to the artifact to remove",
+        default=None,
+        type=str,
+    )
+
     # edit parser
     edit_parser.add_argument(
         "nameid",
@@ -177,6 +202,67 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="Status to update",
         default=None,
         type=str,
+    )
+
+    # grep parser
+    grep_parser.add_argument(
+        "regex",
+        help="Filter search results by specified regex",
+        type=str,
+    )
+    grep_parser.add_argument(
+        "-c", "--category",
+        help="Filter search results by specified category",
+        default=None,
+        type=str,
+    )
+    grep_parser.add_argument(
+        "-g", "--tags",
+        help="""
+        Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"
+        """,
+        default=None,
+        type=str,
+    )
+    grep_parser.add_argument(
+        "-a", "--author",
+        help="Filter search results by specified author",
+        default=None,
+        type=str,
+    )
+    grep_parser.add_argument(
+        "-s", "--status",
+        help="Filter search results by specified status",
+        default=None,
+        type=str,
+    )
+    grep_parser.add_argument(
+        "-m", "--show-matches",
+        help="Show text matching the regex within the artifact ",
+        action='store_true',
+        dest='matches',
+        default=False,
+    )
+    grep_parser.add_argument(
+        "-i", "--case-insensitive",
+        help="Perform grep using a case insensitive regex",
+        action='store_true',
+        dest='case_insensitive',
+        default=False,
+    )
+    grep_parser.add_argument(
+        "-v", "--verbose",
+        help="Show additional information for the provided results",
+        action='store_true',
+        dest='verbose',
+        default=False,
+    )
+    grep_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
     )
 
     # list parser
@@ -241,103 +327,21 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         dest='all_tags',
         default=False,
     )
-    
-    # view parser
-    view_parser.add_argument(
-        "nameid",
-        help="Title or ID of the artifact to view",
-        type=str,
-        nargs="?",
-    )
-    view_parser.add_argument(
-        "-i", "--id",
-        help="ID of the artifact to visualize",
-        type=str,
-    )
-    view_parser.add_argument(
-        "-t", "--title",
-        help="Title of the artifact to visualize",
-        type=str,
-    )
-    view_parser.add_argument(
-        "-c", "--category",
-        help="Category associated to the artifact to visualize",
-        type=str,
-    )
-    view_parser.add_argument(
-        "-e", "--open-editor",
-        help="Open the file in a text editor (read-only mode)",
-        action='store_true',
-        dest='editor',
-        default=False,
-    )
-    view_parser.add_argument(
-        "-n", "--no-color",
-        help="Enabled no-color mode",
-        action='store_true',
-        dest='no_color',
-        default=False,
-    )
 
-    # grep parser
-    grep_parser.add_argument(
-        "regex",
-        help="Filter search results by specified regex",
-        type=str,
-    )
-    grep_parser.add_argument(
-        "-c", "--category",
-        help="Filter search results by specified category",
-        default=None,
-        type=str,
-    )
-    grep_parser.add_argument(
-        "-g", "--tags",
-        help="""
-        Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"
-        """,
-        default=None,
-        type=str,
-    )
-    grep_parser.add_argument(
-        "-a", "--author",
-        help="Filter search results by specified author",
-        default=None,
-        type=str,
-    )
-    grep_parser.add_argument(
-        "-s", "--status",
-        help="Filter search results by specified status",
-        default=None,
-        type=str,
-    )
-    grep_parser.add_argument(
-        "-m", "--show-matches",
-        help="Show text matching the regex within the artifact ",
+    # stats parser
+    stats_parser.add_argument(
+        "-v", "--verbose", 
+        help='Show stats in a verbose mode',
         action='store_true',
-        dest='matches',
-        default=False,
-    )
-    grep_parser.add_argument(
-        "-i", "--case-insensitive",
-        help="Perform grep using a case insensitive regex",
-        action='store_true',
-        dest='case_insensitive',
-        default=False,
-    )
-    grep_parser.add_argument(
-        "-v", "--verbose",
-        help="Show additional information for the provided results",
-        action='store_true',
-        dest='verbose',
-        default=False,
-    )
-    grep_parser.add_argument(
+        dest='stats_verbose',
+        default=False)
+
+    stats_parser.add_argument(
         "-n", "--no-color",
-        help="Enabled no-color mode",
-        action='store_true',
+        help="Enable no-color mode",
+        action='store_false',
         dest='no_color',
-        default=False,
+        default=True,
     )
 
     # update parser
@@ -394,24 +398,41 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
 
-    # delete parser
-    delete_parser.add_argument(
+    # view parser
+    view_parser.add_argument(
+        "nameid",
+        help="Title or ID of the artifact to view",
+        type=str,
+        nargs="?",
+    )
+    view_parser.add_argument(
         "-i", "--id",
-        help="ID of the artifact",
+        help="ID of the artifact to visualize",
         type=str,
-        nargs='*',
     )
-    delete_parser.add_argument(
+    view_parser.add_argument(
         "-t", "--title",
-        help="Title of the artifact to remove",
-        default=None,
+        help="Title of the artifact to visualize",
         type=str,
     )
-    delete_parser.add_argument(
+    view_parser.add_argument(
         "-c", "--category",
-        help="Category associated to the artifact to remove",
-        default=None,
+        help="Category associated to the artifact to visualize",
         type=str,
+    )
+    view_parser.add_argument(
+        "-e", "--open-editor",
+        help="Open the file in a text editor (read-only mode)",
+        action='store_true',
+        dest='editor',
+        default=False,
+    )
+    view_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
     )
 
     # template parser

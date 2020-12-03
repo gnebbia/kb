@@ -38,6 +38,24 @@ def base_list(config:Dict[str, str]):
         list_of_bases.append(base_info)
     return (list_of_bases)
 
+def does_base_exist(target:str, config:Dict[str, str]):
+    """
+    Check to see if a specific knowledge base exists
+
+    Arguments:
+    base        -   the knowledgebase to check for
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+    list_of_bases = base_list(config)
+    for base in list_of_bases:
+        print(base)
+        print(base["name"])
+        if base["name"] == target:
+            return True
+    return False
+
 def get_current_kb_details(config:Dict[str, str]):
     """
     Get information about the current knowledgebase.
@@ -55,3 +73,22 @@ def get_current_kb_details(config:Dict[str, str]):
         if base['name'] == data['current']:
             ckb['description'] = base['description']
     return (ckb)
+
+def switch_base(target:str,config:Dict[str, str]):
+    """
+    Switch the current knowledge base to the one supplied.
+
+    Arguments:
+    target      -   the desired knowledge base.
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+
+    current = toml.load(config["PATH_KB_INITIAL_BASES"])
+    print (current)
+    current["current"] = target
+    print(current)
+    # Write the .toml file back - thereby switching the knowledge base
+    with open(config["PATH_KB_INITIAL_BASES"], 'w') as switched:
+        switched.write(toml.dumps(current))

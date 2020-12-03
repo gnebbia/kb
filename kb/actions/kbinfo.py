@@ -15,20 +15,12 @@ import toml
 from typing import Dict
 
 from kb.actions.list import list_categories, list_tags, list_templates
+from kb.actions.base import get_current_kb_details
 from kb.api.constants import MIME_TYPE, API_VERSION
 import kb.db as db
 import kb.filesystem as fs
 from kb import __version__
 
-def get_current_kb_details(config:Dict[str, str]):
-    ckb = dict()
-    data = toml.load(config["PATH_KB_INITIAL_BASES"])
-    ckb["name"] = data["current"]
-    bases = data["bases"]
-    for base in bases:
-        if base['name'] == data['current']:
-            ckb['description'] = base['description']
-    return (ckb)
 
 def kb_stats(config: Dict[str, str]):
     """

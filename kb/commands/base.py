@@ -27,17 +27,26 @@ from kb.entities.artifact import Artifact
 import kb.printer.template as printer
 from kb.actions.template import edit as edit_template
 from kb.actions.template import delete as delete_template
-from kb.actions.base import base_list
-import kb.printer.base as baseprint
-
-
+from kb.actions.base import base_list,get_current_kb_details
+from kb.printer.base import generate_current_kb,generate_bases_output
 
 def list_bases(args: Dict[str, str], config: Dict[str, str]):
     bases = base_list(config)
-    color_mode = not args["no_color"]
-    baseprint.generate_bases_output(bases, color_mode)
-    print(bases)
+    if "no_color" in args:
+        color_mode = not args["no_color"]
+    else:
+        color_mode = False
+    generate_bases_output(bases, color_mode)
     return True
+
+def get_current(args: Dict[str, str], config: Dict[str, str]):
+    current_kb=get_current_kb_details(config)
+    if "no_color" in args:
+        color_mode = not args["no_color"]
+    else:
+        color_mode = False
+    generate_current_kb(current_kb,color_mode)
+    return current_kb
 
 def switch(args: Dict[str, str], config: Dict[str, str]):
     return True
@@ -205,6 +214,7 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
 COMMANDS = {
     'add': add,
     'base': switch,
+    'current':get_current,
     'delete': delete,
     'edit': edit,
     'list': list_bases
@@ -234,5 +244,4 @@ def base(args: Dict[str, str], config: Dict[str, str]):
 
     # Check initialization
     initializer.init(config)
-    print(args)
-    COMMANDS[args["command"]](args, config)
+    COMMANDS[args["base_command"]](args, config)

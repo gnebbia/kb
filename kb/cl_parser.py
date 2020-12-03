@@ -121,19 +121,23 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
 
-     # base parser
-    base_parser.add_argument(
-        "-b","--base",
-        help="Knowledge base to switch to",
-        type=str,
-    )
-    base_parser.add_argument(
-        "list",
-        help="List of knowledge bases",
-        type=str,
-    )
 
-    base_parser.add_argument(
+    # base parser
+    base_subparsers = base_parser.add_subparsers(help='base commands', dest="base_command")
+    base_subparsers.required = True
+
+    # base subcommands
+    list_base_parser = base_subparsers.add_parser('list', help='Knowledgebase manipulation commands')
+    current_base_parser = base_subparsers.add_parser('current', help='Show the currently active knowledge base')
+      
+    list_base_parser.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True,
+    )
+    current_base_parser.add_argument(
         "-n", "--no-color",
         help="Enable no-color mode",
         action='store_false',

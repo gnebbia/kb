@@ -16,6 +16,25 @@ from typing import List
 from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 from kb.entities.artifact import Artifact
 
+def generate_current_kb(ckb: str,color: bool = True):
+    """
+    Generates current knowledge base output.
+
+    Arguments:
+    ckb             - a Dictionary string of knowledgebase info
+    color           - a boolean, True if color is enabled
+
+    Returns:
+    Nothing - the screen printout is produced by this module
+    """
+
+    output = "{c}".format(c='Currently selected knowledge base: "' + ckb["name"] + '" - ' + ckb["description"])
+
+    if not color:
+        output = BOLD + output + RESET
+    print(output)
+    
+
 
 def generate_bases_output(
         bases: str,
@@ -24,26 +43,26 @@ def generate_bases_output(
     Generates kb base results header.
 
     Arguments:
-    stats           - a Dictionary string of knowledgebase info
+    bases           - a Dictionary string of knowledgebase info
     color           - a boolean, True if color is enabled
 
     Returns:
     Nothing - the screen printout is produced by this module
     """
     
-    header = "{name}           {description}".format(
+    header = "{name}                          {description}".format(
         name='Name',
-        description='Description')
+        description='Description').ljust(80)
 
-    if color:
+    if not color:
         header = UND + BOLD + header + RESET
     print(header)
 
     for base in bases:
         summary = "{name}          {description}".format(
-            kb_version=base["name"].ljust(20),
-            api_version=base["name"].ljust(40))
-        if color:
-            summary = UND + BOLD + summary + RESET
+            name=base["name"].ljust(20),
+            description=base["description"].ljust(40))
+        if not color:
+            summary = BOLD + summary + RESET
         print(summary)
-        
+    

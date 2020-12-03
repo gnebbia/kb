@@ -22,6 +22,7 @@ from flask_httpauth import HTTPBasicAuth
 # Import the API functions
 from kb.api.add import add
 from kb.api.base import base as base_list
+from kb.api.base import get_current
 from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
@@ -75,7 +76,7 @@ PORT = 5000
 HOST = '0.0.0.0'
 
 # Methods allowed:
-ALLOWED_METHODS = ['add', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'stats', 'template', 'update', 'version', 'view']
+ALLOWED_METHODS = ['add', 'base', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'stats', 'template', 'update', 'version', 'view']
 
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
@@ -201,6 +202,16 @@ def add_item():
     attachment = request.files['file']
     resp = add(args=parameters, config=DEFAULT_CONFIG, file=attachment)
     return(resp)
+
+
+@kbapi_app.route('/base/current', methods=['GET'])
+@auth.login_required
+def list_current_base():
+    """
+    Return the current knowledgebase
+    """
+    results = get_current(config=DEFAULT_CONFIG)
+    return (results)
 
 
 @kbapi_app.route('/base/list', methods=['GET'])

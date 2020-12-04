@@ -23,7 +23,8 @@ import kb.filesystem as fs
 import kb.config as conf
 from kb.entities.artifact import Artifact
 import kb.printer.template as printer
-
+from kb.actions.template import edit as edit_template
+from kb.actions.template import delete as delete_template
 
 def get_templates(templates_path: str) -> List[str]:
     """
@@ -117,7 +118,6 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                 "Please specify another name for the new template")
         sys.exit(1)
 
-    
     fs.create_directory(Path(template_path).parent)
     # fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
 
@@ -150,6 +150,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         dest_path = config["PATH_KB_TEMPLATES"]
     fs.copy_file(template_path, dest_path)
 
+
 def delete(args: Dict[str, str], config: Dict[str, str]):
     """
     Delete a template from the kb templates.
@@ -162,8 +163,12 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_TEMPLATES         - the path to where the templates of KB
                                                   are stored
     """
-    template_name = args["template"]
-    fs.remove_file(Path(config["PATH_KB_TEMPLATES"], template_name))
+    
+    results = delete_template(args, config)
+    if results == -404:
+        print("ERROR: The template you want to delete does not exist. "
+              "Please specify a valid template to edit or create a new one")
+        sys.exit(1)
 
 
 def edit(args: Dict[str, str], config: Dict[str, str]):
@@ -179,17 +184,7 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
                                            are stored
                       EDITOR             - the editor program to call
     """
-    template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
-
-    if not fs.is_file(template_path):
-        print("ERROR: The template you want to edit does not exist. "
-                "Please specify a valid template to edit or create a new one")
-        sys.exit(1)
-
-    shell_cmd = shlex.split(
-        config["EDITOR"]) + [template_path]
-    call(shell_cmd)
-
+    edit_template(args, config)
 
 COMMANDS = {
     'add': add,

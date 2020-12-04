@@ -1,0 +1,21 @@
+# Start with the base image (for the cli)
+
+FROM python:alpine3.8
+
+RUN apk update && \
+    apk add nano vim && \
+    pip install --upgrade pip 
+    
+COPY . /app
+
+WORKDIR /app
+
+# Update the base image, install dependencies and create the aliases file
+
+RUN pip install -r requirements.txt && \
+    python setup.py install && \
+    cat /app/docker/cli/aliases >> /etc/profile
+
+ENV ENV="/etc/profile"
+
+WORKDIR /data

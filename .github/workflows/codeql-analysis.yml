@@ -24,6 +24,7 @@ on:
   schedule:
     - cron: '41 0 * * 0'
 
+
 jobs:
   analyze:
     name: Analyze

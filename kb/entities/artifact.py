@@ -6,7 +6,6 @@
 
 """
 kb artifact frozen dataclass
-
 :Copyright: © 2020, gnc.
 :License: GPLv3 (see /LICENSE).
 """

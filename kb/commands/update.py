@@ -15,6 +15,8 @@ import shlex
 from subprocess import call
 from typing import Dict
 from pathlib import Path
+
+from kb.actions.update import update_artifact
 import kb.db as db
 import kb.initializer as initializer
 import kb.history as history
@@ -63,29 +65,7 @@ def update(args: Dict[str, str], config: Dict[str, str]):
             print("The artifact you are trying to update does not exist! "
                   "Please insert a valid ID...")
             return None
-
-        updated_artifact = Artifact(
-            id=None,
-            title=args["title"],
-            category=args["category"],
-            tags=args["tags"],
-            author=args["author"],
-            status=args["status"],
-            template=args["template"])
-
-        db.update_artifact_by_id(conn, old_artifact.id, updated_artifact)
-        # If either title or category has been changed, we must move the file
-        if args["category"] or args["title"]:
-            old_category_path = Path(
-                config["PATH_KB_DATA"],
-                old_artifact.category)
-            new_category_path = Path(
-                config["PATH_KB_DATA"],
-                args["category"] or old_artifact.category)
-            fs.create_directory(new_category_path)
-
-            fs.move_file(Path(old_category_path, old_artifact.title), Path(
-                new_category_path, args["title"] or old_artifact.title))
+        response = update_artifact(conn, old_artifact, args, config, "")
     # else if a title is specified
     elif args["title"]:
         artifact = db.get_uniq_artifact_by_filter(conn, title=args["title"],

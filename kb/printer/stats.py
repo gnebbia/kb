@@ -48,13 +48,19 @@ def generate_stats_header(
         tags=str(stats["CurrentStatistics"]["Tags"]["Total"]).rjust(9),
         artifacts=str(stats["CurrentStatistics"]["Artifacts"]["Total"]).rjust(10),
         templates=str(stats["CurrentStatistics"]["Templates"]["Total"]).rjust(10))
+    
+    current = "{current}".format(
+        current='Current KB: "' + stats["CurrentKB"]["Name"] + '" - ' + stats["CurrentKB"]["Description"])
 
     if color:
         header = UND + BOLD + header + RESET
         summary = BOLD + summary + RESET
-
+        current = BOLD + current + RESET
+        
     print(header)
     print(summary)
+    print()
+    print(current)
 
 
 def generate_sizes(

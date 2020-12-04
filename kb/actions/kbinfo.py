@@ -11,11 +11,14 @@ kb stats action module
 :License: GPLv3 (see /LICENSE).
 """
 
+import toml
 from typing import Dict
-import kb.filesystem as fs
+
 from kb.actions.list import list_categories, list_tags, list_templates
+from kb.actions.base import get_current_kb_details
 from kb.api.constants import MIME_TYPE, API_VERSION
 import kb.db as db
+import kb.filesystem as fs
 from kb import __version__
 
 
@@ -33,6 +36,7 @@ def kb_stats(config: Dict[str, str]):
 
     conn = db.create_connection(config["PATH_KB_DB"])
 
+    current_kb = dict()
     augmented_config = dict()
     versions_config = dict()
     current_stats_config = dict()
@@ -71,6 +75,11 @@ def kb_stats(config: Dict[str, str]):
     sizes_config["Artifacts"] = fs.get_complete_size(config["PATH_KB_DATA"])
     current_stats_config["Sizes"] = sizes_config
 
+    ckb = get_current_kb_details(config)
+    current_kb["Name"] = ckb["name"]
+    current_kb["Description"] = ckb["description"]
+    augmented_config["CurrentKB"] = current_kb
+    
     artifacts["Total"] = db.count_artifacts(conn)
     current_stats_config["Artifacts"] = artifacts
     augmented_config["lastUpdate"] = fs.get_last_modified_time(config["PATH_KB_DB"])

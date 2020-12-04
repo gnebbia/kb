@@ -21,7 +21,7 @@ from kb.api.constants import MIME_TYPE
 import kb.db as db
 
 # Get the configuration for the knowledgebase
-from kb.config import DEFAULT_CONFIG
+#from kb.config import DEFAULT_CONFIG
 
 # Use the flask framework
 from flask import make_response
@@ -51,26 +51,30 @@ def add(args: Dict[str, str], config: Dict[str, str], file):
 
     if file:
         # Create "category" directory if it does not exist
-        category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
+        category_path = Path(config["PATH_KB_DATA"], args["category"])
         category_path.mkdir(parents=True, exist_ok=True)
 
         # Get the filename
         filename = secure_filename(file.filename)
-        category_path = Path(DEFAULT_CONFIG["PATH_KB_DATA"], args["category"])
+        category_path = Path(config["PATH_KB_DATA"], args["category"])
         file.save(os.path.join(category_path, filename))
         os.rename(os.path.join(category_path, filename), os.path.join(category_path, args["title"]))
 
     conn = db.create_connection(config["PATH_KB_DB"])
 
-    result = add_artifact(conn, args, DEFAULT_CONFIG)
+    result = add_artifact(conn, args, config)
+    conn.commit()
+
+    if result is None:
+        resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
+        resp.mimetype = MIME_TYPE['json']
+        return (resp)
+
     if result > 1:
         resp = make_response(({'Added': result}), 200)
 
-    if resp is None:
-        resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
-
-    if resp <= 0:
-        resp = make_response(({'Error': 'There was an issue adding the artifact'}), 200)
+    if result <= 0:
+        resp = make_response(({'Error': 'There was an issue adding the artifact - ' + result}), 200)
 
     resp.mimetype = MIME_TYPE['json']
     return (resp)

@@ -40,6 +40,7 @@ def list_cats(config: Dict[str, str]):
     categories = ls.list_categories(config)
     response = make_response(({'Categories': categories}), 200)
     response.mimetype = MIME_TYPE['json']
+    print(response)
     return response
 
 

@@ -52,16 +52,17 @@ def search_kb(args: Dict[str, str], config: Dict[str, str]):
         return all_tags
 
     tags_list = None
-    if args["tags"] and args["tags"] != "":
-        tags_list = args["tags"].split(';')
+    if args.get("tags",False) is True:
+        if args["tags"] and args["tags"] != "":
+            tags_list = args["tags"].split(';')
 
     rows = db.get_artifacts_by_filter(
         conn,
-        title=args["query"],
-        category=args["category"],
+        title=args.get("query",''),
+        category=args.get("category",''),
         tags=tags_list,
-        status=args["status"],
-        author=args["author"])
+        status=args.get("status",''),
+        author=args.get("author",''))
 
     artifacts = sorted(rows, key=lambda x: x.title)
     return artifacts

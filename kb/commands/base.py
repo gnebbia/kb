@@ -69,13 +69,12 @@ def get_current(args: Dict[str, str], config: Dict[str, str]):
 
 
 def switch(args: Dict[str, str], config: Dict[str, str]):
-    print("Switch to ", args["kb"])
     target = args["kb"]
     if does_base_exist(target,config):
-        print("exists")
         switch_base(target,config)
+        print("Knowledge base switched to ", args["kb"])
     else:
-        print("doesnt exist")
+        print('The knowledge base you specified ("' + target + '") does not exist.')
     return True
 
 def nowt(args: Dict[str, str], config: Dict[str, str]):

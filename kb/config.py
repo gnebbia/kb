@@ -53,6 +53,30 @@ def get_current_base(BASE: Path):
     except FileNotFoundError:
         return('default')
 
+def get_config():
+    BASE = Path.home()
+
+    # Get the current kb or 'default'
+
+    KB_BASE = Path(BASE,".kb",get_current_base(BASE))
+
+    DEFAULT_CONFIG = {
+        "PATH_BASE": str(Path(BASE, ".kb")),
+        "PATH_KB": str(Path(KB_BASE)),
+        "PATH_KB_DB": str(Path(KB_BASE, "kb.db")),
+        "PATH_KB_HIST": str(Path(KB_BASE, "recent.hist")),
+        "PATH_KB_DATA": str(Path(KB_BASE, "data")),
+        "PATH_KB_CONFIG": str(Path(KB_BASE,  "kb.conf.py")),  # for future use
+        "PATH_KB_TEMPLATES": str(Path(KB_BASE,  "templates")),
+        "PATH_KB_DEFAULT_TEMPLATE": str(Path(KB_BASE, "templates", "default")),
+        "PATH_KB_INITIAL_BASES": str(Path(BASE,".kb", "bases.toml")),
+        "DB_SCHEMA_VERSION": 1,
+        "EDITOR": os.environ.get("EDITOR", "vim"),
+        "INITIAL_CATEGORIES": ["default", ]
+    }
+    return (DEFAULT_CONFIG)
+
+
 # Home base for the user
 BASE = Path.home()
 

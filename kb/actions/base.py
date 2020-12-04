@@ -50,8 +50,6 @@ def does_base_exist(target:str, config:Dict[str, str]):
     """
     list_of_bases = base_list(config)
     for base in list_of_bases:
-        print(base)
-        print(base["name"])
         if base["name"] == target:
             return True
     return False
@@ -86,9 +84,7 @@ def switch_base(target:str,config:Dict[str, str]):
     """
 
     current = toml.load(config["PATH_KB_INITIAL_BASES"])
-    print (current)
     current["current"] = target
-    print(current)
     # Write the .toml file back - thereby switching the knowledge base
     with open(config["PATH_KB_INITIAL_BASES"], 'w') as switched:
         switched.write(toml.dumps(current))

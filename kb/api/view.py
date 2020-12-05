@@ -16,6 +16,7 @@ import base64
 from pathlib import Path
 
 from flask import make_response
+from markupsafe import escape 
 
 from kb.api.constants import MIME_TYPE
 from kb.db import get_artifact_by_id, get_artifacts_by_filter
@@ -41,7 +42,7 @@ def view_by_id(conn, id, DEFAULT_CONFIG):
     if id:
         artifact = get_artifact_by_id(conn, id)
         if artifact is None:
-            response = make_response(({'Error': 'There is no artifact with the ID of ' + str(id)}), 404)
+            response = make_response(({'Error': 'There is no artifact with the ID of ' + escape(str(id))}), 404)
             response.mimetype = MIME_TYPE['json']
             return response
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), str(artifact.category))
@@ -71,13 +72,13 @@ def view_by_title(conn, title, DEFAULT_CONFIG):
 
     artifact = get_artifacts_by_filter(conn, title=title, is_strict=True)
     # Set default response - nothing found
-    response = (make_response(({'Error': 'There are no artifacts with the title of ' + title}), 404))
+    response = (make_response(({'Error': 'There are no artifacts with the title of ' + escape(title)}), 404))
 
     if len(artifact) > 1:
-        response = make_response(({'Error': 'There is more than one artifact with the title of ' + title}), 301)
+        response = make_response(({'Error': 'There is more than one artifact with the title of ' + escape(title)}), 301)
         response.mimetype = MIME_TYPE['json']
     if len(artifact) == 0:
-        response = (make_response(({'Error': 'There are no artifacts with the title of ' + title}), 404))
+        response = (make_response(({'Error': 'There are no artifacts with the title of ' + escape(title)}), 404))
         response.mimetype = MIME_TYPE['json']
     if len(artifact) == 1:
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), artifact[0].category)
@@ -106,13 +107,13 @@ def view_by_name(conn, title, category, DEFAULT_CONFIG):
     """
     artifact = get_artifacts_by_filter(conn, title=title, category=category, is_strict=True)
     # Set default response - nothing found
-    response = (make_response(({'Error': 'There are no artifacts with the name of ' + category + "/" + title}), 404))
+    response = (make_response(({'Error': 'There are no artifacts with the name of ' + escape(category) + "/" + escape(title)}), 404))
 
     if len(artifact) > 1:
-        response = make_response(({'Error': 'There is more than one artifact with the name of ' + category + "/" + title}), 301)
+        response = make_response(({'Error': 'There is more than one artifact with the name of ' + escape(category) + "/" + escape(title)}), 301)
         response.mimetype = MIME_TYPE['json']
     if len(artifact) == 0:
-        response = (make_response(({'Error': 'There are no artifacts with the name of ' + category + "/" + title}), 404))
+        response = (make_response(({'Error': 'There are no artifacts with the name of ' + escape(category) + "/" + escape(title)}), 404))
         response.mimetype = MIME_TYPE['json']
     if len(artifact) == 1:
         category_path = Path(str(DEFAULT_CONFIG["PATH_KB_DATA"]), artifact[0].category)

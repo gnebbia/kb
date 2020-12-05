@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Dict
 
 from flask import jsonify, make_response
+from markupsafe import escape
 
 from kb.actions.template import get_template as get_a_template
 from kb.actions.template import delete as delete_template
@@ -196,7 +197,7 @@ def get_template(template, DEFAULT_CONFIG):
         resp.mimetype = MIME_TYPE['json']
         return(resp)
     else:
-        record = '{"Template":"' + template + '","Content":"' + str(results) + '"}'
+        record = '{"Template":"' + escape(template) + '","Content":"' + escape(str(results)) + '"}'
         resp = (make_response((record), 200))
         resp.mimetype = MIME_TYPE['utf8']
         return(resp)

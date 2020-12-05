@@ -88,23 +88,26 @@ To deploy kb-API as a gunicorn-based server, simply use:
 
 | Endpoint                                     | Method | Description|
 |----------------------------------------------|-------|-------------|
-| `http://<hostname>/add`                      | POST | Adds a new artifact to the knowledgebase |
+| `http://<hostname>/add`                      | POST | Adds a new artifact to the current knowledgebase |
+| `http://<hostname>/base/list`                | GET  | Lists the available knowledgebases |
+| `http://<hostname>/base/current`             | GET  | Returns the current knowledgebase |
+| `http://<hostname>/base/switch/<base>`       | PUT  | Switches to the named knowledgebase |
 | `http://<hostname>/categories`             | GET  | Lists all the current categories in the knowledgebase |
 | `http://<hostname>/delete/id/<id>`           | POST | Delete a specific Artifact by ID |
 | `http://<hostname>/delete/ids/<id,id,id>`    | POST | Delete specific Artifacts by ID |
 | `http://<hostname>/delete/<name>`            | POST | Delete a specific Artifact by name |
-| `http://<hostname>/erase/db`                 | POST | Erase just the knowledgebase database |
-| `http://<hostname>/erase/all`                | POST | Erase all of the knowledgebase as well as files |
-| `http://<hostname>/export/all`               | GET  | Export ALL the data (including files) from the knowledgebase |
-| `http://<hostname>/export/kb`                | GET  | Export JUST the data from the knowledgebase |
-| `http://<hostname>/grep/<regex>`             | GET  | Returns ALL of the artifacts in the knowledgebase using the regex|
-| `http://<hostname>/import   `                | POST | Remove the existing knowledgebase and replace with the content of the  import file |
-| `http://<hostname>/list`                     | GET  | Returns ALL of the artifacts in the knowledgebase |
-| `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the knowledgebase in the requested category |
-| `http://<hostname>/list/tags/<tags>`         | GET  | Returns artifacts in the knowledgebase which have the requested tags |
-| `http://<hostname>/stats`                    | GET  | Return a JSON string of information about the knowledgebase |
-| `http://<hostname>/tags `                    | GET  | Return a JSON string of all the tags in the knowledgebase |
-| `http://<hostname>/templates`                | GET  | Return a list of all the templates available |
+| `http://<hostname>/erase/db`                 | POST | Erase just the current knowledgebase database |
+| `http://<hostname>/erase/all`                | POST | Erase all of the current knowledgebase as well as files |
+| `http://<hostname>/export/all`               | GET  | Export ALL the data (including files) from the current knowledgebase |
+| `http://<hostname>/export/kb`                | GET  | Export JUST the data from the current knowledgebase |
+| `http://<hostname>/grep/<regex>`             | GET  | Returns ALL of the artifacts in the current knowledgebase using the regex|
+| `http://<hostname>/import   `                | POST | Remove the current knowledgebase and replace with the content of the  import file |
+| `http://<hostname>/list`                     | GET  | Returns ALL of the artifacts in the current  knowledgebase |
+| `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the current knowledgebase in the requested category |
+| `http://<hostname>/list/tags/<tags>`         | GET  | Returns artifacts in the current knowledgebase which have the requested tags |
+| `http://<hostname>/stats`                    | GET  | Return a JSON string of information about the current knowledgebase |
+| `http://<hostname>/tags `                    | GET  | Return a JSON string of all the tags in the current knowledgebase |
+| `http://<hostname>/templates`                | GET  | Return a list of all the templates available in the current knowledgebase|
 | `http://<hostname>/template/<query>`         | GET  | Returns the list of templates that comply with the query specified as a regex |
 | `http://<hostname>/template/add/<template>`  | POST | Create a new template with the content specified in the file uploaded with it |
 | `http://<hostname>/template/apply/<template>`| GET  | Apply the template to a set of artifacts whose criteria meet those 

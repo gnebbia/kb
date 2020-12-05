@@ -14,6 +14,7 @@ kb base api module
 from typing import Dict
 
 from flask import make_response
+from markupsafe import escape 
 
 from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base
 from kb.api.constants import MIME_TYPE
@@ -38,9 +39,9 @@ def base(config: Dict[str, str]):
 def switch(target:str, config: Dict[str, str]):
     if does_base_exist(target,config):
         switch_base(target,config)
-        resp = (make_response(({'Switched': "The current knowledge base is now : '" + target + "'"}), 200))
+        resp = (make_response(({'Switched': "The current knowledge base is now : '" + escape(target) + "'"}), 200))
     else:
-        resp = (make_response(({'Error': "The knowledge base '" + target + "' does not exist"}), 404))
+        resp = (make_response(({'Error': "The knowledge base '" + escape(target) + "' does not exist"}), 404))
     resp.mimetype = MIME_TYPE['json']
     return resp
 

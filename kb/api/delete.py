@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Dict
 
 from flask import make_response
+from markupsafe import escape 
 
 from kb.actions.delete import delete_artifacts
 from kb.api.constants import MIME_TYPE
@@ -51,11 +52,11 @@ def delete_list_of_items_by_ID(ids, config: Dict[str, str]):
         resp.mimetype = MIME_TYPE['json']
         return(resp)
     if len(deleted) != len(ids):
-        resp = (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(deleted)}), 200))
+        resp = (make_response(({'Error': 'These are the only artifacts that were deleted: ' + ', '.join(escape(deleted))}), 200))
         resp.mimetype = MIME_TYPE['json']
         return(resp)
     else:
-        resp = (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(deleted)}), 200))
+        resp = (make_response(({'Deleted': 'All artifacts were deleted: ' + ', '.join(escape(deleted))}), 200))
         resp.mimetype = MIME_TYPE['json']
         return(resp)
 

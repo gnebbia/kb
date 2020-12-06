@@ -14,9 +14,13 @@ kb base action module
 import toml
 from typing import Dict
 
+
 from kb.actions.list import list_categories, list_tags, list_templates
 from kb.api.constants import MIME_TYPE, API_VERSION
+
+import kb.initializer
 import kb.db as db
+from kb.config import construct_config,BASE
 import kb.filesystem as fs
 from kb import __version__
 
@@ -88,3 +92,42 @@ def switch_base(target:str,config:Dict[str, str]):
     # Write the .toml file back - thereby switching the knowledge base
     with open(config["PATH_KB_INITIAL_BASES"], 'w') as switched:
         switched.write(toml.dumps(current))
+
+
+def new_base(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Implementation of creation of new knowledge bases
+
+    Arguments:
+    args        -   contains the name and description of the knowledge base to create
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+ 
+    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
+    name = args.get("name","")
+    description = args.get("description","")
+
+    # Cannot use the reserved term "default"
+    if name == 'default':
+        return -1
+       
+    # Check to see if the knowledge base already exists - cannot create it otherwise
+    if does_base_exist(name,config):
+        return -2
+    
+    data = toml.load(config["PATH_KB_INITIAL_BASES"])
+    data['current'] = name
+    data['bases'].append({'name':name,'description':description})
+    
+    # Write the new information to the main bases.toml file.
+    with open(initial_bases_path, 'w') as dkb:
+        dkb.write(toml.dumps(data))
+
+    # Create new configuration file to initialise the knowledge base with
+    # and initialise it
+    new_config = construct_config(BASE)
+    kb.initializer.init(new_config) 
+
+    return 0

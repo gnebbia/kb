@@ -26,7 +26,7 @@ import kb.filesystem as fs
 import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 import kb.printer.template as printer
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base, new_base
 from kb.printer.base import generate_current_kb,generate_bases_output
 
 def list_bases(args: Dict[str, str], config: Dict[str, str]):
@@ -95,36 +95,23 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                     at least the following key:
                     PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
     """
-    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
     name = args.get("name","")
-    description = args.get("description","")
+    results = new_base(args,config)
 
-    # Cannot use the reserved term "default"
-    if name == 'default':
+    # Can't use the name "default"
+    if results == -1:
         print('The knowledge base "default" is reserved')
-        return False
-       
+        return False 
+    
     # Check to see if the knowledge base already exists - cannot create it otherwise
-    if does_base_exist(name,config):
+    if results == -2:
         print('The knowledge base "' + name + '" already exists.')
         return False
-    
-    data = toml.load(config["PATH_KB_INITIAL_BASES"])
-    data['current'] = name
-    data['bases'].append({'name':name,'description':description})
-    
-    # Write the new information to the main bases.toml file.
-    with open(initial_bases_path, 'w') as dkb:
-        dkb.write(toml.dumps(data))
-
-    # Create new configuration file to initialise the knowledge base with
-    # and initialise it
-    new_config = construct_config(BASE)
-    initializer.init(new_config)
 
     # Print success message
-    print ('New knowledge base "' + name + '" created and is current')
-    return True
+    if results == 0:
+        print ('New knowledge base "' + name + '" created and is current')
+        return True       
 
 def nowt(args: Dict[str, str], config: Dict[str, str]):
     return True

@@ -16,7 +16,7 @@ from typing import Dict
 from flask import make_response
 from markupsafe import escape 
 
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base,new_base
 from kb.api.constants import MIME_TYPE
 
 
@@ -60,3 +60,34 @@ def get_current(config: Dict[str, str]):
     resp = make_response(json_current.replace("'",'"'), 200)    
     resp.mimetype = MIME_TYPE['json']
     return(resp)
+
+def make_new_base(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Command implementation of creation of new knowledge base
+
+    Arguments:
+    args        -   contains the name and description of the knowledge base to create
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+    name = args.get("name","")
+    results = new_base(args,config)
+
+    # Can't use the name "default"
+    if results == -1:
+        resp = make_response({"Error":"The knowledge base 'default' is reserved"}, 404)    
+        resp.mimetype = MIME_TYPE['json']
+        return resp 
+    
+    # Check to see if the knowledge base already exists - cannot create it otherwise
+    if results == -2:
+        resp = make_response({"Error":"The knowledge base '" + name + "' already exists"}, 404)    
+        resp.mimetype = MIME_TYPE['json']
+        return resp 
+        
+    # Print success message
+    if results == 0:
+        resp = make_response({"OK":"The knowledge base '" + name + "' has been created"}, 200)    
+        resp.mimetype = MIME_TYPE['json']
+        return resp   

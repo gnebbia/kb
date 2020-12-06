@@ -24,7 +24,7 @@ from werkzeug.routing import BaseConverter
 # Import the API functions
 from kb.api.add import add
 from kb.api.base import base as base_list
-from kb.api.base import get_current,switch
+from kb.api.base import get_current, switch, make_new_base
 from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
@@ -48,8 +48,7 @@ from kb import db
 from kb import __version__
 
 # Get the configuration for the knowledgebase
-#from kb.config import DEFAULT_CONFIG, get_current_base, KB_BASE, BASE
-from kb.config import get_current_base, KB_BASE, BASE
+from kb.config import get_current_base, BASE, construct_config
 
 
 class ListConverter(BaseConverter):
@@ -187,24 +186,8 @@ def for_each_request():
     BASE = Path.home()
 
     # Get the current kb or 'default'
-
-    KB_BASE = Path(BASE,".kb",get_current_base(BASE))
-
-    DEFAULT_CONFIG = {
-        "PATH_BASE": str(Path(BASE, ".kb")),
-        "PATH_KB": str(Path(KB_BASE)),
-        "PATH_KB_DB": str(Path(KB_BASE, "kb.db")),
-        "PATH_KB_HIST": str(Path(KB_BASE, "recent.hist")),
-        "PATH_KB_DATA": str(Path(KB_BASE, "data")),
-        "PATH_KB_CONFIG": str(Path(KB_BASE,  "kb.conf.py")),  # for future use
-        "PATH_KB_TEMPLATES": str(Path(KB_BASE,  "templates")),
-        "PATH_KB_DEFAULT_TEMPLATE": str(Path(KB_BASE, "templates", "default")),
-        "PATH_KB_INITIAL_BASES": str(Path(BASE,".kb", "bases.toml")),
-        "DB_SCHEMA_VERSION": 1,
-        "EDITOR": os.environ.get("EDITOR", "vim"),
-        "INITIAL_CATEGORIES": ["default", ]
-    }
-
+    DEFAULT_CONFIG = construct_config(BASE)
+    
 
 """
 Routing for URLs
@@ -260,6 +243,17 @@ def list_all_bases():
     results = base_list(config=DEFAULT_CONFIG)
     return (results)
 
+@kbapi_app.route('/base/new/<string:name>', methods=['POST'])
+@auth.login_required
+def create_new_base(name=''):
+    """
+    Create a new knowledge base
+    """
+    parameters["name"] = name
+    parameters["description"] = request.form.get("description", "")
+
+    results = make_new_base(parameters,config=DEFAULT_CONFIG)
+    return (results)
 
 @kbapi_app.route('/base/switch/<string:target>', methods=['PUT'])
 @auth.login_required

@@ -76,7 +76,7 @@ def make_new_base(args: Dict[str, str], config: Dict[str, str]):
 
     # Can't use the name "default"
     if results == -1:
-        resp = make_response({"Error":"The knowledge base 'default' is reserved"}, 404)    
+        resp = make_response({"Error":"The knowledge base 'default' is reserved, and therefore, not allowed"}, 404)    
         resp.mimetype = MIME_TYPE['json']
         return resp 
     

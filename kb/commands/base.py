@@ -100,7 +100,7 @@ def new(args: Dict[str, str], config: Dict[str, str]):
 
     # Can't use the name "default"
     if results == -1:
-        print('The knowledge base "default" is reserved')
+        print('The knowledge base "default" is reserved, and therefore, not allowed')
         return False 
     
     # Check to see if the knowledge base already exists - cannot create it otherwise

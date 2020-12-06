@@ -91,13 +91,16 @@ def create_kb_files(config):
         category_path = Path(data_path, category)
         fs.create_directory(category_path)
 
-    # Create markers file
+    # Create markers files
     with open(default_template_path, 'w') as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
     # Create default knowledgebases file
-    with open(initial_bases_path, 'w') as dkb:
-        dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
+    try:
+        _ = toml.load(initial_bases_path)
+    except (FileNotFoundError, toml.TomlDecodeError):  
+        with open(initial_bases_path, 'w') as dkb:
+            dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
 
 
 def is_initialized(config) -> bool:

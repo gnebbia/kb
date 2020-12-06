@@ -128,10 +128,26 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
 
     # base subcommands
-    list_base_parser = base_subparsers.add_parser('list', help='Show available knowledge bases')
     current_base_parser = base_subparsers.add_parser('current', help='Show the currently active knowledge base')
+    list_base_parser = base_subparsers.add_parser('list', help='Show available knowledge bases')
+    new_base_parser = base_subparsers.add_parser('new', help='Creeate a new knowledge base')
     switch_base_parser = base_subparsers.add_parser('switch', help='Switch to a named knowledge base')
-  
+ 
+    new_base_parser.add_argument(
+        help="Name of the new knowledge base",
+        action='store',
+        dest='name',
+        default='new',
+    )
+    
+    new_base_parser.add_argument(
+        "-d","--description",
+        help="Description of the new knowledge base",
+        action='store',
+        dest='description',
+        default='',
+    )
+
     switch_base_parser.add_argument(
         help="knowledge base to switch to",
         action='store',

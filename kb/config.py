@@ -14,8 +14,9 @@ kb config module
 __all__ = ()
 
 import os
-from sys import platform
 from pathlib import Path
+from sys import platform
+
 import toml
 
 def get_markers(markers_path: str):
@@ -56,7 +57,14 @@ def get_current_base(BASE: Path):
 
 
 def construct_config(BASE: Path):
-    # Get the current kb or 'default'
+    """
+    Assemble the configuration file
+
+    Arguments:
+    BASE      - the path to the toml bases.toml file
+
+    Returns DEFAULT_CONFIG with correct values.
+    """
 
     KB_BASE = Path(BASE,".kb",get_current_base(BASE))
 

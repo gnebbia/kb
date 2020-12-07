@@ -42,6 +42,27 @@ def base_list(config:Dict[str, str]):
         list_of_bases.append(base_info)
     return (list_of_bases)
 
+
+def remove_base_from_list(name:str, data:str):
+    """
+    Gets a list of active knowledgebases.
+
+    Arguments:
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+
+    output_list = []
+    for base in data["bases"]:
+        if base["name"] != name:
+            base_info = dict()
+            base_info['name'] = base['name']
+            base_info['description'] = base['description']
+            output_list.append(base_info)
+    return (output_list)
+
+
 def does_base_exist(target:str, config:Dict[str, str]):
     """
     Check to see if a specific knowledge base exists
@@ -75,6 +96,7 @@ def get_current_kb_details(config:Dict[str, str]):
         if base['name'] == data['current']:
             ckb['description'] = base['description']
     return (ckb)
+
 
 def switch_base(target:str,config:Dict[str, str]):
     """
@@ -131,3 +153,41 @@ def new_base(args: Dict[str, str], config: Dict[str, str]):
     kb.initializer.init(new_config) 
 
     return 0
+
+
+def delete_base(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Implementation of delete a knowledge bases
+
+    Arguments:
+    args        -   contains the name of the knowledge base to delete
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """    
+
+    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
+    name = args.get("name","")
+    
+    # Get bases.tooml file
+    data = toml.load(initial_bases_path)
+    current = data['current']
+
+    if current == name:
+        return -1 # Cannot delete current knowledgebase
+
+    if not does_base_exist(name,config):
+        return -2 # Cannot delete a knowledgebase if it doesnt exist
+    
+    base_path = config["PATH_BASE"] + "/" + name
+
+    data['bases'] = remove_base_from_list(name,data)
+
+
+    # Write bases.toml file without the removed base
+    with open(initial_bases_path, 'w') as dkb:
+        dkb.write(toml.dumps(data))
+
+    # remove the directory with the artifacts etc in...
+    fs.remove_directory(base_path)
+    return 0      

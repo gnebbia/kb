@@ -68,7 +68,6 @@ class ListConverter(BaseConverter):
 kbapi_app = Flask(__name__)
 kbapi_app.url_map.converters['list'] = ListConverter  # Add custom converter for lists
 
-
 # Initiate the authentication framework
 auth = HTTPBasicAuth()
 
@@ -79,7 +78,6 @@ HOST = '0.0.0.0'
 
 # Methods allowed:
 ALLOWED_METHODS = ['add', 'base', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'stats', 'template', 'update', 'version', 'view']
-
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
 # query -> filter for the title field of the artifact
@@ -243,6 +241,7 @@ def list_all_bases():
     results = base_list(config=DEFAULT_CONFIG)
     return (results)
 
+
 @kbapi_app.route('/base/new/<string:name>', methods=['POST'])
 @auth.login_required
 def create_new_base(name=''):
@@ -254,6 +253,7 @@ def create_new_base(name=''):
 
     results = make_new_base(parameters,config=DEFAULT_CONFIG)
     return (results)
+
 
 @kbapi_app.route('/base/switch/<string:target>', methods=['PUT'])
 @auth.login_required

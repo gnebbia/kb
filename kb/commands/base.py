@@ -26,7 +26,7 @@ import kb.filesystem as fs
 import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 import kb.printer.template as printer
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base, new_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base, new_base, delete_base
 from kb.printer.base import generate_current_kb,generate_bases_output
 
 def list_bases(args: Dict[str, str], config: Dict[str, str]):
@@ -85,6 +85,7 @@ def switch(args: Dict[str, str], config: Dict[str, str]):
         print('The knowledge base you specified ("' + target + '") does not exist.')
     return True
 
+
 def new(args: Dict[str, str], config: Dict[str, str]):
     """
     Command implementation of creation of new knowledge base
@@ -113,14 +114,29 @@ def new(args: Dict[str, str], config: Dict[str, str]):
         print ('New knowledge base "' + name + '" created and is current')
         return True       
 
+def delete(args: Dict[str, str], config: Dict[str, str]):
+    results = delete_base(args,config)
+    if results == 0:
+        print('The knowledge base "' + args["name"] + '" was successfully deleted')    
+        return True
+    if results == -1:
+        print("Cannot delete current knowledge base")
+    if results == -2:
+        print('The knowledge base "' + args["name"] + '" doesnt exist')
+    if results == -3:
+        print('Cannot delete the "default" knowledge base')
+    return False
+
+
 def nowt(args: Dict[str, str], config: Dict[str, str]):
     return True
+
 
 COMMANDS = {
     'new': new,
     'switch': switch,
     'current':get_current,
-    'delete': nowt,
+    'delete': delete,
     'edit': nowt,
     'list': list_bases
 }

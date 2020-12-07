@@ -16,7 +16,7 @@ from typing import Dict
 from flask import make_response
 from markupsafe import escape 
 
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base,new_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base,new_base,delete_base
 from kb.api.constants import MIME_TYPE
 
 
@@ -61,6 +61,7 @@ def get_current(config: Dict[str, str]):
     resp.mimetype = MIME_TYPE['json']
     return(resp)
 
+
 def make_new_base(args: Dict[str, str], config: Dict[str, str]):
     """
     Command implementation of creation of new knowledge base
@@ -86,8 +87,40 @@ def make_new_base(args: Dict[str, str], config: Dict[str, str]):
         resp.mimetype = MIME_TYPE['json']
         return resp 
         
-    # Print success message
+    # Return success message
     if results == 0:
         resp = make_response({"OK":"The knowledge base '" + name + "' has been created"}, 200)    
         resp.mimetype = MIME_TYPE['json']
         return resp   
+
+
+def delete_a_base(name, config: Dict[str, str]):
+    """
+    Implementation of delete a knowledge bases
+
+    Arguments:
+    args        -   contains the name of the knowledge base to delete
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """    
+
+    parameters = dict()
+    parameters["name"] = name
+    results = delete_base(parameters,config)
+    if results == 0:
+        resp = make_response({"OK":"The knowledge base '" + name + "' has been deleted"}, 200)    
+        resp.mimetype = MIME_TYPE['json']        
+        return resp
+    if results == -1:
+        resp = make_response({"Error":"Cannot delete the current knowledge base"}, 404)    
+        resp.mimetype = MIME_TYPE['json']
+        return resp 
+    if results == -2:
+        resp = make_response({"Error":"The knowledge base '" + name + "' does not exist"}, 404)    
+        resp.mimetype = MIME_TYPE['json']
+        return resp
+    if results == -3:
+        resp = make_response({"Error":"The knowledge base 'default' is reserved, and therefore, cannot be deleted"}, 404)    
+        resp.mimetype = MIME_TYPE['json']
+        return resp

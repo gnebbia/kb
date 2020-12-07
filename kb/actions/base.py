@@ -11,17 +11,17 @@ kb base action module
 :License: GPLv3 (see /LICENSE).
 """
 
-import toml
-from typing import Dict
 
+import toml
+from pathlib import Path
+from typing import Dict
 
 from kb.actions.list import list_categories, list_tags, list_templates
 from kb.api.constants import MIME_TYPE, API_VERSION
-
-import kb.initializer
-import kb.db as db
 from kb.config import construct_config,BASE
+import kb.db as db
 import kb.filesystem as fs
+import kb.initializer
 from kb import __version__
 
 def base_list(config:Dict[str, str]):
@@ -177,9 +177,10 @@ def delete_base(args: Dict[str, str], config: Dict[str, str]):
         return -1 # Cannot delete current knowledgebase
 
     if not does_base_exist(name,config):
-        return -2 # Cannot delete a knowledgebase if it doesnt exist
+        return -2 # Cannot delete a knowledgebase if it doesn't exist
     
-    base_path = config["PATH_BASE"] + "/" + name
+    
+    base_path = str(Path(config["PATH_BASE"],name))
 
     data['bases'] = remove_base_from_list(name,data)
 

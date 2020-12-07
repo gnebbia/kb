@@ -24,7 +24,7 @@ from werkzeug.routing import BaseConverter
 # Import the API functions
 from kb.api.add import add
 from kb.api.base import base as base_list
-from kb.api.base import get_current, switch, make_new_base
+from kb.api.base import get_current, switch, make_new_base,delete_a_base
 from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
@@ -229,6 +229,16 @@ def list_current_base():
     Return the current knowledgebase
     """
     results = get_current(config=DEFAULT_CONFIG)
+    return (results)
+
+
+@kbapi_app.route('/base/delete/<string:name>', methods=['GET'])
+@auth.login_required
+def delete_base(name=''):
+    """
+    Delete the named knowledgebase
+    """
+    results = delete_a_base(name,config=DEFAULT_CONFIG)
     return (results)
 
 

@@ -115,6 +115,15 @@ def new(args: Dict[str, str], config: Dict[str, str]):
         return True       
 
 def delete(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Delete a knowledge bases
+
+    Arguments:
+    args        -   contains the name of the knowledge base to delete
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """    
     results = delete_base(args,config)
     if results == 0:
         print('The knowledge base "' + args["name"] + '" was successfully deleted')    
@@ -122,7 +131,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     if results == -1:
         print("Cannot delete current knowledge base")
     if results == -2:
-        print('The knowledge base "' + args["name"] + '" doesnt exist')
+        print('The knowledge base "' + args["name"] + " doesn't exist")
     if results == -3:
         print('Cannot delete the "default" knowledge base')
     return False
@@ -137,7 +146,7 @@ COMMANDS = {
     'switch': switch,
     'current':get_current,
     'delete': delete,
-    'edit': nowt,
+    'rename': nowt,
     'list': list_bases
 }
 

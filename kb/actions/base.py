@@ -24,6 +24,23 @@ import kb.filesystem as fs
 import kb.initializer
 from kb import __version__
 
+
+def write_base_list(initial_bases_path:str,data:str):
+    """
+    Write a list of active knowledge bases to the bases.toml file.
+
+    Arguments:
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+
+    # Write the information to the main bases.toml file.
+    with open(initial_bases_path, 'w') as dkb:
+        dkb.write(toml.dumps(data))
+    return True
+
+
 def base_list(config:Dict[str, str]):
     """
     Gets a list of active knowledgebases.
@@ -43,6 +60,20 @@ def base_list(config:Dict[str, str]):
     return (list_of_bases)
 
 
+def add_base_to_list(name:str, description:str, data:str):
+    """
+    Adds a new knowledge base into the list.
+
+    Arguments:
+    name        -   name of the knowledge base to add
+    description -   description of the new knowledge base.
+    data        -   existing list
+    """
+
+    data['bases'].append({'name':name,'description':description})
+    return(data)
+
+
 def remove_base_from_list(name:str, data:str):
     """
     Gets a list of active knowledgebases.
@@ -53,6 +84,7 @@ def remove_base_from_list(name:str, data:str):
                     PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
     """
 
+    print(data)
     output_list = []
     for base in data["bases"]:
         if base["name"] != name:
@@ -78,6 +110,7 @@ def does_base_exist(target:str, config:Dict[str, str]):
         if base["name"] == target:
             return True
     return False
+
 
 def get_current_kb_details(config:Dict[str, str]):
     """
@@ -112,8 +145,7 @@ def switch_base(target:str,config:Dict[str, str]):
     current = toml.load(config["PATH_KB_INITIAL_BASES"])
     current["current"] = target
     # Write the .toml file back - thereby switching the knowledge base
-    with open(config["PATH_KB_INITIAL_BASES"], 'w') as switched:
-        switched.write(toml.dumps(current))
+    write_base_list(config["PATH_KB_INITIAL_BASES"],current)
 
 
 def new_base(args: Dict[str, str], config: Dict[str, str]):
@@ -140,12 +172,11 @@ def new_base(args: Dict[str, str], config: Dict[str, str]):
         return -2
     
     data = toml.load(config["PATH_KB_INITIAL_BASES"])
-    data['current'] = name
-    data['bases'].append({'name':name,'description':description})
     
-    # Write the new information to the main bases.toml file.
-    with open(initial_bases_path, 'w') as dkb:
-        dkb.write(toml.dumps(data))
+    data['current'] = name
+    add_base_to_list(name,description,data) 
+
+    write_base_list(initial_bases_path,data)
 
     # Create new configuration file to initialise the knowledge base with
     # and initialise it
@@ -179,16 +210,60 @@ def delete_base(args: Dict[str, str], config: Dict[str, str]):
     if not does_base_exist(name,config):
         return -2 # Cannot delete a knowledgebase if it doesn't exist
     
-    
     base_path = str(Path(config["PATH_BASE"],name))
 
     data['bases'] = remove_base_from_list(name,data)
-
-
-    # Write bases.toml file without the removed base
-    with open(initial_bases_path, 'w') as dkb:
-        dkb.write(toml.dumps(data))
+    
+    write_base_list(initial_bases_path,data)
 
     # remove the directory with the artifacts etc in...
     fs.remove_directory(base_path)
-    return 0      
+    return 0    
+
+
+def rename_base(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Implementation of renaming a knowledge bases
+
+    Arguments:
+    args        -   contains the name and description of the knowledge base to create
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+    old = args.get("old",'')
+    new = args.get("new",'')
+    current = get_current_kb_details(config)["name"]
+    
+    description = args.get("description",'')
+    if old == '':
+        return -1 # No old base supplied
+    if new == '':
+        return -2 # No new base supplied
+    if old == new:
+        return -3 # Old base name same as new base name
+    if not does_base_exist(old,config):
+        return -4 # Old base does not exist
+    if does_base_exist(new,config):
+        return -5 # New base already exists
+    if new == 'default':
+        return -6 # Cannot use 'default' as a kb name
+    if old == 'default':
+        return -7 # Cannot use 'default' as a kb name
+    if old == current:
+        return -8 # Cannot rename the current knowledge base
+    if new == current:
+        return -9 # Cannot rename to the current knowledge base
+    data = toml.load(config["PATH_KB_INITIAL_BASES"])
+    data_with_new_base = add_base_to_list(new,description,data)
+    data_final = remove_base_from_list(old,data_with_new_base)
+    print("renamed")
+
+    print()
+    print()
+    output = {
+        "current": current,
+        "bases" : data_final
+    }    
+    print (output)
+    return 0

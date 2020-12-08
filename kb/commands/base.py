@@ -26,7 +26,7 @@ import kb.filesystem as fs
 import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 import kb.printer.template as printer
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base, new_base, delete_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base, new_base, delete_base,rename_base
 from kb.printer.base import generate_current_kb,generate_bases_output
 
 def list_bases(args: Dict[str, str], config: Dict[str, str]):
@@ -136,6 +136,10 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
         print('Cannot delete the "default" knowledge base')
     return False
 
+def rename(args: Dict[str, str], config: Dict[str, str]):
+    results = rename_base(args, config)
+    print(results)
+    return True
 
 def nowt(args: Dict[str, str], config: Dict[str, str]):
     return True
@@ -146,7 +150,7 @@ COMMANDS = {
     'switch': switch,
     'current':get_current,
     'delete': delete,
-    'rename': nowt,
+    'rename': rename,
     'list': list_bases
 }
 

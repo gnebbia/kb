@@ -165,7 +165,7 @@ def remove_directory(directory: str) -> None:
     shutil.rmtree(directory)
 
 
-def rename_directory(old: str), new:str -> None:
+def rename_directory(old: str, new:str) -> None:
     """
     Rename a directory.
 

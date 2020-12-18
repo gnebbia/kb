@@ -17,7 +17,21 @@ import toml
 import kb.db as db
 import kb.filesystem as fs
 import kb.config as conf
+from kb import __version__
 
+
+def versiontuple(v:str):
+    """
+    Convert a version number into a comparable tuple.
+
+    Arguments:
+    v       - version number/string
+    """
+
+    filled = []
+    for point in v.split("."):
+        filled.append(point.zfill(8))
+    return tuple(filled)
 
 def init(config):
     """
@@ -36,6 +50,12 @@ def init(config):
     """
     if not is_initialized(config):
         create_kb_files(config)
+        
+    # Migration from single to multiple knowledgebases - occured between 0.1.5 and 0.1.6
+    
+    if versiontuple(__version__) >= versiontuple('0.1.5'):
+        fs.migrate_file_structure_015_to_016(config,conf)
+    # End of Migration 
 
 
 def create_kb_files(config):
@@ -57,7 +77,6 @@ def create_kb_files(config):
                 DB_SCHEMA_VERSION         - the database schema version
     """
     # Get paths for kb from configuration
-    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
     kb_path = config["PATH_KB"]
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
@@ -94,13 +113,6 @@ def create_kb_files(config):
     # Create markers files
     with open(default_template_path, 'w') as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
-
-    # Create default knowledgebases file
-    try:
-        _ = toml.load(initial_bases_path)
-    except (FileNotFoundError, toml.TomlDecodeError):  
-        with open(initial_bases_path, 'w') as dkb:
-            dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
 
 
 def is_initialized(config) -> bool:

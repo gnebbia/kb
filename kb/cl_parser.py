@@ -18,7 +18,7 @@ import sys
 from typing import Sequence
 
 from kb import __version__
-from kb.config import DEFAULT_CONFIG
+from kb.config import DEFAULT_CONFIG,DEFAULT_KNOWLEDGEBASE
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -188,7 +188,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="knowledge base to switch to",
         action='store',
         dest='kb',
-        default='default',
+        default=DEFAULT_KNOWLEDGEBASE,
     )
   
     list_base_parser.add_argument(

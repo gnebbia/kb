@@ -18,6 +18,7 @@ from markupsafe import escape
 
 from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base,new_base,delete_base
 from kb.api.constants import MIME_TYPE
+from kb.config import DEFAULT_KNOWLEDGEBASE
 
 
 def base(config: Dict[str, str]):
@@ -75,9 +76,9 @@ def make_new_base(args: Dict[str, str], config: Dict[str, str]):
     name = args.get("name","")
     results = new_base(args,config)
 
-    # Can't use the name "default"
+    # Can't use the name contained in DEFAULT_KNOWLEDGEBASE
     if results == -1:
-        resp = make_response({"Error":"The knowledge base 'default' is reserved, and therefore, not allowed"}, 404)    
+        resp = make_response({"Error":"The knowledge base '" + DEFAULT_KNOWLEDGEBASE + "' is reserved, and therefore, not allowed"}, 404)    
         resp.mimetype = MIME_TYPE['json']
         return resp 
     
@@ -121,6 +122,6 @@ def delete_a_base(name, config: Dict[str, str]):
         resp.mimetype = MIME_TYPE['json']
         return resp
     if results == -3:
-        resp = make_response({"Error":"The knowledge base 'default' is reserved, and therefore, cannot be deleted"}, 404)    
+        resp = make_response({"Error":"The knowledge base '"+DEFAULT_KNOWLEDGEBASE + "' is reserved, and therefore, cannot be deleted"}, 404)    
         resp.mimetype = MIME_TYPE['json']
         return resp

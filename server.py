@@ -48,7 +48,7 @@ from kb import db
 from kb import __version__
 
 # Get the configuration for the knowledgebase
-from kb.config import get_current_base, BASE, construct_config
+from kb.config import get_current_base, BASE, construct_config,DEFAULT_KNOWLEDGEBASE
 
 
 class ListConverter(BaseConverter):
@@ -183,7 +183,7 @@ def for_each_request():
     # Home base for the user
     BASE = Path.home()
 
-    # Get the current kb or 'default'
+    # Get the current kb or DEFAULT_KNOWLEDGEBASE
     DEFAULT_CONFIG = construct_config(BASE,'')
     
 
@@ -267,7 +267,7 @@ def create_new_base(name=''):
 
 @kbapi_app.route('/base/switch/<string:target>', methods=['PUT'])
 @auth.login_required
-def switch_base(target='default'):
+def switch_base(target=DEFAULT_KNOWLEDGEBASE):
     """
     Switch to a knowledge base
     """

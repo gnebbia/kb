@@ -19,7 +19,7 @@ from subprocess import call
 from typing import Dict, List
 
 import kb.config as conf
-from kb.config import BASE,construct_config
+from kb.config import BASE,construct_config,DEFAULT_KNOWLEDGEBASE
 import kb.db as db
 import kb.filesystem as fs
 
@@ -99,9 +99,9 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     name = args.get("name","")
     results = new_base(args,config)
 
-    # Can't use the name "default"
+    # Can't use the name contained in DEFAULT_KNOWLEDGEBASE
     if results == -1:
-        print('The knowledge base "default" is reserved, and therefore, not allowed')
+        print('The knowledge base "' + DEFAULT_KNOWLEDGEBASE + '" is reserved, and therefore, not allowed')
         return False 
     
     # Check to see if the knowledge base already exists - cannot create it otherwise
@@ -133,7 +133,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     if results == -2:
         print('The knowledge base "' + args["name"] + " doesn't exist")
     if results == -3:
-        print('Cannot delete the "default" knowledge base')
+        print('Cannot delete the "' + DEFAULT_KNOWLEDGEBASE + '" knowledge base')
     return False
 
 def rename(args: Dict[str, str], config: Dict[str, str]):

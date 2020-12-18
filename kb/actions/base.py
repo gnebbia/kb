@@ -18,7 +18,7 @@ from typing import Dict
 
 from kb.actions.list import list_categories, list_tags, list_templates
 from kb.api.constants import MIME_TYPE, API_VERSION
-from kb.config import construct_config,BASE
+from kb.config import construct_config,BASE,DEFAULT_KNOWLEDGEBASE
 import kb.db as db
 import kb.filesystem as fs
 import kb.initializer
@@ -163,8 +163,8 @@ def new_base(args: Dict[str, str], config: Dict[str, str]):
     name = args.get("name","")
     description = args.get("description","")
 
-    # Cannot use the reserved term "default"
-    if name == 'default':
+    # Cannot use the reserved knowledge base name contained in DEFAULT_KNOWLEDGEBASE
+    if name == DEFAULT_KNOWLEDGEBASE:
         return -1
        
     # Check to see if the knowledge base already exists - cannot create it otherwise
@@ -218,7 +218,7 @@ def delete_base(args: Dict[str, str], config: Dict[str, str]):
 
     # remove the directory with the artifacts etc in...
     fs.remove_directory(base_path)
-    return 0    
+    return 0
 
 
 def rename_base(args: Dict[str, str], config: Dict[str, str]):
@@ -246,10 +246,10 @@ def rename_base(args: Dict[str, str], config: Dict[str, str]):
         return -4 # Old base does not exist
     if does_base_exist(new,config):
         return -5 # New base already exists
-    if new == 'default':
-        return -6 # Cannot use 'default' as a kb name
-    if old == 'default':
-        return -7 # Cannot use 'default' as a kb name
+    if new == DEFAULT_KNOWLEDGEBASE:
+        return -6 # Cannot use DEFAULT_KNOWLEDGEBASE as a kb name
+    if old == DEFAULT_KNOWLEDGEBASE:
+        return -7 # Cannot use DEFAULT_KNOWLEDGEBASE as a kb name
     if old == current:
         return -8 # Cannot rename the current knowledge base
     if new == current:
@@ -270,7 +270,7 @@ def rename_base(args: Dict[str, str], config: Dict[str, str]):
     # Write toml file
     with open(str(Path(config["PATH_BASE"],'bases.toml')), 'w') as bases:
         bases.write(toml.dumps(final_toml))
-        
+
     # need to lock old directory first ?????
     # Rename kb
     fs.rename_directory(str(old_path),str(new_path))

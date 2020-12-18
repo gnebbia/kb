@@ -17,9 +17,11 @@ import os
 import re
 import shutil
 import tempfile
+import toml
 from pathlib import Path
 from typing import List
 from datetime import datetime
+from config import DEFAULT_KNOWLEDGEBASE
 
 
 def list_files(directory: str) -> List[str]:
@@ -96,7 +98,7 @@ def get_complete_size(root='.'):
     """
 
     total_size = 0
-    for dirpath, dirnames, filenames in os.walk(root):
+    for dirpath, filenames in os.walk(root):
         for f in filenames:
             fp = os.path.join(dirpath, f)
             # skip if it is symbolic link
@@ -384,3 +386,27 @@ def get_last_modified_time(fullfilename):
         return datetime.utcfromtimestamp(os.path.getmtime(fullfilename)).strftime('%Y-%m-%d %H:%M:%S')
     except OSError:
         return None
+
+
+def migrate_file_structure_015_to_016(config,conf):
+
+    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
+    kb_path_base = config["PATH_BASE"]
+    
+    # Create default knowledgebases file (bases.toml) - 0.1.6 and upward
+    try:
+        _ = toml.load(initial_bases_path)
+    except (FileNotFoundError, toml.TomlDecodeError):  
+        with open(initial_bases_path, 'w') as dkb:
+            dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
+
+    # Create default knowledge base directory
+    create_directory(str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE)))
+
+    # Move data, templates and db into newly created directory (and optionally recent.hist)
+    move_file(str(Path(kb_path_base,'data')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'data')))
+    move_file(str(Path(kb_path_base,'templates')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'templates')))
+    move_file(str(Path(kb_path_base,'kb.db')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'kb.db')))
+    move_file(str(Path(kb_path_base,'recent.hist')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'recent.hist')))
+
+

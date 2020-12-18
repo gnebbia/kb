@@ -19,6 +19,8 @@ from sys import platform
 
 import toml
 
+from kb.config import DEFAULT_KNOWLEDGEBASE
+
 def get_markers(markers_path: str):
     """
     Load markers file
@@ -43,7 +45,7 @@ def get_current_base(BASE: Path):
     Arguments:
     BASE      - the path to the toml bases.toml file
 
-    Returns name of the current KB (or 'default')
+    Returns name of the current KB (or DEFAULT_KNOWLEDGEBASE)
     """
     bases_config = str(Path(BASE,".kb", "bases.toml"))
     try:
@@ -53,7 +55,7 @@ def get_current_base(BASE: Path):
     except toml.TomlDecodeError:
         print("Error: The bases file is not in the toml format")
     except FileNotFoundError:
-        return('default')
+        return(DEFAULT_KNOWLEDGEBASE)
 
 
 def construct_config(BASE: Path, current: str):
@@ -99,9 +101,10 @@ DEFAULT_TEMPLATE = {
     "TITLES": ("^#.*", "blue"),
     "WARNINGS": ("^!.*", "yellow"),
 }
+DEFAULT_KNOWLEDGEBASE = 'default'
 
 INITIAL_KNOWLEDGEBASE = {
-    'current':'default',
-    'bases': [{'name': 'default', 'description': 'Default knowledgebase'}]
+    'current':DEFAULT_KNOWLEDGEBASE,
+    'bases': [{'name': DEFAULT_KNOWLEDGEBASE, 'description': 'Default knowledgebase'}]
     }
 

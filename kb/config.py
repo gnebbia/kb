@@ -56,7 +56,7 @@ def get_current_base(BASE: Path):
         return('default')
 
 
-def construct_config(BASE: Path):
+def construct_config(BASE: Path, current: str):
     """
     Assemble the configuration file
 
@@ -65,8 +65,12 @@ def construct_config(BASE: Path):
 
     Returns DEFAULT_CONFIG with correct values.
     """
+    if current == '':
+        this_base = get_current_base(BASE)    
+    else:
+        this_base = current
 
-    KB_BASE = Path(BASE,".kb",get_current_base(BASE))
+    KB_BASE = Path(BASE,".kb",this_base)
 
     DEFAULT_CONFIG = {
         "PATH_BASE": str(Path(BASE, ".kb")),
@@ -89,7 +93,7 @@ def construct_config(BASE: Path):
 BASE = Path.home()
 
 # Get configuration
-DEFAULT_CONFIG = construct_config(BASE)
+DEFAULT_CONFIG = construct_config(BASE,'')
 
 DEFAULT_TEMPLATE = {
     "TITLES": ("^#.*", "blue"),

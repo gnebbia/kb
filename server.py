@@ -175,8 +175,8 @@ Pre-request tooling
 
 @kbapi_app.before_request
 def for_each_request():
-    """
-    Ensure the current knowledgebase is referred to
+    """ 
+    Ensure the current knowledge base is referred to
     """
     global DEFAULT_CONFIG
 
@@ -184,7 +184,7 @@ def for_each_request():
     BASE = Path.home()
 
     # Get the current kb or 'default'
-    DEFAULT_CONFIG = construct_config(BASE)
+    DEFAULT_CONFIG = construct_config(BASE,'')
     
 
 """
@@ -197,7 +197,7 @@ Routing for URLs
 @auth.login_required
 def method_never_implemented():
     """
-    Methods from the command line NEVER to be implemented as the do not fit the paradigm of an API
+    Methods from the command line NEVER to be implemented as they do not fit the paradigm of an API
     """
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
     response.allow = ALLOWED_METHODS
@@ -226,17 +226,17 @@ def add_item():
 @auth.login_required
 def list_current_base():
     """
-    Return the current knowledgebase
+    Return the current knowledge base
     """
     results = get_current(config=DEFAULT_CONFIG)
     return (results)
 
 
-@kbapi_app.route('/base/delete/<string:name>', methods=['GET'])
+@kbapi_app.route('/base/delete/<string:name>', methods=['POST'])
 @auth.login_required
 def delete_base(name=''):
     """
-    Delete the named knowledgebase
+    Delete the named knowledge base
     """
     results = delete_a_base(name,config=DEFAULT_CONFIG)
     return (results)
@@ -246,7 +246,7 @@ def delete_base(name=''):
 @auth.login_required
 def list_all_bases():
     """
-    List all  the knowledgebases
+    List all  the knowledge bases
     """
     results = base_list(config=DEFAULT_CONFIG)
     return (results)

@@ -80,7 +80,7 @@ def switch(args: Dict[str, str], config: Dict[str, str]):
     target = args["kb"]
     if does_base_exist(target,config):
         switch_base(target,config)
-        print("Knowledge base switched to ", args["kb"])
+        print("Knowledge base switched to", args["kb"])
     else:
         print('The knowledge base you specified ("' + target + '") does not exist.')
     return True

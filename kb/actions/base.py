@@ -180,7 +180,7 @@ def new_base(args: Dict[str, str], config: Dict[str, str]):
 
     # Create new configuration file to initialise the knowledge base with
     # and initialise it
-    new_config = construct_config(BASE)
+    new_config = construct_config(BASE,name)
     kb.initializer.init(new_config) 
 
     return 0
@@ -254,16 +254,25 @@ def rename_base(args: Dict[str, str], config: Dict[str, str]):
         return -8 # Cannot rename the current knowledge base
     if new == current:
         return -9 # Cannot rename to the current knowledge base
-    data = toml.load(config["PATH_KB_INITIAL_BASES"])
-    data_with_new_base = add_base_to_list(new,description,data)
-    data_final = remove_base_from_list(old,data_with_new_base)
-    print("renamed")
 
-    print()
-    print()
-    output = {
-        "current": current,
-        "bases" : data_final
-    }    
-    print (output)
+    # Manipulate the bases.toml file to effect the rename
+    # but hold the data in memory
+    data = toml.load(config["PATH_KB_INITIAL_BASES"])               # Get the bases.toml file
+    data_with_new_base = add_base_to_list(new,description,data)     # Add the new base + description
+    data_final = remove_base_from_list(old,data_with_new_base)      # Remove the old name
+    final_toml = {  'current': current,                             # Re-assemble the toml file
+                    'bases': data_final
+                    }
+
+    old_path = str(Path(config["PATH_BASE"],old))
+    new_path = str(Path(config["PATH_BASE"],new))
+
+    # Write toml file
+    with open(str(Path(config["PATH_BASE"],'bases.toml')), 'w') as bases:
+        bases.write(toml.dumps(final_toml))
+        
+    # need to lock old directory first ?????
+    # Rename kb
+    fs.rename_directory(str(old_path),str(new_path))
+
     return 0

@@ -46,10 +46,7 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
     response = delete_artifacts(args, config, False)
 
     if response == -200:
-        if 'id' in args:
-            print("Artifact {id} removed!".format(args["id"]))
-        else:
-            print("Artifact {category}/{title} removed!".format(args["category"], args["title"]))
+        print("Artifact removed.")
     
     if response == -301:
         print("There is more than one artifact with that title, please specify a category")

@@ -141,9 +141,6 @@ def rename(args: Dict[str, str], config: Dict[str, str]):
     print(results)
     return True
 
-def nowt(args: Dict[str, str], config: Dict[str, str]):
-    return True
-
 
 COMMANDS = {
     'new': new,

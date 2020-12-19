@@ -16,7 +16,7 @@ from typing import Dict
 from flask import make_response
 from markupsafe import escape 
 
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base,new_base,delete_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base,new_base,delete_base,rename_base
 from kb.api.constants import MIME_TYPE
 from kb.config import DEFAULT_KNOWLEDGEBASE
 
@@ -125,3 +125,34 @@ def delete_a_base(name, config: Dict[str, str]):
         resp = make_response({"Error":"The knowledge base '"+DEFAULT_KNOWLEDGEBASE + "' is reserved, and therefore, cannot be deleted"}, 404)    
         resp.mimetype = MIME_TYPE['json']
         return resp
+
+
+def rename(parameters : Dict[str, str], config: Dict[str, str]):
+    """
+    Implementation of renaming a knowledge base
+
+    Arguments:
+    args        -   contains the name of the knowledge base to rename, and the new name
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """    
+    
+    results = rename_base(parameters,config)
+    
+    output_msg = {
+         0: make_response({"OK":"The knowledge base '" + parameters['old'] + "' has been renamed to '" + parameters['new'] + "'."}, 200),  
+        -1: make_response({"Error":"No existing knowledge base supplied."}, 404),
+        -2: make_response({"Error":"No new knowledge base supplied."}, 404),
+        -3: make_response({"Error":"Existing and new knowledge bases are the same."}, 404),
+        -4: make_response({"Error":"The knowledge base " + parameters['old'] + " does not exist."}, 404),
+        -5: make_response({"Error":"The knowledge base " + parameters['new'] + " already exists."}, 404),
+        -6: make_response({"Error":"The default knowledge base " + DEFAULT_KNOWLEDGEBASE + " cannot be used."}, 404),
+        -7: make_response({"Error":"The default knowledge base " + DEFAULT_KNOWLEDGEBASE + " cannot be used."}, 404),
+        -8: make_response({"Error":"The current knowledge base cannot be renamed."}, 404),
+        -9: make_response({"Error":"The current knowledge base cannot be renathe new name."}, 404),
+    }
+
+    resp =  output_msg.get(results,make_response({"Error":"No knowledge bases can be renamed."}, 404))
+    resp.mimetype = MIME_TYPE['json']        
+    return resp

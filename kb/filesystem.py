@@ -21,7 +21,7 @@ import toml
 from pathlib import Path
 from typing import List
 from datetime import datetime
-from config import DEFAULT_KNOWLEDGEBASE
+from kb.config import DEFAULT_KNOWLEDGEBASE
 
 
 def list_files(directory: str) -> List[str]:
@@ -390,7 +390,29 @@ def get_last_modified_time(fullfilename):
 
 def migrate_file_structure_015_to_016(config,conf):
 
+    """
+
+    File structures changes between 0.1.5 and 0.1.6:
+    
+    <= 0.1.5                                       >= 0.1.6 
+    +-------------+                                +-------------+
+    |kb.db        |                                | kb.db       |        
+    |data         | -- all in single .kb folder    | data        | - one set per kb
+    |templates    |                                | templates   |   in a single folder
+    |recent.hist  |                                | recent.hist |   within .kb folder
+    +-------------+                                +-------------+
+                                                        
+                                                                    
+                                                    bases.toml     - within .kb folder
+                                                    kb_1 folder
+                                                    kb_2 folder
+                                                    .....
+    """
+
+    # Retrieve location/name of (to-be) bases.toml file
     initial_bases_path = config["PATH_KB_INITIAL_BASES"]
+
+    # Retrieve location of base .kb folder
     kb_path_base = config["PATH_BASE"]
     
     # Create default knowledgebases file (bases.toml) - 0.1.6 and upward
@@ -409,4 +431,4 @@ def migrate_file_structure_015_to_016(config,conf):
     move_file(str(Path(kb_path_base,'kb.db')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'kb.db')))
     move_file(str(Path(kb_path_base,'recent.hist')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'recent.hist')))
 
-
+    # Migration froom 0.1.5 to 0.1.6 complete

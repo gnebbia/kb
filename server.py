@@ -24,7 +24,7 @@ from werkzeug.routing import BaseConverter
 # Import the API functions
 from kb.api.add import add
 from kb.api.base import base as base_list
-from kb.api.base import get_current, switch, make_new_base,delete_a_base
+from kb.api.base import get_current, switch, make_new_base,delete_a_base,rename
 from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
@@ -262,6 +262,20 @@ def create_new_base(name=''):
     parameters["description"] = request.form.get("description", "")
 
     results = make_new_base(parameters,config=DEFAULT_CONFIG)
+    return (results)
+
+
+@kbapi_app.route('/base/rename/<string:old>', methods=['POST'])
+@auth.login_required
+def rename_base(old=''):
+    """
+    Rename a new knowledge base
+    """
+    parameters["old"] = old
+    parameters["new"] = request.form.get("new", "")
+    parameters["description"] = request.form.get("description", "")
+
+    results = rename(parameters,config=DEFAULT_CONFIG)
     return (results)
 
 

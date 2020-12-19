@@ -51,8 +51,7 @@ def init(config):
     if not is_initialized(config):
         create_kb_files(config)
         
-    # Migration from single to multiple knowledgebases - occured between 0.1.5 and 0.1.6
-    
+    # Migration from single to multiple knowledgebases - occurred between 0.1.5 and 0.1.6
     if versiontuple(__version__) >= versiontuple('0.1.5'):
         fs.migrate_file_structure_015_to_016(config,conf)
     # End of Migration 
@@ -83,7 +82,7 @@ def create_kb_files(config):
     initial_categs = config["INITIAL_CATEGORIES"]
     templates_path = config["PATH_KB_TEMPLATES"]
     schema_version = config["DB_SCHEMA_VERSION"]
-    default_template_path = str(Path(templates_path) / "default")
+    default_template_path = str(Path(templates_path, conf.DEFAULT_KNOWLEDGEBASE))
 
     # Create main kb
     fs.create_directory(kb_path)

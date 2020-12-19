@@ -275,4 +275,4 @@ def rename_base(args: Dict[str, str], config: Dict[str, str]):
     # Rename kb
     fs.rename_directory(str(old_path),str(new_path))
 
-    return 0
+    return 0 # Good return code - all completed

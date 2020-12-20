@@ -19,6 +19,7 @@ from sys import platform
 
 import toml
 
+<<<<<<< HEAD
 def seed_default_knowledge_base():
     """
     Set name for default knowledge base
@@ -27,6 +28,8 @@ def seed_default_knowledge_base():
     """
     return ('default')
 
+=======
+>>>>>>> issue51
 def get_markers(markers_path: str):
     """
     Load markers file

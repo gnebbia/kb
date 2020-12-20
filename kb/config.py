@@ -19,8 +19,6 @@ from sys import platform
 
 import toml
 
-from kb.config import DEFAULT_KNOWLEDGEBASE
-
 def get_markers(markers_path: str):
     """
     Load markers file

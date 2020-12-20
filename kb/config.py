@@ -27,6 +27,7 @@ def seed_default_knowledge_base():
     """
     return ('default')
 
+
 def get_markers(markers_path: str):
     """
     Load markers file

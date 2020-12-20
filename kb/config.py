@@ -19,7 +19,13 @@ from sys import platform
 
 import toml
 
-from kb.config import DEFAULT_KNOWLEDGEBASE
+def seed_default_knowledge_base():
+    """
+    Set name for default knowledge base
+
+    Returns a string containing the default knowledge base
+    """
+    return ('default')
 
 def get_markers(markers_path: str):
     """
@@ -45,7 +51,7 @@ def get_current_base(BASE: Path):
     Arguments:
     BASE      - the path to the toml bases.toml file
 
-    Returns name of the current KB (or DEFAULT_KNOWLEDGEBASE)
+    Returns name of the current KB (or "seed_default_knowledge_base()")
     """
     bases_config = str(Path(BASE,".kb", "bases.toml"))
     try:
@@ -55,7 +61,7 @@ def get_current_base(BASE: Path):
     except toml.TomlDecodeError:
         print("Error: The bases file is not in the toml format")
     except FileNotFoundError:
-        return(DEFAULT_KNOWLEDGEBASE)
+        return(seed_default_knowledge_base())
 
 
 def construct_config(BASE: Path, current: str):
@@ -97,12 +103,16 @@ BASE = Path.home()
 # Get configuration
 DEFAULT_CONFIG = construct_config(BASE,'')
 
+# Initial values for default template
 DEFAULT_TEMPLATE = {
     "TITLES": ("^#.*", "blue"),
     "WARNINGS": ("^!.*", "yellow"),
 }
-DEFAULT_KNOWLEDGEBASE = 'default'
 
+# Default knowledge base name
+DEFAULT_KNOWLEDGEBASE = seed_default_knowledge_base()
+
+# Initial data for multi-knowledge base file
 INITIAL_KNOWLEDGEBASE = {
     'current':DEFAULT_KNOWLEDGEBASE,
     'bases': [{'name': DEFAULT_KNOWLEDGEBASE, 'description': 'Default knowledgebase'}]

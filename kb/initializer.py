@@ -51,10 +51,13 @@ def init(config):
     if not is_initialized(config):
         create_kb_files(config)
         
-    # Migration from single to multiple knowledgebases - occurred between 0.1.5 and 0.1.6
-    if versiontuple(__version__) >= versiontuple('0.1.5'):
-        fs.migrate_file_structure_015_to_016(config,conf)
-    # End of Migration 
+    # Migration of file structures may be required - occurred between 0.1.5 and 0.1.6
+    # Check for the multiple bases.toml file
+    if not fs.does_file_exist(config["PATH_KB_INITIAL_BASES"]):
+        # Double check versions!
+        if versiontuple(__version__) >= versiontuple('0.1.5'):
+            fs.migrate_file_structure_015_to_016(config,conf)
+        # End of Migration 
 
 
 def create_kb_files(config):

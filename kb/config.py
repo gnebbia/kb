@@ -19,27 +19,6 @@ from sys import platform
 
 import toml
 
-# Home base for the user
-BASE = Path.home()
-
-# Get configuration
-DEFAULT_CONFIG = construct_config(BASE,'')
-
-# Initial values for default template
-DEFAULT_TEMPLATE = {
-    "TITLES": ("^#.*", "blue"),
-    "WARNINGS": ("^!.*", "yellow"),
-}
-
-# Default knowledge base name
-DEFAULT_KNOWLEDGEBASE = seed_default_knowledge_base()
-
-# Initial data for multi-knowledge base file
-INITIAL_KNOWLEDGEBASE = {
-    'current':DEFAULT_KNOWLEDGEBASE,
-    'bases': [{'name': DEFAULT_KNOWLEDGEBASE, 'description': 'Default knowledgebase'}]
-    }
-
 
 def seed_default_knowledge_base():
     """
@@ -118,3 +97,24 @@ def construct_config(BASE: Path, current: str):
         "INITIAL_CATEGORIES": ["default", ]
     }
     return DEFAULT_CONFIG
+
+# Home base for the user
+BASE = Path.home()
+
+# Get configuration
+DEFAULT_CONFIG = construct_config(BASE,'')
+
+# Initial values for default template
+DEFAULT_TEMPLATE = {
+    "TITLES": ("^#.*", "blue"),
+    "WARNINGS": ("^!.*", "yellow"),
+}
+
+# Default knowledge base name
+DEFAULT_KNOWLEDGEBASE = seed_default_knowledge_base()
+
+# Initial data for multi-knowledge base file
+INITIAL_KNOWLEDGEBASE = {
+    'current':DEFAULT_KNOWLEDGEBASE,
+    'bases': [{'name': DEFAULT_KNOWLEDGEBASE, 'description': 'Default knowledgebase'}]
+    }

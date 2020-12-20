@@ -382,10 +382,27 @@ def grep_in_files_uniq(
 
 
 def get_last_modified_time(fullfilename):
+    """
+    Get the last updated time of a file.
+
+    Returns     -   Last updated time
+    """
     try:
         return datetime.utcfromtimestamp(os.path.getmtime(fullfilename)).strftime('%Y-%m-%d %H:%M:%S')
     except OSError:
         return None
+
+def does_file_exist(filename: str):
+    """
+    Checks to see if a filename exists.
+
+    Arguments:
+
+    filename    - a path to a filename
+
+    Returns     - True if the file exists
+    """
+    return(os.path.isfile(filename))
 
 
 def migrate_file_structure_015_to_016(config,conf):

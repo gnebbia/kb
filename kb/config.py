@@ -19,6 +19,7 @@ from sys import platform
 
 import toml
 
+<<<<<<< HEAD
 
 # Home base for the user
 BASE = Path.home()
@@ -42,6 +43,9 @@ INITIAL_KNOWLEDGEBASE = {
     }
 
 
+=======
+<<<<<<< HEAD
+>>>>>>> issue51
 def seed_default_knowledge_base():
     """
     Set name for default knowledge base
@@ -50,7 +54,12 @@ def seed_default_knowledge_base():
     """
     return ('default')
 
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> issue51
+>>>>>>> issue51
 def get_markers(markers_path: str):
     """
     Load markers file

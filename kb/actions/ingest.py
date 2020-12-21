@@ -32,7 +32,7 @@ def ingest_kb(args: Dict[str, str], config: Dict[str, str]):
     """
 
     tar = tarfile.open(args["file"], "r:gz")
-    tar.extractall(Path.home())
+    tar.extractall(Path(config["PATH_KB"]))
     tar.close()
 
     return -200

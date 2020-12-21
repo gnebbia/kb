@@ -33,14 +33,15 @@ def export_kb(args: Dict[str, str], config: Dict[str, str]):
     """
     fname = args["file"] or time.strftime("%d_%m_%Y-%H%M%S")
     archive_ext = ".kb.tar.gz"
+
     if not fname.endswith(archive_ext):
         fname = fname + archive_ext
-
     if args.get("only_data") == 'True':
         with tarfile.open(fname, mode='w:gz') as archive:
             archive.add(config["PATH_KB_DATA"], arcname="kb", recursive=True)
     else:
         with tarfile.open(fname, mode='w:gz') as archive:
-            archive.add(config["PATH_KB"], arcname=".kb", recursive=True)
+            archive.add(config["PATH_KB"], arcname=".",recursive=True)
+            # archive.add(config["PATH_KB"], arcname=".kb", recursive=True)
 
     return(fname)

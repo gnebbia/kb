@@ -98,7 +98,7 @@ def get_complete_size(root='.'):
     """
 
     total_size = 0
-    for dirpath, filenames in os.walk(root):
+    for dirpath, _dirname,filenames in os.walk(root):
         for f in filenames:
             fp = os.path.join(dirpath, f)
             # skip if it is symbolic link

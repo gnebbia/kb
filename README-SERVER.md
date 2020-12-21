@@ -93,6 +93,7 @@ To deploy kb-API as a gunicorn-based server, simply use:
 | `http://<hostname>/base/delete/<base>`        | POST | Deletes the named knowledge base |
 | `http://<hostname>/base/list`                 | GET  | Lists the available knowledge bases |
 | `http://<hostname>/base/new/<base>`           | POST | Create the named knowledge base |
+| `http://<hostname>/base/rename/<base>`        | POST | Rename the named knowledge base |
 | `http://<hostname>/base/switch/<base>`        | PUT  | Switches to the named knowledge base |
 | `http://<hostname>/categories`                | GET  | Lists all the current castegories in the knowledge base |
 | `http://<hostname>/delete/id/<id>`            | POST | Delete a specific Artifact by ID |

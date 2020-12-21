@@ -39,7 +39,11 @@ def search_kb(args: Dict[str, str], config: Dict[str, str]):
     # Check initialization
     initializer.init(config)
 
+
     conn = db.create_connection(config["PATH_KB_DB"])
+    
+    categories = ls.list_categories(config)
+    print(categories)
 
     # List all categories
     if args.get("all_categories", False) is True:
@@ -64,5 +68,6 @@ def search_kb(args: Dict[str, str], config: Dict[str, str]):
         status=args.get("status",''),
         author=args.get("author",''))
 
+    
     artifacts = sorted(rows, key=lambda x: x.title)
     return artifacts

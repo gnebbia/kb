@@ -392,6 +392,7 @@ def get_last_modified_time(fullfilename):
     except OSError:
         return None
 
+
 def does_file_exist(filename: str):
     """
     Checks to see if a filename exists.
@@ -434,7 +435,7 @@ def migrate_file_structure_015_to_016(config,conf):
     
     # Create default knowledgebases file (bases.toml) - 0.1.6 and upward
     try:
-        _ = toml.load(initial_bases_path)
+        _bases_file = toml.load(initial_bases_path)
     except (FileNotFoundError, toml.TomlDecodeError):  
         with open(initial_bases_path, 'w') as dkb:
             dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))

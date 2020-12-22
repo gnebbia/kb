@@ -18,6 +18,7 @@ from typing import Dict
 import sys
 sys.path.append('kb')
 
+from kb import __version__
 
 def export_kb(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -39,9 +40,22 @@ def export_kb(args: Dict[str, str], config: Dict[str, str]):
     if args.get("only_data") == 'True':
         with tarfile.open(fname, mode='w:gz') as archive:
             archive.add(config["PATH_KB_DATA"], arcname="kb", recursive=True)
+     
     else:
-        with tarfile.open(fname, mode='w:gz') as archive:
+        # V1 format export
+        # with tarfile.open(fname, mode='w:gz') as archive:
+        #    archive.add(config["PATH_KB"], arcname=".kb",recursive=True)
+        """
+        V2 format export
+        Place metadata in the export file so that the import function determine 
+        whether this is in the original format for exprt files or the new multi-kb format
+        """
+        pax = { 'kb-export-format-version' : '2',
+                'kb-version' : __version__ }
+        with tarfile.open(fname, "w:gz",format=tarfile.PAX_FORMAT, pax_headers=pax) as archive:
             archive.add(config["PATH_KB"], arcname=".",recursive=True)
-            # archive.add(config["PATH_KB"], arcname=".kb", recursive=True)
-
+        
     return(fname)
+
+
+               

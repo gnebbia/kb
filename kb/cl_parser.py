@@ -13,10 +13,12 @@ Command Line Parsing Module for kb
 
 __all__ = ()
 
-import sys
 import argparse
-from kb import __version__
+import sys
 from typing import Sequence
+
+from kb import __version__
+from kb.config import DEFAULT_CONFIG,DEFAULT_KNOWLEDGEBASE
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -35,7 +37,6 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(prog='kb',
                                      description='A knowledge base organizer')
-
     parser.add_argument(
         "--version",
         action="version",
@@ -47,28 +48,32 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     # Main Commands
     add_parser = subparsers.add_parser(
         'add', help='Add an artifact')
-    edit_parser = subparsers.add_parser(
-        'edit', help='Edit an artifact content')
-    list_parser = subparsers.add_parser(
-        'list', help='Search for artifacts')
-    view_parser = subparsers.add_parser(
-        'view', help='View artifacts')
-    grep_parser = subparsers.add_parser(
-        'grep', help='Grep through kb artifacts')
-    update_parser = subparsers.add_parser(
-        'update', help='Update artifact properties')
+    base_parser = subparsers.add_parser(
+        'base', help='Manage knowledge bases')    
     delete_parser = subparsers.add_parser(
         'delete', help='Delete artifacts')
-    template_parser = subparsers.add_parser(
-        'template', help='Manage templates for artifacts')
-    import_parser = subparsers.add_parser(
-        'import', help='Import a knowledge base')
+    edit_parser = subparsers.add_parser(
+        'edit', help='Edit an artifact content')    
+    erase_parser = subparsers.add_parser(
+        'erase', help='Erase the entire kb knowledgebase')
     export_parser = subparsers.add_parser(
         'export', help='Export the knowledge base')
-    erase_parser = subparsers.add_parser(
-        'erase', help='Erase the entire kb knowledge base')
+    grep_parser = subparsers.add_parser(
+        'grep', help='Grep through kb artifacts')
     help_parser = subparsers.add_parser(
         'help', help='Show help of a particular command')
+    import_parser = subparsers.add_parser(
+        'import', help='Import a knowledge base')
+    list_parser = subparsers.add_parser(
+        'list', help='Search for artifacts')
+    stats_parser = subparsers.add_parser(
+        'stats', help='Show stats for the knowledgebase')
+    template_parser = subparsers.add_parser(
+        'template', help='Manage templates for artifacts')
+    update_parser = subparsers.add_parser(
+        'update', help='Update artifact properties')
+    view_parser = subparsers.add_parser(
+        'view', help='View artifacts')
 
     # add parser
     add_parser.add_argument(
@@ -116,6 +121,112 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
 
+
+    # base parser
+    base_subparsers = base_parser.add_subparsers(help='base commands', dest="base_command")
+    base_subparsers.required = True
+
+
+    # base subcommands
+    current_base_parser = base_subparsers.add_parser('current', help='Show the currently active knowledge base')
+    delete_base_parser = base_subparsers.add_parser('delete', help='Delete a knowledge base')
+    list_base_parser = base_subparsers.add_parser('list', help='Show available knowledge bases')
+    new_base_parser = base_subparsers.add_parser('new', help='Creeate a new knowledge base')
+    switch_base_parser = base_subparsers.add_parser('switch', help='Switch to a named knowledge base')
+    rename_base_parser = base_subparsers.add_parser('rename', help='Rename the current knowledge base')
+
+    rename_base_parser.add_argument(
+        "-o","--old",
+        help="Name of the original knowledge base",
+        action='store',
+        dest='old',
+        metavar='<old>',
+        default='',
+    )
+
+    rename_base_parser.add_argument(
+        "-n","--new",
+        help="Name of the new knowledge base",
+        action='store',
+        dest='new',
+        metavar='<new>',        
+        default='',
+    )
+
+    rename_base_parser.add_argument(
+        "-d","--description",
+        help="Description of the renamed knowledge base",
+        action='store',
+        dest='description',
+        metavar='<description>',
+        default='',
+    )
+
+    new_base_parser.add_argument(
+        help="Name of the new knowledge base",
+        action='store',
+        dest='name',
+        default='new',
+    )
+
+    delete_base_parser.add_argument(
+        help="Knowledge base to delete",
+        action='store',
+        dest='name',
+        default='',
+    )
+    
+    new_base_parser.add_argument(
+        "-d","--description",
+        help="Description of the new knowledge base",
+        action='store',
+        dest='description',
+        default='',
+    )
+
+    switch_base_parser.add_argument(
+        help="knowledge base to switch to",
+        action='store',
+        dest='kb',
+        default=DEFAULT_KNOWLEDGEBASE,
+    )
+  
+    list_base_parser.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True,
+    )
+
+    current_base_parser.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True,
+    )
+
+    # delete parser
+    delete_parser.add_argument(
+        "-i", "--id",
+        help="ID of the artifact",
+        type=str,
+        nargs='*',
+    )
+    delete_parser.add_argument(
+        "-t", "--title",
+        help="Title of the artifact to remove",
+        default=None,
+        type=str,
+    )
+    delete_parser.add_argument(
+        "-c", "--category",
+        help="Category associated to the artifact to remove",
+        default=None,
+        type=str,
+    )
+
     # edit parser
     edit_parser.add_argument(
         "nameid",
@@ -157,92 +268,6 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="Status to update",
         default=None,
         type=str,
-    )
-
-    # list parser
-    list_parser.add_argument(
-        "query",
-        help="Filter search results by specified title",
-        default="",
-        nargs="?",
-        type=str,
-    )
-    list_parser.add_argument(
-        "-c", "--category",
-        help="Filter search results by specified category",
-        default=None,
-        type=str,
-    )
-    list_parser.add_argument(
-        "-g", "--tags",
-        help="""
-        Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"
-        """,
-        default=None,
-        type=str,
-    )
-    list_parser.add_argument(
-        "-a", "--author",
-        help="Filter search results by specified author",
-        default=None,
-        type=str,
-    )
-    list_parser.add_argument(
-        "-s", "--status",
-        help="Filter search results by specified status",
-        default=None,
-        type=str,
-    )
-    list_parser.add_argument(
-        "-v", "--verbose",
-        help="Show additional information for the provided results",
-        action='store_true',
-        dest='verbose',
-        default=False,
-    )
-    list_parser.add_argument(
-        "-n", "--no-color",
-        help="Enabled no-color mode",
-        action='store_true',
-        dest='no_color',
-        default=False,
-    )
-
-    # view parser
-    view_parser.add_argument(
-        "nameid",
-        help="Title or ID of the artifact to view",
-        type=str,
-        nargs="?",
-    )
-    view_parser.add_argument(
-        "-i", "--id",
-        help="ID of the artifact to visualize",
-        type=str,
-    )
-    view_parser.add_argument(
-        "-t", "--title",
-        help="Title of the artifact to visualize",
-        type=str,
-    )
-    view_parser.add_argument(
-        "-c", "--category",
-        help="Category associated to the artifact to visualize",
-        type=str,
-    )
-    view_parser.add_argument(
-        "-e", "--open-editor",
-        help="Open the file in a text editor (read-only mode)",
-        action='store_true',
-        dest='editor',
-        default=False,
-    )
-    view_parser.add_argument(
-        "-n", "--no-color",
-        help="Enabled no-color mode",
-        action='store_true',
-        dest='no_color',
-        default=False,
     )
 
     # grep parser
@@ -306,6 +331,85 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         default=False,
     )
 
+    # list parser
+    list_parser.add_argument(
+        "query",
+        help="Filter search results by specified title",
+        default="",
+        nargs="?",
+        type=str,
+    )
+    list_parser.add_argument(
+        "-c", "--category",
+        help="Filter search results by specified category",
+        default=None,
+        type=str,
+    )
+    list_parser.add_argument(
+        "-g", "--tags",
+        help="""
+        Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"
+        """,
+        default=None,
+        type=str,
+    )
+    list_parser.add_argument(
+        "-a", "--author",
+        help="Filter search results by specified author",
+        default=None,
+        type=str,
+    )
+    list_parser.add_argument(
+        "-s", "--status",
+        help="Filter search results by specified status",
+        default=None,
+        type=str,
+    )
+    list_parser.add_argument(
+        "-v", "--verbose",
+        help="Show additional information for the provided results",
+        action='store_true',
+        dest='verbose',
+        default=False,
+    )
+    list_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
+    )
+    list_parser.add_argument(
+        "-C", "--allcategories",
+        help="List the current categories",
+        action='store_true',
+        dest='all_categories',
+        default=False,
+    )
+    list_parser.add_argument(
+        "-G", "--alltags",
+        help="List the current tags",
+        action='store_true',
+        dest='all_tags',
+        default=False,
+    )
+
+    # stats parser
+    stats_parser.add_argument(
+        "-v", "--verbose", 
+        help='Show stats in a verbose mode',
+        action='store_true',
+        dest='stats_verbose',
+        default=False)
+
+    stats_parser.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True,
+    )
+
     # update parser
     update_parser.add_argument(
         "-i", "--id",
@@ -360,24 +464,41 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
 
-    # delete parser
-    delete_parser.add_argument(
+    # view parser
+    view_parser.add_argument(
+        "nameid",
+        help="Title or ID of the artifact to view",
+        type=str,
+        nargs="?",
+    )
+    view_parser.add_argument(
         "-i", "--id",
-        help="ID of the artifact",
+        help="ID of the artifact to visualize",
         type=str,
-        nargs='*',
     )
-    delete_parser.add_argument(
+    view_parser.add_argument(
         "-t", "--title",
-        help="Title of the artifact to remove",
-        default=None,
+        help="Title of the artifact to visualize",
         type=str,
     )
-    delete_parser.add_argument(
+    view_parser.add_argument(
         "-c", "--category",
-        help="Category associated to the artifact to remove",
-        default=None,
+        help="Category associated to the artifact to visualize",
         type=str,
+    )
+    view_parser.add_argument(
+        "-e", "--open-editor",
+        help="Open the file in a text editor (read-only mode)",
+        action='store_true',
+        dest='editor',
+        default=False,
+    )
+    view_parser.add_argument(
+        "-n", "--no-color",
+        help="Enabled no-color mode",
+        action='store_true',
+        dest='no_color',
+        default=False,
     )
 
     # template parser
@@ -404,7 +525,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     add_template_parser.add_argument(
-        "-t","--title",
+        "-t", "--title",
         help="The title to assign to the template added from a file to kb",
         type=str,
     )
@@ -475,7 +596,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     apply_template_parser.add_argument(
-        "-m","--extended-match",
+        "-m", "--extended-match",
         help="""
         Perform application query not on a strict match,
         for example:
@@ -543,5 +664,4 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
                     f"Valid commands are: {', '.join(subparsers.choices.keys())}"
                 )
         sys.exit(1)
-
     return parsed_args

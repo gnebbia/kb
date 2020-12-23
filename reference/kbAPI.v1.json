@@ -1,0 +1,139 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "kbAPI",
+    "version": "1.0",
+    "description": "An API to access the kb knowledgebase",
+    "license": {
+      "url": "https://github.com/gnebbia/kb/blob/main/LICENSE",
+      "name": "GNU General Public License v3.0"
+    },
+    "contact": {
+      "email": "nebbionegiuseppe@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "SERVER"
+    },
+    {
+      "url": "",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/version": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "Version": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "The current version of the kb software"
+                    }
+                  },
+                  "required": [
+                    "Version"
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "Version": "0.1.5"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-version",
+        "description": "Retrieve the current version of the kb software in use",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header"
+          }
+        ]
+      }
+    },
+    "/list": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "Knowledge": {
+                      "type": "array",
+                      "description": "Array of artifacts",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "Knowledge"
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "Knowledge": "[{'id':1,'title':'newfile22', 'category':'crystal','path':'crystal/newfile22','tags':'programming;crystal;cheats','status':'','author':'','template':'None'},{'id':2,'title':'newfile223', 'category':'crystal','path':'crystal/newfile223','tags':'programming;crystal;cheats','status':'','author':'','template':'None'},{'id':3,'title':'newfile2234', 'category':'crystal','path':'crystal/newfile2234','tags':'programming;crystal;cheats','status':'','author':'','template':'None'}]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - no existing artifacts ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "Error": "There are no artifacts in the knowledgebase."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-list",
+        "description": "List all the items in the knowledgebase"
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "Username/Password": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Basic Authentication"
+      }
+    }
+  }
+}

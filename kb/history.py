@@ -11,6 +11,7 @@ kb history module
 :License: GPLv3 (see /LICENSE).
 """
 
+from pathlib import Path
 from typing import List
 from kb.entities.artifact import Artifact
 import kb.db as db
@@ -34,13 +35,17 @@ def get_artifact_id(hist_file_path: str, list_id: int) -> int:
     The database ID corresponding to the artifact or
     None in case of non-valid list ID
     """
-    with open(hist_file_path, 'r') as hfile:
-        for line in hfile:
-            items = line.split(",")
-            if items[0] == list_id:
-                return items[1]
-        return None
 
+    hist_file = Path(hist_file_path)
+    if hist_file.exists():
+        with open(hist_file_path, 'r') as hfile:
+            for line in hfile:
+                items = line.split(",")
+                if items[0] == list_id:
+                    return items[1]
+            return None
+    else:    
+        return "404"
 
 def write(hist_file_path: str, search_result: List) -> None:
     """

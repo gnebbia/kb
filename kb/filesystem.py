@@ -17,8 +17,11 @@ import os
 import re
 import shutil
 import tempfile
+import toml
 from pathlib import Path
 from typing import List
+from datetime import datetime
+from kb.config import DEFAULT_KNOWLEDGEBASE
 
 
 def list_files(directory: str) -> List[str]:
@@ -61,6 +64,49 @@ def list_dirs(directory: str) -> List[str]:
     files = [str(f.relative_to(dirpath))
              for f in dirpath.rglob("*") if f.is_dir()]
     return files
+
+
+def get_file_size(filename):
+    """
+    Get the size of a named file
+
+    Args:
+    filename       - a string representing the path to the required file
+
+    Returns:
+    A value in bytes (or zero if the file does not exist or cannot be opened)
+    """
+    file_size = 0
+    try:
+        st = os.stat(filename)
+    except:
+        file_size = 0
+    finally:
+        file_size = st.st_size
+    return file_size
+
+
+def get_complete_size(root='.'):
+    """
+    Get the size of the whole knowledgebase (including data, templates, artifacts etc)
+
+    Args:
+    root       - a string representing the root of the knowledgebase
+
+    Returns:
+    A value in bytes (or zero if the knowledgebase does not exist or cannot be opened)
+    """
+
+    total_size = 0
+    for dirpath, _dirname,filenames in os.walk(root):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+
+    return total_size
+
 
 def touch_file(filename: str):
     """
@@ -119,6 +165,16 @@ def remove_directory(directory: str) -> None:
     directory    - the directory to remove from the kb system
     """
     shutil.rmtree(directory)
+
+
+def rename_directory(old: str, new:str) -> None:
+    """
+    Rename a directory.
+
+    Arguments:
+    directory    - the directory path to be renamed
+    """
+    os.rename(old,new)
 
 
 def create_directory(directory: str) -> None:
@@ -323,3 +379,74 @@ def grep_in_files_uniq(
             # so we don't search through binary files
             continue
     return list(set(matches))
+
+
+def get_last_modified_time(fullfilename):
+    """
+    Get the last updated time of a file.
+
+    Returns     -   Last updated time
+    """
+    try:
+        return datetime.utcfromtimestamp(os.path.getmtime(fullfilename)).strftime('%Y-%m-%d %H:%M:%S')
+    except OSError:
+        return None
+
+
+def does_file_exist(filename: str):
+    """
+    Checks to see if a filename exists.
+
+    Arguments:
+
+    filename    - a path to a filename
+
+    Returns     - True if the file exists
+    """
+    return(os.path.isfile(filename))
+
+
+def migrate_file_structure_015_to_016(config,conf):
+
+    """
+
+    File structures changes between 0.1.5 and 0.1.6:
+    
+    <= 0.1.5                                       >= 0.1.6 
+    +-------------+                                +-------------+
+    |kb.db        |                                | kb.db       |        
+    |data         | -- all in single .kb folder    | data        | - one set per kb
+    |templates    |                                | templates   |   in a single folder
+    |recent.hist  |                                | recent.hist |   within .kb folder
+    +-------------+                                +-------------+
+                                                        
+                                                                    
+                                                    bases.toml     - within .kb folder
+                                                    kb_1 folder
+                                                    kb_2 folder
+                                                    .....
+    """
+
+    # Retrieve location/name of (to-be) bases.toml file
+    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
+
+    # Retrieve location of base .kb folder
+    kb_path_base = config["PATH_BASE"]
+    
+    # Create default knowledgebases file (bases.toml) - 0.1.6 and upward
+    try:
+        _bases_file = toml.load(initial_bases_path)
+    except (FileNotFoundError, toml.TomlDecodeError):  
+        with open(initial_bases_path, 'w') as dkb:
+            dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
+
+    # Create default knowledge base directory
+    create_directory(str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE)))
+
+    # Move data, templates and db into newly created directory (and optionally recent.hist)
+    move_file(str(Path(kb_path_base,'data')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'data')))
+    move_file(str(Path(kb_path_base,'templates')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'templates')))
+    move_file(str(Path(kb_path_base,'kb.db')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'kb.db')))
+    move_file(str(Path(kb_path_base,'recent.hist')),str(Path(kb_path_base,DEFAULT_KNOWLEDGEBASE,'recent.hist')))
+
+    # Migration froom 0.1.5 to 0.1.6 complete

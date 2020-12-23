@@ -163,6 +163,7 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         cur.execute(sql, args)
 
     conn.commit()
+    return(last_artifact_id)
 
 def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     """
@@ -214,6 +215,7 @@ def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
 
     conn.commit()
 
+
 def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
     Deletes the artifact corresponding to the provided
@@ -225,7 +227,6 @@ def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
     cur = conn.cursor()
     sql_query = "DELETE FROM artifacts WHERE id = ?"
-
     cur.execute(sql_query, [artifact_id])
     conn.commit()
 
@@ -292,7 +293,7 @@ def get_artifacts_by_filter(
     has been found
     """
     artifact_id_list = list()
-
+   
     if title is not None:
         artifacts_by_title = get_artifacts_by_title(
             conn, query_string=title, is_strict=is_strict)
@@ -325,7 +326,6 @@ def get_artifacts_by_filter(
     artifacts = []
     for result_id in resulting_set:
         artifacts.append(get_artifact_by_id(conn, result_id))
-
     return artifacts
 
 
@@ -641,3 +641,60 @@ def migrate_v0_to_v1(conn):
     cur.execute(sql_query)
     conn.commit()
     set_schema_version(conn, 1)
+
+
+def count_artifacts(conn):
+    """
+    Counts the number of artifacts in the database
+
+    Arguments:
+    conn            - the sqlite3 connection object
+    
+    Returns:
+    Number of artifacts in the database
+    """
+    cur = conn.cursor()
+    cur.execute("""SELECT COUNT(*)
+                   FROM artifacts""")
+
+    result = cur.fetchone()
+    return int(str(result).replace(')', "").replace('(', "").replace(',', ""))
+
+
+def count_tags(conn):
+    """
+    Counts the number of unique tags in the database
+
+    Arguments:
+    conn            - the sqlite3 connection object
+    
+    Returns:
+    Number of unique tags in the database
+    """
+    cur = conn.cursor()
+    cur.execute("""SELECT COUNT(DISTINCT tag)
+                   FROM tags WHERE tag IS NOT NULL""")
+
+    result = cur.fetchone()
+    return int(str(result).replace(')', "").replace('(', "").replace(',', ""))
+
+
+def ldb_tags(conn):
+    """
+    Return a list  of unique tags in the database
+
+    Arguments:
+    conn            - the sqlite3 connection object
+
+    Returns:
+    List of unique tags in the database
+    """
+    cur = conn.cursor()
+    cur.execute("""SELECT DISTINCT tag
+                   FROM tags WHERE tag IS NOT NULL""")
+
+    result = cur.fetchall()
+    tags = []
+    for row in result:
+        tags.append(str(row).replace("('", "").replace("',)", ""))
+    return tags

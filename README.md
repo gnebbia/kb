@@ -139,6 +139,7 @@ alias kbv="kb view"
 alias kbd="kb delete --id"
 alias kbg="kb grep"
 alias kbt="kb list --tags"
+alias kbs="kb stats --verbose"
 EOF
 echo "source ~/.kb_alias" >> ~/.bashrc
 source ~/.kb_alias
@@ -219,6 +220,7 @@ echo doskey kbv=kb view $*
 echo doskey kbd=kb delete --id $*
 echo doskey kbg=kb grep $*
 echo doskey kbt=kb list --tags $*
+echo doskey kbs=kb stats --verbose $*
 )> %USERPROFILE%\autorun.cmd
 ```
 
@@ -234,6 +236,7 @@ function kbv { kb view $args }
 function kbd { kb delete --id $args }
 function kbg { kb grep $args }
 function kbt { kb list --tags $args }
+function kbs { kb stats $args }
 '@ >  $env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1
 ```
 
@@ -245,10 +248,10 @@ A docker setup has been included to help with development.
 To install and start the project with docker:
 ```sh
 docker-compose up -d
-docker-compose exec kb bash
+docker-compose exec kb ash
 ```
 
-The container has the aliases included in its `.bashrc` so you can use
+The container has the aliases included in its `.profile` so you can use
 kb in the running container as you would if you installed it on the
 host directly.  The `./docker/data` directory on the host is bound to
 `/data` in the container, which is the image's working directly also.
@@ -319,6 +322,14 @@ kbl -v
 ```
 ![](img/kb_list_verbose.gif)
 
+### It is also possible to list the current categories and tags stored within the knowledgebase:
+```sh
+kb list --allcategories    ( also -C can be used )
+
+kb list --alltags          ( also -G can be used )
+```
+
+The `--no-color` switch is also available.
 
 ### Add artifacts
 
@@ -600,6 +611,19 @@ We can apply the template "light" to all artifacts of the category
 ```sh
 kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
+
+#### Finding out about kb knowledge base
+
+There is a command which can be used to inteerrogate the knowledgebase to see the size, number of articles etc:
+
+```sh
+kb stats
+
+# or if aliases are used:
+kbs
+```
+
+By default, this gives overall information about the knowledgebase, but adding the `--verbose` option will give more detailed information. Note that the `--no-color` option can also be used to provide a monochrome output.
 
 ## UPGRADE
 

@@ -67,6 +67,14 @@ Version: 0.1.5
          * [Apply a template to all artifacts of a category](#apply-a-template-to-all-artifacts-of-a-category)
          * [Apply a template to all artifacts having zip in their title](#apply-a-template-to-all-artifacts-having-zip-in-their-title)
          * [Apply a template to all artifacts having specific properties](#apply-a-template-to-all-artifacts-having-specific-properties)
+      * [Finding out about a knowledge base](#finding-out-about-a-knowledge-base)
+      * [Manage Knowledge bases](#manage-knowledge-bases)
+         * [Determine current knowledge base](#determine-current-knowledge-base)
+         * [Switch to a different knowledge base](#switch-to-a-different-knowledge-base)
+         * [Create a new knowledge base](#create-a-new-knowledge-base)
+         * [List available knowledge bases](#list-available-knowledge-bases)
+         * [Delete a knowledge base](#delete-a-knowledge-base)
+         * [Rename a knowledge base](#rename-a-knowledge-base)
    * [UPGRADE](#upgrade)
    * [DONATIONS](#donations)
    * [COPYRIGHT](#copyright)
@@ -612,9 +620,9 @@ We can apply the template "light" to all artifacts of the category
 kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
 
-#### Finding out about kb knowledge base
+#### Finding out about a knowledge base
 
-There is a command which can be used to inteerrogate the knowledgebase to see the size, number of articles etc:
+There is a command which can be used to interrogate the knowledgebase to see the size, number of articles etc:
 
 ```sh
 kb stats
@@ -624,6 +632,87 @@ kbs
 ```
 
 By default, this gives overall information about the knowledgebase, but adding the `--verbose` option will give more detailed information. Note that the `--no-color` option can also be used to provide a monochrome output.
+
+### Manage Knowledge bases
+
+kb supports multiple knowledge bases per installation. This allows knowledge bases of different domains to be separated from one another. When installed, there is a default knowledge base called "default". This knowledge base cannot be deleted.
+
+#### Determine current knowledge base
+
+To show the current knowledge base:
+
+```sh
+kb base current
+```
+By default, all commands work on the currently selected knowledge base.
+
+The `--no-color` switch is also available.
+
+#### Switch to a different knowledge base
+
+To switch to another knowledge base:
+
+```sh
+kb base switch "otherbase"
+```
+
+The other knowledge base should exist, and, if successful, the current knowledge base will be the one specified.
+Otherwise, the current knowledge base stays as is.
+
+#### Create a new knowledge base
+
+As many knowledge bases as required can be created. 
+
+```sh
+kb base new "workkb" -d "Information for work"
+
+or 
+
+kb base new "workkb" -description "Information for work"
+
+```
+
+The new knowledge base should have a unique name (also not "default") and optionally a description.
+
+#### List available knowledge bases
+
+To list available knowledge bases:
+
+```sh
+kb base list
+```
+
+This will display a list of currently available knowledge bases, with the use of the `--no-color` switch for monochrome output if required.
+
+#### Delete a knowledge base
+
+To delete a knowledge base:
+
+```sh
+kb base delete "science_kb"
+```
+
+This will delete the named knowledge base. The command will fail if an attempt it made to delete one of:
+   * The current knowledge base
+   * The "default" knowledge base
+   * A non-existent knowledge base
+
+#### Rename a knowledge base
+
+To rename a knowledge base:
+
+```sh
+kb base rename "science_kb" "scikit_learn_kb" -d "Python scikit-lean notes"
+```
+
+This will rename the named knowledge base (with an optional description if required)
+
+The command will fail if an attempt it made to delete one of:
+   * The current knowledge base
+   * The "default" knowledge base
+   * A non-existent knowledge base
+   * The target name already exists as a knowledge base.
+   * The old and the new are the same name
 
 ## UPGRADE
 

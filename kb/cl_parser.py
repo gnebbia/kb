@@ -136,7 +136,6 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     rename_base_parser = base_subparsers.add_parser('rename', help='Rename the current knowledge base')
 
     rename_base_parser.add_argument(
-        "-o","--old",
         help="Name of the original knowledge base",
         action='store',
         dest='old',
@@ -145,7 +144,6 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
 
     rename_base_parser.add_argument(
-        "-n","--new",
         help="Name of the new knowledge base",
         action='store',
         dest='new',

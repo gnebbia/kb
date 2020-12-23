@@ -129,7 +129,7 @@ pip install -U git+https://github.com/gnebbia/kb
 ```
 
 **Tip** for GNU/Linux and MacOS users: For a better user experience,
-also set the following kb bash aliases:
+also set the kb bash aliases, by copying and pasting this snippet into your terminal:
 ```sh
 cat <<EOF > ~/.kb_alias
 alias kbl="kb list"
@@ -563,7 +563,7 @@ kb template delete lisp-cheatsheets
 
 #### Edit a template
 
-To edit the template called "listp-cheatsheets" just do:
+To edit the template called "lisp-cheatsheets" just do:
 ```sh
 kb template edit lisp-cheatsheets
 ```

@@ -29,7 +29,6 @@ AttributeError: module 'attr' has no attribute 's'
 
 `pip install -U attrs`
 
-
 #### I see the following: 
 `` ModuleNotFoundError: No module named '_sqlite3'``
 

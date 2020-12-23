@@ -68,7 +68,7 @@ def kb_stats(config: Dict[str, str]):
     tags["Current"] = current_tags
     tags["Total"] = len(current_tags)
     current_stats_config["Tags"] = tags
-
+    
     sizes_config["Database"] = fs.get_file_size(config["PATH_KB_DB"])
     sizes_config["Total"] = fs.get_complete_size(config["PATH_KB"])
     sizes_config["Templates"] = fs.get_complete_size(config["PATH_KB_TEMPLATES"])

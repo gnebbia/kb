@@ -4,3 +4,4 @@ colored
 toml
 flask
 flask-httpauth
+MarkupSafe

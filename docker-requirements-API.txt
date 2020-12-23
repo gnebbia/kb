@@ -3,3 +3,4 @@ attrs
 toml
 flask
 flask-httpauth
+MarkupSafe

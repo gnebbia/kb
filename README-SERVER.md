@@ -86,37 +86,43 @@ To deploy kb-API as a gunicorn-based server, simply use:
 
 ## Endpoints
 
-| Endpoint                                     | Method | Description|
-|----------------------------------------------|-------|-------------|
-| `http://<hostname>/add`                      | POST | Adds a new artifact to the knowledgebase |
-| `http://<hostname>/categories`             | GET  | Lists all the current categories in the knowledgebase |
-| `http://<hostname>/delete/id/<id>`           | POST | Delete a specific Artifact by ID |
-| `http://<hostname>/delete/ids/<id,id,id>`    | POST | Delete specific Artifacts by ID |
-| `http://<hostname>/delete/<name>`            | POST | Delete a specific Artifact by name |
-| `http://<hostname>/erase/db`                 | POST | Erase just the knowledgebase database |
-| `http://<hostname>/erase/all`                | POST | Erase all of the knowledgebase as well as files |
-| `http://<hostname>/export/all`               | GET  | Export ALL the data (including files) from the knowledgebase |
-| `http://<hostname>/export/kb`                | GET  | Export JUST the data from the knowledgebase |
-| `http://<hostname>/grep/<regex>`             | GET  | Returns ALL of the artifacts in the knowledgebase using the regex|
-| `http://<hostname>/import   `                | POST | Remove the existing knowledgebase and replace with the content of the  import file |
-| `http://<hostname>/list`                     | GET  | Returns ALL of the artifacts in the knowledgebase |
-| `http://<hostname>/list/category/<category>` | GET  | Returns artifacts in the knowledgebase in the requested category |
-| `http://<hostname>/list/tags/<tags>`         | GET  | Returns artifacts in the knowledgebase which have the requested tags |
-| `http://<hostname>/stats`                    | GET  | Return a JSON string of information about the knowledgebase |
-| `http://<hostname>/tags `                    | GET  | Return a JSON string of all the tags in the knowledgebase |
-| `http://<hostname>/templates`                | GET  | Return a list of all the templates available |
-| `http://<hostname>/template/<query>`         | GET  | Returns the list of templates that comply with the query specified as a regex |
-| `http://<hostname>/template/add/<template>`  | POST | Create a new template with the content specified in the file uploaded with it |
-| `http://<hostname>/template/apply/<template>`| GET  | Apply the template to a set of artifacts whose criteria meet those 
-| `http://<hostname>/template/delete/<template>`| POST  | Delete the specified template |
-| `http://<hostname>/template/get/<template>`  | GET  | Returns the named template specified in the body of the HTTP request |
-| `http://<hostname>/template/new/<template>`  | POST | Create a new named template containing the default template  |
+| Endpoint                                      | Method | Description|
+|-----------------------------------------------|-------|-------------|
+| `http://<hostname>/add`                       | POST | Adds a new artifact to the current knowledge base |
+| `http://<hostname>/base/current`              | GET  | Returns the current knowledge base |
+| `http://<hostname>/base/delete/<base>`        | POST | Deletes the named knowledge base |
+| `http://<hostname>/base/list`                 | GET  | Lists the available knowledge bases |
+| `http://<hostname>/base/new/<base>`           | POST | Create the named knowledge base |
+| `http://<hostname>/base/rename/<base>`        | POST | Rename the named knowledge base |
+| `http://<hostname>/base/switch/<base>`        | PUT  | Switches to the named knowledge base |
+| `http://<hostname>/categories`                | GET  | Lists all the current castegories in the knowledge base |
+| `http://<hostname>/delete/id/<id>`            | POST | Delete a specific Artifact by ID |
+| `http://<hostname>/delete/ids/<id,id,id...>`  | POST | Delete specific Artifacts by ID |
+| `http://<hostname>/delete/<name>`             | POST | Delete a specific Artifact by name |
+| `http://<hostname>/erase/db`                  | POST | Erase just the current knowledge base database |
+| `http://<hostname>/erase/all`                 | POST | Erase all of the current knowledge base as well as files |
+| `http://<hostname>/export/all`                | GET  | Export ALL the data (including files) from the current knowledge base |
+| `http://<hostname>/export/kb`                 | GET  | Export JUST the data from the current knowledge base |
+| `http://<hostname>/grep/<regex>`              | GET  | Returns ALL of the artifacts in the current knowledge base using the regex|
+| `http://<hostname>/import   `                 | POST | Remove the current knowledge base and replace with the content of the  import file |
+| `http://<hostname>/list`                      | GET  | Returns ALL of the artifacts in the current  knowledge base |
+| `http://<hostname>/list/category/<category>`  | GET  | Returns artifacts in the current knowledge base in the requested category |
+| `http://<hostname>/list/tags/<tags>`          | GET  | Returns artifacts in the current knowledge base which have the requested tags |
+| `http://<hostname>/stats`                     | GET  | Return a JSON string of information about the current knowledge base |
+| `http://<hostname>/tags `                     | GET  | Return a JSON string of all the tags in the current knowledge base |
+| `http://<hostname>/templates`                 | GET  | Return a list of all the templates available in the current knowledge base|
+| `http://<hostname>/template/<query>`          | GET  | Returns the list of templates that comply with the query specified as a regex |
+| `http://<hostname>/template/add/<template>`   | POST | Create a new template with the content specified in the file uploaded with it |
+| `http://<hostname>/template/apply/<template>` | GET  | Apply the template to a set of artifacts whose criteria meet those 
+| `http://<hostname>/template/delete/<template>`| POST | Delete the specified template |
+| `http://<hostname>/template/get/<template>`   | GET  | Returns the named template specified in the body of the HTTP request |
+| `http://<hostname>/template/new/<template>`   | POST | Create a new named template containing the default template  |
 | `http://<hostname>/template/update/<template>`| PUT  | Update the specified template |
-| `http://<hostname>/update/<id>`              | PUT  | Updates an artifact by ID |
-| `http://<hostname>/view/<id>`                | GET  | View an artifact by ID  |
-| `http://<hostname>/view/<title>`             | GET  | View an artifact by title  |
-| `http://<hostname>/view/<category>/<name>`   | GET  | View an artifact by its name  |
-| `http://<hostname>/version`                  | GET  | Returns the version of the kb software in use  |
+| `http://<hostname>/update/<id>`               | PUT  | Updates an artifact by ID |
+| `http://<hostname>/view/<id>`                 | GET  | View an artifact by ID  |
+| `http://<hostname>/view/<title>`              | GET  | View an artifact by title  |
+| `http://<hostname>/view/<category>/<name>`    | GET  | View an artifact by its name  |
+| `http://<hostname>/version`                   | GET  | Returns the version of the kb software in use  |
 
 ## Endpoints which do NOT exist
 
@@ -151,4 +157,4 @@ Since kb uses SQLite to store artifacts, there are small limitations which shoul
 > 1 - SQLite can support multiple users at once. It does however lock the whole database when writing, so if there are lots of concurrent writes it is not a suitable database for the application (usually the time the database is locked is a few  milliseconds - so for most uses this does not matter). But it is very well tested and very stable (and widely used) so it can be trusted.
 This means that there **may** be occasions when a write operation will fail, so this should be catered for in any application using this REST API
 
-> 2 - If the `.../import` method is used, and the knowledgebase is being used as a multi-user scenario, then ALL the artifacts will be removed, and the knowledgebase will be reset to whatever is in the import file for **everyone** 
+> 2 - If the `.../import` method is used, and the knowledge base is being used as a multi-user scenario, then ALL the artifacts will be removed, and the knowledge base will be reset to whatever is in the import file for **everyone** 

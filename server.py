@@ -24,7 +24,7 @@ from werkzeug.routing import BaseConverter
 # Import the API functions
 from kb.api.add import add
 from kb.api.base import base as base_list
-from kb.api.base import get_current,switch
+from kb.api.base import get_current, switch, make_new_base,delete_a_base,rename
 from kb.api.list import list_cats, list_all_tags
 from kb.api.erase import erase
 from kb.api.delete import delete, delete_list_of_items_by_ID
@@ -48,8 +48,7 @@ from kb import db
 from kb import __version__
 
 # Get the configuration for the knowledgebase
-#from kb.config import DEFAULT_CONFIG, get_current_base, KB_BASE, BASE
-from kb.config import get_current_base, KB_BASE, BASE
+from kb.config import get_current_base, BASE, construct_config,DEFAULT_KNOWLEDGEBASE
 
 
 class ListConverter(BaseConverter):
@@ -69,7 +68,6 @@ class ListConverter(BaseConverter):
 kbapi_app = Flask(__name__)
 kbapi_app.url_map.converters['list'] = ListConverter  # Add custom converter for lists
 
-
 # Initiate the authentication framework
 auth = HTTPBasicAuth()
 
@@ -80,7 +78,6 @@ HOST = '0.0.0.0'
 
 # Methods allowed:
 ALLOWED_METHODS = ['add', 'base', 'delete', 'erase', 'export', 'get', 'grep', 'ingest' 'search', 'stats', 'template', 'update', 'version', 'view']
-
 
 parameters = dict(id="", title="", category="", query="", tags="", author="", status="", no_color=False, verbose=False)
 # query -> filter for the title field of the artifact
@@ -178,33 +175,17 @@ Pre-request tooling
 
 @kbapi_app.before_request
 def for_each_request():
-    """
-    Ensure the current knowledgebase is referred to
+    """ 
+    Ensure the current knowledge base is referred to
     """
     global DEFAULT_CONFIG
 
     # Home base for the user
     BASE = Path.home()
 
-    # Get the current kb or 'default'
-
-    KB_BASE = Path(BASE,".kb",get_current_base(BASE))
-
-    DEFAULT_CONFIG = {
-        "PATH_BASE": str(Path(BASE, ".kb")),
-        "PATH_KB": str(Path(KB_BASE)),
-        "PATH_KB_DB": str(Path(KB_BASE, "kb.db")),
-        "PATH_KB_HIST": str(Path(KB_BASE, "recent.hist")),
-        "PATH_KB_DATA": str(Path(KB_BASE, "data")),
-        "PATH_KB_CONFIG": str(Path(KB_BASE,  "kb.conf.py")),  # for future use
-        "PATH_KB_TEMPLATES": str(Path(KB_BASE,  "templates")),
-        "PATH_KB_DEFAULT_TEMPLATE": str(Path(KB_BASE, "templates", "default")),
-        "PATH_KB_INITIAL_BASES": str(Path(BASE,".kb", "bases.toml")),
-        "DB_SCHEMA_VERSION": 1,
-        "EDITOR": os.environ.get("EDITOR", "vim"),
-        "INITIAL_CATEGORIES": ["default", ]
-    }
-
+    # Get the current kb or DEFAULT_KNOWLEDGEBASE
+    DEFAULT_CONFIG = construct_config(BASE,'')
+    
 
 """
 Routing for URLs
@@ -216,7 +197,7 @@ Routing for URLs
 @auth.login_required
 def method_never_implemented():
     """
-    Methods from the command line NEVER to be implemented as the do not fit the paradigm of an API
+    Methods from the command line NEVER to be implemented as they do not fit the paradigm of an API
     """
     response = make_response(({'Error': 'Method Never Allowed'}), 405)
     response.allow = ALLOWED_METHODS
@@ -245,9 +226,19 @@ def add_item():
 @auth.login_required
 def list_current_base():
     """
-    Return the current knowledgebase
+    Return the current knowledge base
     """
     results = get_current(config=DEFAULT_CONFIG)
+    return (results)
+
+
+@kbapi_app.route('/base/delete/<string:name>', methods=['POST'])
+@auth.login_required
+def delete_base(name=''):
+    """
+    Delete the named knowledge base
+    """
+    results = delete_a_base(name,config=DEFAULT_CONFIG)
     return (results)
 
 
@@ -255,15 +246,42 @@ def list_current_base():
 @auth.login_required
 def list_all_bases():
     """
-    List all  the knowledgebases
+    List all  the knowledge bases
     """
     results = base_list(config=DEFAULT_CONFIG)
     return (results)
 
 
+@kbapi_app.route('/base/new/<string:name>', methods=['POST'])
+@auth.login_required
+def create_new_base(name=''):
+    """
+    Create a new knowledge base
+    """
+    parameters["name"] = name
+    parameters["description"] = request.form.get("description", "")
+
+    results = make_new_base(parameters,config=DEFAULT_CONFIG)
+    return (results)
+
+
+@kbapi_app.route('/base/rename/<string:old>', methods=['POST'])
+@auth.login_required
+def rename_base(old=''):
+    """
+    Rename a new knowledge base
+    """
+    parameters["old"] = old
+    parameters["new"] = request.form.get("new", "")
+    parameters["description"] = request.form.get("description", "")
+
+    results = rename(parameters,config=DEFAULT_CONFIG)
+    return (results)
+
+
 @kbapi_app.route('/base/switch/<string:target>', methods=['PUT'])
 @auth.login_required
-def switch_base(target='default'):
+def switch_base(target=DEFAULT_KNOWLEDGEBASE):
     """
     Switch to a knowledge base
     """

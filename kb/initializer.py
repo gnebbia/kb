@@ -17,7 +17,21 @@ import toml
 import kb.db as db
 import kb.filesystem as fs
 import kb.config as conf
+from kb import __version__
 
+
+def versiontuple(v:str):
+    """
+    Convert a version number into a comparable tuple.
+
+    Arguments:
+    v       - version number/string
+    """
+
+    filled = []
+    for point in v.split("."):
+        filled.append(point.zfill(8))
+    return tuple(filled)
 
 def init(config):
     """
@@ -36,6 +50,14 @@ def init(config):
     """
     if not is_initialized(config):
         create_kb_files(config)
+        
+    # Migration of file structures may be required - occurred between 0.1.5 and 0.1.6
+    # Check for the multiple bases.toml file
+    if not fs.does_file_exist(config["PATH_KB_INITIAL_BASES"]):
+        # Double check versions!
+        if versiontuple(__version__) >= versiontuple('0.1.5'):
+            fs.migrate_file_structure_015_to_016(config,conf)
+        # End of Migration 
 
 
 def create_kb_files(config):
@@ -57,14 +79,13 @@ def create_kb_files(config):
                 DB_SCHEMA_VERSION         - the database schema version
     """
     # Get paths for kb from configuration
-    initial_bases_path = config["PATH_KB_INITIAL_BASES"]
     kb_path = config["PATH_KB"]
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
     initial_categs = config["INITIAL_CATEGORIES"]
     templates_path = config["PATH_KB_TEMPLATES"]
     schema_version = config["DB_SCHEMA_VERSION"]
-    default_template_path = str(Path(templates_path) / "default")
+    default_template_path = str(Path(templates_path, conf.DEFAULT_KNOWLEDGEBASE))
 
     # Create main kb
     fs.create_directory(kb_path)
@@ -91,13 +112,9 @@ def create_kb_files(config):
         category_path = Path(data_path, category)
         fs.create_directory(category_path)
 
-    # Create markers file
+    # Create markers files
     with open(default_template_path, 'w') as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
-
-    # Create default knowledgebases file
-    with open(initial_bases_path, 'w') as dkb:
-        dkb.write(toml.dumps(conf.INITIAL_KNOWLEDGEBASE))
 
 
 def is_initialized(config) -> bool:

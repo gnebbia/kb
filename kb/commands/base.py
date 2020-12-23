@@ -19,15 +19,14 @@ from subprocess import call
 from typing import Dict, List
 
 import kb.config as conf
+from kb.config import BASE,construct_config,DEFAULT_KNOWLEDGEBASE
 import kb.db as db
 import kb.filesystem as fs
 
 import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 import kb.printer.template as printer
-from kb.actions.template import edit as edit_template
-from kb.actions.template import delete as delete_template
-from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base
+from kb.actions.base import base_list,get_current_kb_details,does_base_exist,switch_base, new_base, delete_base,rename_base
 from kb.printer.base import generate_current_kb,generate_bases_output
 
 def list_bases(args: Dict[str, str], config: Dict[str, str]):
@@ -69,23 +68,86 @@ def get_current(args: Dict[str, str], config: Dict[str, str]):
 
 
 def switch(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Command implementation of Switch function to switch to another knowledge base.
+
+    Arguments:
+    args        -   contains any switches and flags that need to be applied
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
     target = args["kb"]
     if does_base_exist(target,config):
         switch_base(target,config)
-        print("Knowledge base switched to ", args["kb"])
+        print("Knowledge base switched to", args["kb"])
     else:
         print('The knowledge base you specified ("' + target + '") does not exist.')
     return True
 
-def nowt(args: Dict[str, str], config: Dict[str, str]):
+
+def new(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Command implementation of creation of new knowledge base
+
+    Arguments:
+    args        -   contains the name and description of the knowledge base to create
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """
+    name = args.get("name","")
+    results = new_base(args,config)
+
+    # Can't use the name contained in DEFAULT_KNOWLEDGEBASE
+    if results == -1:
+        print('The knowledge base "' + DEFAULT_KNOWLEDGEBASE + '" is reserved, and therefore, not allowed')
+        return False 
+    
+    # Check to see if the knowledge base already exists - cannot create it otherwise
+    if results == -2:
+        print('The knowledge base "' + name + '" already exists.')
+        return False
+
+    # Print success message
+    if results == 0:
+        print ('New knowledge base "' + name + '" created and is current')
+        return True       
+
+def delete(args: Dict[str, str], config: Dict[str, str]):
+    """
+    Delete a knowledge bases
+
+    Arguments:
+    args        -   contains the name of the knowledge base to delete
+    config      -   the configuration dictionary that must contain
+                    at least the following key:
+                    PATH_KB_INITIAL_BASES, the path to where the .toml file containing kb information is stored
+    """    
+    results = delete_base(args,config)
+    if results == 0:
+        print('The knowledge base "' + args["name"] + '" was successfully deleted')    
+        return True
+    if results == -1:
+        print("Cannot delete current knowledge base")
+    if results == -2:
+        print('The knowledge base "' + args["name"] + " doesn't exist")
+    if results == -3:
+        print('Cannot delete the "' + DEFAULT_KNOWLEDGEBASE + '" knowledge base')
+    return False
+
+def rename(args: Dict[str, str], config: Dict[str, str]):
+    results = rename_base(args, config)
+    print(results)
     return True
 
+
 COMMANDS = {
-    'add': nowt,
+    'new': new,
     'switch': switch,
     'current':get_current,
-    'delete': nowt,
-    'edit': nowt,
+    'delete': delete,
+    'rename': rename,
     'list': list_bases
 }
 

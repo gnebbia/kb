@@ -42,7 +42,7 @@ def delete_artifacts(args: Dict[str, str], config: Dict[str, str], db_id):
     results = -404  # Need to standardise on -numbers
 
     if args["id"]:
-        results = delete_by_id(args["id"], config, db_id)
+        results = delete_by_id(args["id"][0], config, db_id)
 
     elif args["title"]:
         results = delete_by_name(args["title"], args["category"], config)

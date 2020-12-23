@@ -18,7 +18,7 @@ import sys
 from typing import Sequence
 
 from kb import __version__
-from kb.config import DEFAULT_CONFIG
+from kb.config import DEFAULT_CONFIG,DEFAULT_KNOWLEDGEBASE
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -128,15 +128,67 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
 
     # base subcommands
-    list_base_parser = base_subparsers.add_parser('list', help='Show available knowledge bases')
     current_base_parser = base_subparsers.add_parser('current', help='Show the currently active knowledge base')
+    delete_base_parser = base_subparsers.add_parser('delete', help='Delete a knowledge base')
+    list_base_parser = base_subparsers.add_parser('list', help='Show available knowledge bases')
+    new_base_parser = base_subparsers.add_parser('new', help='Creeate a new knowledge base')
     switch_base_parser = base_subparsers.add_parser('switch', help='Switch to a named knowledge base')
-  
+    rename_base_parser = base_subparsers.add_parser('rename', help='Rename the current knowledge base')
+
+    rename_base_parser.add_argument(
+        "-o","--old",
+        help="Name of the original knowledge base",
+        action='store',
+        dest='old',
+        metavar='<old>',
+        default='',
+    )
+
+    rename_base_parser.add_argument(
+        "-n","--new",
+        help="Name of the new knowledge base",
+        action='store',
+        dest='new',
+        metavar='<new>',        
+        default='',
+    )
+
+    rename_base_parser.add_argument(
+        "-d","--description",
+        help="Description of the renamed knowledge base",
+        action='store',
+        dest='description',
+        metavar='<description>',
+        default='',
+    )
+
+    new_base_parser.add_argument(
+        help="Name of the new knowledge base",
+        action='store',
+        dest='name',
+        default='new',
+    )
+
+    delete_base_parser.add_argument(
+        help="Knowledge base to delete",
+        action='store',
+        dest='name',
+        default='',
+    )
+    
+    new_base_parser.add_argument(
+        "-d","--description",
+        help="Description of the new knowledge base",
+        action='store',
+        dest='description',
+        default='',
+    )
+
     switch_base_parser.add_argument(
         help="knowledge base to switch to",
         action='store',
         dest='kb',
-        default='default',
+        default=DEFAULT_KNOWLEDGEBASE,
     )
   
     list_base_parser.add_argument(

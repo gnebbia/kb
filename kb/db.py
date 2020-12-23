@@ -293,7 +293,7 @@ def get_artifacts_by_filter(
     has been found
     """
     artifact_id_list = list()
-
+   
     if title is not None:
         artifacts_by_title = get_artifacts_by_title(
             conn, query_string=title, is_strict=is_strict)
@@ -326,7 +326,6 @@ def get_artifacts_by_filter(
     artifacts = []
     for result_id in resulting_set:
         artifacts.append(get_artifact_by_id(conn, result_id))
-
     return artifacts
 
 

@@ -16,7 +16,6 @@ from typing import Dict
 
 from kb.actions.list import list_categories, list_tags, list_templates
 from kb.actions.base import get_current_kb_details
-from kb.api.constants import MIME_TYPE, API_VERSION
 import kb.db as db
 import kb.filesystem as fs
 from kb import __version__
@@ -51,7 +50,6 @@ def kb_stats(config: Dict[str, str]):
     augmented_config["DEFAULT_CONFIG"] = config
 
     versions_config["kb"] = str(__version__)
-    versions_config["kbAPI"] = str(API_VERSION)
     augmented_config["Versions"] = versions_config
 
     current_categories = list_categories(config)

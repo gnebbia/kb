@@ -1,7 +1,0 @@
--r requirements.txt
-codespell
-coverage
-flake8
-pyinstaller
-pytest
-pytest-cov

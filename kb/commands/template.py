@@ -25,6 +25,7 @@ from kb.entities.artifact import Artifact
 import kb.printer.template as printer
 from kb.actions.template import edit as edit_template
 from kb.actions.template import delete as delete_template
+from kb.actions.template import new as new_template
 
 def get_templates(templates_path: str) -> List[str]:
     """
@@ -50,7 +51,6 @@ def search(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_TEMPLATES     - the path to where the templates of KB
                                               are stored
     """
-    # template_list = fs.list_files(config["PATH_KB_TEMPLATES"])
     template_list = get_templates(config["PATH_KB_TEMPLATES"])
     if not template_list:
         return
@@ -110,16 +110,21 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DEFAULT_TEMPLATE  - the path to where the default template of KB
                                                   is stored
                       EDITOR                    - the editor program to call
+
+    *****************************************************************************************************************
+    Note that this function makes little use of the "action"-appropriate code, since the paradigm is so different to
+    the API-based code, there is little commonality
+    *****************************************************************************************************************
     """
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
+    result = new_template(template_path,config)
 
-    if fs.is_file(template_path):
+    if result == -409:
         print("ERROR: The template you inserted corresponds to an existing one. "
                 "Please specify another name for the new template")
         sys.exit(1)
 
     fs.create_directory(Path(template_path).parent)
-    # fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
 
     with open(template_path, 'w') as tmplt:
         tmplt.write("# This is an example configuration template\n\n\n")

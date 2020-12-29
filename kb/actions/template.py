@@ -23,7 +23,6 @@ import base64
 from flask import jsonify, make_response
 from werkzeug.utils import secure_filename
 
-from kb.api.constants import MIME_TYPE
 import kb.config as conf
 import kb.db as db
 from kb.entities.artifact import Artifact
@@ -31,6 +30,8 @@ import kb.filesystem as fs
 import kb.initializer as initializer
 import kb.printer.template as printer
 
+# Dictionary of MIME types:
+MIME_TYPE = dict(json="application/json", utf8="text/plain;charset=UTF-8")
 
 def get_templates(templates_path: str) -> List[str]:
     """
@@ -44,21 +45,6 @@ def get_templates(templates_path: str) -> List[str]:
     """
     return fs.list_files(templates_path)
 
-
-# def search(args: Dict[str, str], config: Dict[str, str]):
-    """
-    Search templates installed in kb.
-
-    Arguments:
-    args:           - a dictionary containing the following fields:
-                      query -> filter for the title field of the artifact
-    config:         - a configuration dictionary containing at least
-                      the following keys:
-                      PATH_KB_TEMPLATES     - the path to where the templates of KB
-                                              are stored
-    """
-    # return(get_templates(config["PATH_KB_TEMPLATES"]))
-    
 
 def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -110,37 +96,22 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_DEFAULT_TEMPLATE  - the path to where the default template of KB
                                                   is stored
                       EDITOR                    - the editor program to call
+
+    *****************************************************************************************************************
+    Note that this a very thin, light function which is little used by the functionaal, since the paradigm is so  
+    different to both the API-based and the CLI-based code, there is little commonality. 
+    *****************************************************************************************************************
     """
 
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
-    print(template_path)
     if fs.is_file(template_path):
-        resp_content = '{"Error":"' + "Template already exists" + '"}'
-        resp = make_response((resp_content), 409)
-        resp.mimetype = 'application/json'
-        return(resp)
-
-    #    print("ERROR: The template you inserted corresponds to an existing one. ",
-    #          "Please specify another name for the new template")
-    #    sys.exit(1)
-
-    fs.create_directory(Path(template_path).parent)
-
-    with open(template_path, 'w') as tmplt:
-        tmplt.write("# This is an example configuration template\n\n\n")
-        tmplt.write(toml.dumps(conf.DEFAULT_TEMPLATE))
-
-    # shell_cmd = shlex.split(
-    #    config["EDITOR"]) + [template_path]
-    # call(shell_cmd)
-    resp_content = '{"OK":"' + "Default template content added" + '"}'
-    resp = make_response((resp_content), 200)
-    resp.mimetype = 'application/json'
-    return(resp)
+        return -409
+    else:
+        return -200
 
 
-def add(args: Dict[str, str], config: Dict[str, str], filecontent):
-    """
+"""def add(args: Dict[str, str], config: Dict[str, str], filecontent):
+    
     Add a new template to the templates available in kb.
 
     Arguments:
@@ -151,7 +122,7 @@ def add(args: Dict[str, str], config: Dict[str, str], filecontent):
                       the following keys:
                       PATH_KB_TEMPLATES         - the path to where the templates of KB
                                                   are stored
-    """
+    
 
     # Get the filename
     templates_path = Path(config["PATH_KB_TEMPLATES"])
@@ -167,7 +138,7 @@ def add(args: Dict[str, str], config: Dict[str, str], filecontent):
     resp.status_code = 200
     resp.mimetype = 'application/json'
     return (resp)
-
+"""
 
 def update_template(title: str, config: Dict[str, str], filecontent):
     """
@@ -186,16 +157,10 @@ def update_template(title: str, config: Dict[str, str], filecontent):
     templates_path = Path(config["PATH_KB_TEMPLATES"])
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) + "/" + title)
     if not fs.is_file(template_path):
-        resp_content = '{"Error":"' + "Template does not exist" + '"}'
-        resp = make_response((resp_content), 404)
-        resp.mimetype = MIME_TYPE['json']
-        return(resp)
+        return -409
 
     filecontent.save(os.path.join(templates_path, title))
-    resp_content = '{"OK":"' + "Template successfully updated" + '"}'
-    resp = make_response((resp_content), 200)
-    resp.mimetype = MIME_TYPE['json']
-    return (resp)
+    return -200
 
 
 def delete(args: Dict[str, str], config: Dict[str, str]):

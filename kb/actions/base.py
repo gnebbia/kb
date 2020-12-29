@@ -17,7 +17,6 @@ from pathlib import Path
 from typing import Dict
 
 from kb.actions.list import list_categories, list_tags, list_templates
-from kb.api.constants import MIME_TYPE, API_VERSION
 from kb.config import construct_config,BASE,DEFAULT_KNOWLEDGEBASE
 import kb.db as db
 import kb.filesystem as fs

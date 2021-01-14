@@ -64,7 +64,7 @@ Do NOT modify or delete the following functions:
 
 Modify the register_plugin function as detailed therein, but do NOT delete it.
 
-Complete other minoor modifications as detailed thoughout the code.
+Complete other minoor modifications as detailed throughout the code.
 
 Add functionality as shown........
 """

@@ -19,6 +19,7 @@ from typing import Sequence
 
 from kb import __version__
 from kb.config import DEFAULT_CONFIG,DEFAULT_KNOWLEDGEBASE
+from kb.plugin import loadModules # Functionality for plugin architecture
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -42,9 +43,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         action="version",
         version="%(prog)s {}".format(__version__))
 
+   
+
     subparsers = parser.add_subparsers(help='commands', dest="command")
     subparsers.required = True
 
+    
     # Main Commands
     add_parser = subparsers.add_parser(
         'add', help='Add an artifact')
@@ -648,6 +652,10 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     if len(args) == 0:
         parser.print_help(sys.stderr)
         sys.exit(1)
+    
+
+    loadModules('parser', parser, subparsers, '') # Load any plugins that are available
+
 
     parsed_args = parser.parse_args()
     if parsed_args.command == 'help':

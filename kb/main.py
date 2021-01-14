@@ -31,7 +31,7 @@ from kb.commands.search import search
 from kb.commands.template import template
 from kb.commands.update import update
 from kb.commands.view import view
-
+from kb.plugin import loadModules # Functionality for plugin architecture
 
 COMMANDS = {
     'add': add,
@@ -50,6 +50,7 @@ COMMANDS = {
 }
 
 
+
 def dispatch(function, *args, **kwargs):
     """
     Dispatch command line action to proper
@@ -60,8 +61,12 @@ def dispatch(function, *args, **kwargs):
 
 def main():
     """Main routine of kb."""
+
+    loadModules('commands','','',COMMANDS) # Load any plugins that are available
+
     args = parse_args(sys.argv[1:])
     cmd = args.command
     cmd_params = vars(args)
+    
     dispatch(cmd, cmd_params, config=DEFAULT_CONFIG)
 

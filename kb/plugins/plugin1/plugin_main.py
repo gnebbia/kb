@@ -16,6 +16,7 @@ from typing import Dict
 import kb.initializer as initializer
 from kb.cl_parser import parse_args
 from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
+from kb.plugins.plugins.printer.plugins import metadata as print_metadata
 
 __version__ = '0.0.1'
 
@@ -91,6 +92,7 @@ def register_plugin(parser:argparse, subparsers):
     * Change instances of plugin1_subparsers to <your_plugin_name>_subparsers
     * Change instances of plugin1_parser_metadata to <your_plugin_name>_parser_metadata
     * Amend all 'help' messages to reflect your plugin's functionality
+    * Ensure that you do not remove references in the parsers to the core required functionality
 
     '''
     plugin1_parser = subparsers.add_parser(
@@ -111,6 +113,12 @@ def register_plugin(parser:argparse, subparsers):
         action='store_false',
         dest='no_color',
         default=True)
+    _plugin1_parser_metadata.add_argument(
+        "-s", "--silent",
+        help="Produce no output",
+        action='store_false',
+        dest='output',
+        default=True)
 
     '''
     # Example structure for a new command - add as many of these as you need - following the naming structures 
@@ -127,26 +135,15 @@ def register_plugin(parser:argparse, subparsers):
     return subparsers
 
 def register_command(COMMANDS:dict):
-    # DO NOT MODIFY THIS FUNCTION #
+    # DO NOT MODIFY THIS FUNCTION, except where indicated #
     if (PLUGIN_CONFIG.get('PLUGIN_NAME','') !=''):
         COMMANDS[PLUGIN_CONFIG.get('PLUGIN_NAME')] = plugin1 # This HAS to be the plugin name #
     return COMMANDS
 
 def metadata(args, config):
     # DO NOT MODIFY THIS FUNCTION #
-    line1 = 'Plugin Name : ' + PLUGIN_METADATA['PLUGIN_NAME'] + '-' + PLUGIN_METADATA['PLUGIN_LONG_NAME']
-    line2 = 'Author      : ' + PLUGIN_METADATA['PLUGIN_AUTHOR'] + ' ' + PLUGIN_METADATA['PLUGIN_CONTACT']
-    line3 = 'Version     : ' + PLUGIN_METADATA['PLUGIN_VERSION'] 
-
-    if (args['no_color'] == True):
-        line1 = BOLD + line1 + RESET
-        line2 = BOLD + line2 + RESET
-        line3 = BOLD + line3 + RESET
-
-    print(line1)
-    print(line2)
-    print(line3) 
-    
+    if (args.get('output',False) == True):
+        print_metadata(args, PLUGIN_METADATA, config)
     return(PLUGIN_METADATA)
 
 # Add/modify this to include your new plugin's functionality

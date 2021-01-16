@@ -21,6 +21,7 @@ from kb.plugins.plugins.printer.plugins import metadata as print_metadata
 
 __version__ = '0.0.0'
 
+list_of_plugins = {}
 
 PLUGIN_CONFIG={
     'PLUGIN_NAME':'plugins',
@@ -41,7 +42,7 @@ def register_plugin(parser:argparse, subparsers):
     
     plugins_parser = subparsers.add_parser(
         'plugins', help='Manage plugins')  
-    plugins_subparsers = plugins_parser.add_subparsers(help='Commands to manage plugins commands', dest="plugins_command") # See below (1)
+    plugins_subparsers = plugins_parser.add_subparsers(help='Commands to manage plugins', dest="plugins_command")
     plugins_subparsers.required = True
     
     _plugins_parser_metadata = plugins_subparsers.add_parser('metadata', help='Show this plugin\'s metadata')
@@ -56,10 +57,9 @@ def register_plugin(parser:argparse, subparsers):
     _plugins_parser_list.add_argument(
         "-v", "--verbose",
         help="Show ALL plugin information",
-        action='store_false',
+        action='store_true',
         dest='verbose',
-        default=True)
-    
+        default=False)
     return subparsers
 
 def register_command(COMMANDS:dict):
@@ -67,16 +67,25 @@ def register_command(COMMANDS:dict):
         COMMANDS[PLUGIN_CONFIG.get('PLUGIN_NAME')] = plugins 
     return COMMANDS
 
-def metadata(args, PLUGIN_METTADATA, config):
-    print_metadata(args, PLUGIN_METTADATA, config)
+def metadata(args, config):
+    print_metadata(args, PLUGIN_METADATA, config)
     return(PLUGIN_METADATA)
 
 
 def list_plugins(args: Dict[str, str], config: Dict[str, str]): 
     import sys
-    print('list plugins')
-    mods = [m.__name__.split('.')[2] for m in sys.modules.values() if (re.search(regex, m.__name__) and ('plugins.plugin_main' not in m.__name__))]
-    print(mods)
+    from pathlib import Path
+    
+    modules = [m.__name__[:-12] for m in sys.modules.values() if (re.search(regex, m.__name__) and ('plugins.plugin_main' not in m.__name__))]
+    
+    for module in modules:
+        plugin_main_full = module + '.plugin_main'
+        this_plugin_main = __import__(str(Path(plugin_main_full)), fromlist = ["*"])
+        args['output'] = False
+        _M = this_plugin_main.metadata(args, config)
+        list_of_plugins[_M['PLUGIN_NAME']]=(_M)
+        print_metadata(args, _M, config)
+        print()
     return None
 
 

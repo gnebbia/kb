@@ -13,22 +13,27 @@ plugin enabler module
 
 __all__ = ()
 
+
 def loadModules(function, parser, subparsers, COMMANDS):
     res = {}
+    import kb
     import os
     from pathlib import Path
+
+    libdir = os.path.dirname(kb.__file__)
+
     # check subfolders
-    lst = os.listdir(str(Path(os.getcwd(),"kb","plugins")))
+    lst = os.listdir(str(Path(libdir, "plugins")))
     dir = []
     for d in lst:
-        s = os.path.abspath(str(Path(os.getcwd(),"kb","plugins"))) + os.sep + d
+        s = os.path.abspath(str(Path(libdir, "plugins"))) + os.sep + d
         if os.path.isdir(s) and os.path.exists(s + os.sep + "__init__.py"):
             dir.append(d)
     # load the modules
-    for plugin in dir: 
-        res[plugin] = __import__(str(Path("kb","plugins",plugin,"plugin_main")).replace('/','.'), fromlist = ["*"])
-        if (function=='parser'):
-            res[plugin].register_plugin(parser,subparsers)
-        if (function=='commands'):
+    for plugin in dir:
+        res[plugin] = __import__(str(Path("kb", "plugins", plugin, "plugin_main")).replace('/', '.'), fromlist=["*"])
+        if (function == 'parser'):
+            res[plugin].register_plugin(parser, subparsers)
+        if (function == 'commands'):
             res[plugin].register_command(COMMANDS)
     return res

@@ -109,8 +109,8 @@ def register_plugin(parser:argparse, subparsers,config):
 
     '''
     plugin1_parser = subparsers.add_parser(
-        'plugin1', help='Example plugin')  
-    plugin1_subparsers = plugin1_parser.add_subparsers(dest="plugin1_command") # See below (1)
+        'plugin2', help='Example plugin')  
+    plugin1_subparsers = plugin1_parser.add_subparsers(dest="plugin2_command") # See below (1)
     plugin1_subparsers.required = True
     
     plugin1_parser.add_argument(
@@ -170,7 +170,7 @@ def entry(args: Dict[str, str], config: Dict[str, str]):   # Change this functio
     # Check initialization
     initializer.init(config)
 
-    cmd=args['plugin1_command'] # Change this to be <your_plugin_name>_command (also - see above (1) - change that too)
+    cmd=args['plugin2_command'] # Change this to be <your_plugin_name>_command (also - see above (1) - change that too)
     CMDS = {
         'metadata': metadata,
         'newcommand': newcommand         

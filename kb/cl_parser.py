@@ -654,7 +654,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         sys.exit(1)
     
 
-    loadModules('parser', parser, subparsers, '') # Load any plugins that are available
+    loadModules('parser', parser, subparsers, '',DEFAULT_CONFIG,'') # Load any plugins that are available
 
 
     parsed_args = parser.parse_args()

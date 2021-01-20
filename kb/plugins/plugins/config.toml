@@ -1,0 +1,25 @@
+# -*- encoding: utf-8 -*-
+# kb v0.1.6
+# A knowledge base organizer
+# Copyright © 2020, gnc.
+# See /LICENSE for licensing information.
+
+#
+# Plugin extension plugin configuration file
+#
+# :Copyright: © 2021, alshapton.
+# :License: GPLv3 (see /LICENSE).
+#
+
+title = "KB Plugin Manager configuration file"
+
+[config]
+name = "plugins"
+version = "0.0.0"
+guid = "00000000-0000-0000-0000-000000000000"
+help = "Plugin Manager for kb"
+
+[metadata]
+source= "https://github.com/gnebbia/kb/tree/test/plugins"
+author = "Andrew Shapton"
+contact = "alshapton@gmail.com"

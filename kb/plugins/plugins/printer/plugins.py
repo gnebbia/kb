@@ -13,20 +13,3 @@ kb plugins printed output module
 
 from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 
-def metadata(args, PLUGIN_METADATA, config):
-    verbose = args.get('verbose',False)
-    line1 = 'Plugin Name : ' + PLUGIN_METADATA['PLUGIN_NAME'] + '-' + PLUGIN_METADATA['PLUGIN_LONG_NAME']
-    line2 = 'Author      : ' + PLUGIN_METADATA['PLUGIN_AUTHOR'] + ' ' + PLUGIN_METADATA['PLUGIN_CONTACT']
-    line3 = 'Version     : ' + PLUGIN_METADATA['PLUGIN_VERSION'] 
-
-    if (args['no_color'] == True):
-        line1 = BOLD + line1 + RESET
-        line2 = BOLD + line2 + RESET
-        line3 = BOLD + line3 + RESET
-
-    print(line1)
-    if verbose:
-        print(line2)
-        print(line3) 
-    
-    return(PLUGIN_METADATA)

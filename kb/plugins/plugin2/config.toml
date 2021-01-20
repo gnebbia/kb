@@ -1,0 +1,25 @@
+# -*- encoding: utf-8 -*-
+# kb v0.1.6
+# A knowledge base organizer
+# Copyright © 2020, gnc.
+# See /LICENSE for licensing information.
+
+#
+# Sample extension plugin configuration file
+#
+# :Copyright: © 2021, alshapton.
+# :License: GPLv3 (see /LICENSE).
+#
+
+title = "E2"
+
+[config]
+name = "plugin2"
+version = "0.0.4"
+guid = "404cd476-e603-4358-a68a-c5daab9008ea"
+help = "E2"
+
+[metadata]
+source= "https://github.com/gnebbia/kb/tree/test/plugins"
+author = "Andrew Shapton"
+contact = "alshapton@gmail.com"

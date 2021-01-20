@@ -62,11 +62,14 @@ def dispatch(function, *args, **kwargs):
 def main():
     """Main routine of kb."""
 
-    loadModules('commands','','',COMMANDS) # Load any plugins that are available
-
     args = parse_args(sys.argv[1:])
     cmd = args.command
     cmd_params = vars(args)
+    
+    loadModules('commands','','',COMMANDS,DEFAULT_CONFIG,cmd) # Load any plugins that are available
+
+    
+
     
     dispatch(cmd, cmd_params, config=DEFAULT_CONFIG)
 

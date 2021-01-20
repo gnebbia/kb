@@ -120,5 +120,24 @@ def print_metadata(args, PLUGIN_METADATA, config,status,list_type):
         if (status != ''):
             print(line8)
             
-        
     return(PLUGIN_METADATA)
+
+def get_modules():
+    import os
+    import re
+    import sys
+    
+    modules = [m.__name__[:-12] for m in sys.modules.values() if (re.search(r"plugin_main$", m.__name__) and ('plugins.plugin_main' not in m.__name__))]
+    mods = []
+    for _module in modules:
+        mod = os.path.basename(_module.replace(".",os.path.sep))
+        mods.append(mod)
+    return mods
+
+def get_plugin_status(plugin_name:str):
+    import os
+    from pathlib import Path
+    mods_intermediate_root = str(Path(os.path.dirname(__file__),"plugins",plugin_name))    
+    module_path = (str(Path(os.path.dirname(mods_intermediate_root) + os.path.sep + plugin_name)))
+    return os.path.exists(str(Path(module_path, ".disabled")))
+    

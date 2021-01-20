@@ -82,7 +82,7 @@ Modify ONLY these PLUGIN_METADATA keys to your plugin specification
 
         PLUGIN_AUTHOR    - Name of the authors
         PLUGIN_CONTACT   - eMail address of the author
-        PLUGIN_SOURCE    - Address of publicaly available source code
+        PLUGIN_SOURCE    - Address of publicly available source code
         PLUGIN_LONG_NAME - Description of the plugin
 
 Do NOT modify or delete the following functions:

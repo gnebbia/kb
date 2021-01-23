@@ -44,6 +44,7 @@ def load_plugin_data(which: str, toml_data_file):
     import toml
     try:
         toml_data = toml.load(toml_data_file)
+
         if (which == 'metadata'):
             PLUGIN_METADATA={
                 'PLUGIN_NAME':toml_data['config']['name'],
@@ -66,6 +67,7 @@ def load_plugin_data(which: str, toml_data_file):
     except toml.TomlDecodeError:
         print("Error: The plugin config data is not in the toml format")
     except FileNotFoundError:
+        print("Error: The plugin config data is not in the toml format")
         return('')
 
 
@@ -88,7 +90,7 @@ def print_metadata(args, PLUGIN_METADATA, config,status,list_type):
         status_text = 'Enabled'
     else:
         status_text = 'Disabled'
-    
+
     verbose = args.get('verbose',False)
     line1 = 'Plugin Name : ' + PLUGIN_METADATA['PLUGIN_NAME'] 
     line2 = 'Description : ' + PLUGIN_METADATA['PLUGIN_LONG_NAME']
@@ -119,8 +121,9 @@ def print_metadata(args, PLUGIN_METADATA, config,status,list_type):
         print(line7)
         if (status != ''):
             print(line8)
-            
-    return(PLUGIN_METADATA)
+    print()
+    
+    return None
 
 def get_modules():
     import os
@@ -141,3 +144,40 @@ def get_plugin_status(plugin_name:str):
     module_path = (str(Path(os.path.dirname(mods_intermediate_root) + os.path.sep + plugin_name)))
     return os.path.exists(str(Path(module_path, ".disabled")))
     
+
+def get_plugin_info(filename):
+    
+    import os
+    from pathlib import Path
+    import toml
+    
+    # Read config.toml file to retrieve commands
+    try:
+        toml_data = toml.load(str(Path(os.path.dirname(filename), "config.toml")))
+    except toml.TomlDecodeError:
+        print("Error: The plugin config data is not in the toml format")
+    except FileNotFoundError:
+        return('')
+    return toml_data
+
+def get_plugin_commands(filename):
+    
+    import os
+    from pathlib import Path
+    import toml
+
+    # Read config.toml file to retrieve commands
+    try:
+        toml_data = toml.load(str(Path(os.path.dirname(filename), "config.toml")))
+    except toml.TomlDecodeError:
+        print("Error: The plugin config data is not in the toml format")
+    except FileNotFoundError:
+        return('')
+    commands = toml_data['commands']
+    # formulate the list of new plugin commands with their respective functions
+    # read from the config file.
+    cmds = []
+    for command in commands:
+        cmd = [command['command'] , command['function']]
+        cmds.append(cmd)
+    return cmds

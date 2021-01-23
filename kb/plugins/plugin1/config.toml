@@ -23,3 +23,27 @@ help = "KB Example Plugin"
 source= "https://github.com/gnebbia/kb/tree/test/plugins"
 author = "Andrew Shapton"
 contact = "alshapton@gmail.com"
+
+[parser]
+prefix = 'plugin1'
+entry ='plugins_command'
+help = 'Manage plugins'
+detail = 'Commands to manage plugins'
+
+[[commands]]
+command = 'list'
+function = 'list_plugins'
+help = 'Show the installed plugins'
+
+[[commands]]
+command = 'enable'
+function = 'manage_plugins'
+help = 'Enable an installed plugin'
+
+[[commands]]
+command = 'disable'
+function = 'manage_plugins'
+help = 'Disable an installed plugin'
+
+
+

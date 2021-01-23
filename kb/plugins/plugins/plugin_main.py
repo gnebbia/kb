@@ -17,67 +17,67 @@ from pathlib import Path
 import re
 from typing import Dict
 
-import kb.initializer as initializer
 from kb.cl_parser import parse_args
-from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
+import kb.initializer as initializer
+from kb.plugin import get_plugin_status, get_plugin_commands, get_plugin_info
+from .printer.printer_output import print_list
 
-from kb.plugin import get_plugin_status
-
-
-list_of_plugins = {}
 
 PLUGIN_CONFIG = {}
 PLUGIN_METADATA = {}
 
-
-
-PLUGIN_ENTRY='plugins_command'
-
 TOML_DATA_FILE = str(Path(os.path.dirname(__file__), "config.toml"))
 
-
 def register_plugin(parser:argparse, subparsers, config):
-    
+    # Get overall content for registratioon of plugin
+    info = get_plugin_info(__file__)
+    # Get main parser information
+    prsr = info['parser']
+    P = prsr['prefix'] + "_parser"
+    PS = prsr['prefix'] + '_subparsers'
     # Create parsers
-    plugins_parser = subparsers.add_parser(
-        'plugins', help='Manage plugins')  
-    plugins_subparsers = plugins_parser.add_subparsers(help='Commands to manage plugins', dest=PLUGIN_ENTRY)
-    plugins_subparsers.required = True
+    globals()[P] = subparsers.add_parser(prsr['prefix'], help=prsr['help'])  
+    globals()[PS] = globals()[P].add_subparsers(help=prsr['detail'], dest=prsr['entry'])
+    globals()[PS].required = True
     
-    _plugins_parser_metadata = plugins_subparsers.add_parser('metadata', help='Show this plugin\'s metadata')
-    _plugins_parser_metadata.add_argument(
+    # Create subparsers
+    # Create MANDATORY metadata parser - this NEVER changes
+    _parser_metadata = globals()[PS].add_parser('metadata', help='Show this plugin\'s metadata')
+    _parser_metadata.add_argument(
         "-v", "--verbose",
         help="Show ALL plugin information",
         action='store_true',
         dest='verbose',
         default=False)
-    _plugins_parser_metadata.add_argument(
+    _parser_metadata.add_argument(
         "-n", "--no-color",
         help="Enable no-color mode",
         action='store_false',
         dest='no_color',
         default=True)
+    # End fo MANDATORY metadata parser
 
-    _plugins_parser_list = plugins_subparsers.add_parser('list', help='Show the installed plugins')
-    _plugins_parser_list.add_argument(
-        "-n", "--no-color",
-        help="Enable no-color mode",
-        action='store_false',
-        dest='no_color',
-        default=True)
-    _plugins_parser_list.add_argument(
-        "-s",'--status',
-        default='all',
-        choices=['enabled', 'disabled', 'all'],
-        help='list enabled, disabled, or all (default: %(default)s)')
-    _plugins_parser_list.add_argument(
+    # User-supplied commmands
+    _parser_list = globals()[PS].add_parser('list', help='Show information about plugins')
+    _parser_list.add_argument(
         "-v", "--verbose",
         help="Show ALL plugin information",
         action='store_true',
         dest='verbose',
         default=False)
+    _parser_list.add_argument(
+        "-n", "--no-color",
+        help="Enable no-color mode",
+        action='store_false',
+        dest='no_color',
+        default=True)
+    _parser_list.add_argument(
+        '-s','--status',
+        choices = ['enabled', 'disabled', 'all'],
+        help = 'list enabled, disabled, or all (default)',
+        default = 'all')
 
-    _plugins_parser_disable = plugins_subparsers.add_parser('disable', help='Disable an installed plugins')
+    _plugins_parser_disable = globals()[PS].add_parser('disable', help='Disable an installed plugin')
     _plugins_parser_disable.add_argument(
         "name",
         help="Name of plugin to disable",
@@ -91,7 +91,7 @@ def register_plugin(parser:argparse, subparsers, config):
         dest='verbose',
         default=False)
     
-    _plugins_parser_enable = plugins_subparsers.add_parser('enable', help='Enable an installed plugins')
+    _plugins_parser_enable = globals()[PS].add_parser('enable', help='Enable an installed plugins')
     _plugins_parser_enable.add_argument(
         "name",
         help="Name of plugin to enable",
@@ -104,125 +104,103 @@ def register_plugin(parser:argparse, subparsers, config):
         action='store_true',
         dest='verbose',
         default=False)
-
+    
     return subparsers
 
 
-
-
-def disable_plugins(args: Dict[str, str], config: Dict[str, str]): 
+def manage_plugins(args: Dict[str, str], config: Dict[str, str]): 
     import sys
     from pathlib import Path
     from kb.plugin import get_modules
 
+    # Retrieve plugin entry command
+    plugin_entry = get_plugin_info(__file__)['parser']['entry']
+
+    results = []
+    # Get a list of modules
     mods = get_modules()
 
     mods_intermediate_root = str(Path(os.path.dirname(__file__)))    
     for plugin in args['name']:
 
         if plugin not in mods:
-            print('Plugin ' + plugin + ' is not installed.')
+            results.append('Plugin ' + plugin + ' is not installed.')
             continue
 
         # Check to see the status of this module
         disabled = get_plugin_status(plugin)
 
-        if disabled:
-            print('Plugin ' + plugin + ' is already disabled.')
-            continue
+        if (args[plugin_entry] == 'disable'):
 
-        if not disabled:
-            module_path = (str(Path(os.path.dirname(mods_intermediate_root) + os.path.sep + plugin)))
-            disabled_path = str(Path(module_path, ".disabled"))
-            Path(disabled_path).touch()
-            print('Plugin ' + plugin + ' has been disabled.')
+            if disabled:
+                results.append('Plugin ' + plugin + ' is already disabled.')
+                continue
 
-    return None
-
-def enable_plugins(args: Dict[str, str], config: Dict[str, str]): 
-    import sys
-    from pathlib import Path
-    from kb.plugin import get_modules
-
-    mods = get_modules()
-
-    mods_intermediate_root = str(Path(os.path.dirname(__file__)))    
-    for plugin in args['name']:
-        if plugin not in mods:
-            print('Plugin ' + plugin + ' is not installed.')
-            continue
-
-        # Check to see the status of this module
-        disabled = get_plugin_status(plugin)
+            if not disabled:
+                module_path = (str(Path(os.path.dirname(mods_intermediate_root) + os.path.sep + plugin)))
+                disabled_path = str(Path(module_path, ".disabled"))
+                Path(disabled_path).touch()
+                results.append('Plugin ' + plugin + ' has been disabled.')               
         
-        if not disabled:
-            print('Plugin ' + plugin + ' is already enabled.')
-            continue
+        if (args[plugin_entry] == 'enable'):
+            if not disabled:
+                results.append('Plugin ' + plugin + ' is already enabled.')
+                continue
 
-        if disabled:
-            # enable plugin here
-            module_path = (str(Path(os.path.dirname(mods_intermediate_root) + os.path.sep + plugin)))
-            disabled_path = str(Path(module_path, ".disabled"))
-            Path(disabled_path).unlink(missing_ok=True)
-            print('Plugin ' + plugin + ' has been enabled.')
-            
-    return None
+            if disabled:
+                # enable plugin here
+                module_path = (str(Path(os.path.dirname(mods_intermediate_root), plugin)))
+                disabled_path = str(Path(module_path, ".disabled"))
+                Path(disabled_path).unlink(missing_ok=True)
+                results.append('Plugin ' + plugin + ' has been enabled.')   
 
+    print_list(args,config,results)
+    return results
 
 def list_plugins(args: Dict[str, str], config: Dict[str, str]): 
-    import sys
-    from pathlib import Path
-    from kb.plugin import metadata as print_metadata
-    from kb.plugin import get_modules
-
-    list_type = str(args["status"])
-
-    # Get a list of installed plugins
-    plugins = get_modules()
-
-    # Cycle through the available plugins and display their metadata
-    for plugin in plugins:
-        plugin_path=(str(Path(os.path.dirname(str(Path(os.path.dirname(__file__)))), plugin)))
-        toml_data_file = str(Path(plugin_path, "config.toml"))
-    
-        # Check to see if this module should be included in the list
-        disabled = get_plugin_status(plugin)
-        if ((list_type == 'all' ) or
-            (list_type == 'enabled' and not disabled ) or
-            (list_type == 'disabled' and disabled )):
-            print_metadata(args, config, toml_data_file,not disabled,list_type)
-            print()
+    from kb.plugins.plugins.commands.list import list_plugins as get_list_of_plugins
+    get_list_of_plugins(args,config)
     return None
 
 
-# DO NOT EDIT THESE FUNCTIONS
 def register_command(COMMANDS:dict,TOML_DATA_FILE,fn):
+    # DO NOT EDIT THIS FUNCTION IN ANY WAY !
     import kb.plugin as utils
     return utils.register_command(COMMANDS,str(Path(os.path.dirname(__file__), "config.toml")),entry) 
 
+
 def metadata(args, config):
+    # DO NOT EDIT THIS FUNCTION IN ANY WAY !
     from kb.plugin import metadata as print_metadata
     return print_metadata(args, config, TOML_DATA_FILE,'','')
-# DO NOT EDIT THE ABOVE FUNCTIONS
-    
-# List of new plugin commands with their respective functions
-PLUGIN_COMMANDS = {
-    'list': list_plugins,
-    'disable': disable_plugins,
-    'enable': enable_plugins }
 
-# DO NOT EDIT THIS FUNCTION
+
 def entry(args: Dict[str, str], config: Dict[str, str]):   
+    # DO NOT EDIT THIS FUNCTION IN ANY WAY !
 
     # Check initialization
     initializer.init(config)
 
-    cmd = args[PLUGIN_ENTRY] 
+    # Initialize empty list of commands for this plugin to populate
+    icmds = {}
+
+    # Retrieve list of commands for this plugin
+    plugin_commands = get_plugin_commands(__file__)
+    # Retrieve the parser entry point for this plugin
+    plugin_entry = get_plugin_info(__file__)['parser']['entry']
+    
+    # Assemble the list of commands for this plugin
+    # and append to the mandatory metadata command
+    for icmd in plugin_commands:
+        comm = {icmd[0] : globals()[icmd[1]]}
+        icmds.update(comm)
+
+    cmd = args[plugin_entry] 
     CMDS = {
         'metadata': metadata 
-    }                          
-    CMDS.update(PLUGIN_COMMANDS)
-    print(CMDS)
+    }        
+    # Combine mandatory commands with user-supplied commands                  
+    CMDS.update(icmds) 
     CMDS[cmd](args, config)
    
 

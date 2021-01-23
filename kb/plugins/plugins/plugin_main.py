@@ -55,9 +55,9 @@ def register_plugin(parser:argparse, subparsers, config):
         action='store_false',
         dest='no_color',
         default=True)
-    # End fo MANDATORY metadata parser
+    # End of MANDATORY metadata parser
 
-    # User-supplied commmands
+    # User-supplied commands
     _parser_list = globals()[PS].add_parser('list', help='Show information about plugins')
     _parser_list.add_argument(
         "-v", "--verbose",

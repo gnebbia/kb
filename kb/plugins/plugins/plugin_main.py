@@ -108,59 +108,21 @@ def register_plugin(parser:argparse, subparsers, config):
     return subparsers
 
 
+# START OF USER FUNCTIONS
+
+
 def manage_plugins(args: Dict[str, str], config: Dict[str, str]): 
-    import sys
-    from pathlib import Path
-    from kb.plugin import get_modules
-
-    # Retrieve plugin entry command
-    plugin_entry = get_plugin_info(__file__)['parser']['entry']
-
-    results = []
-    # Get a list of modules
-    mods = get_modules()
-
-    mods_intermediate_root = str(Path(os.path.dirname(__file__)))    
-    for plugin in args['name']:
-
-        if plugin not in mods:
-            results.append('Plugin ' + plugin + ' is not installed.')
-            continue
-
-        # Check to see the status of this module
-        disabled = get_plugin_status(plugin)
-
-        if (args[plugin_entry] == 'disable'):
-
-            if disabled:
-                results.append('Plugin ' + plugin + ' is already disabled.')
-                continue
-
-            if not disabled:
-                module_path = (str(Path(os.path.dirname(mods_intermediate_root) + os.path.sep + plugin)))
-                disabled_path = str(Path(module_path, ".disabled"))
-                Path(disabled_path).touch()
-                results.append('Plugin ' + plugin + ' has been disabled.')               
-        
-        if (args[plugin_entry] == 'enable'):
-            if not disabled:
-                results.append('Plugin ' + plugin + ' is already enabled.')
-                continue
-
-            if disabled:
-                # enable plugin here
-                module_path = (str(Path(os.path.dirname(mods_intermediate_root), plugin)))
-                disabled_path = str(Path(module_path, ".disabled"))
-                Path(disabled_path).unlink(missing_ok=True)
-                results.append('Plugin ' + plugin + ' has been enabled.')   
-
-    print_list(args,config,results)
-    return results
+    from kb.plugins.plugins.commands.manage import manage_plugins as manage_the_plugins
+    manage_the_plugins(args,config,__file__)
+    return None
 
 def list_plugins(args: Dict[str, str], config: Dict[str, str]): 
     from kb.plugins.plugins.commands.list import list_plugins as get_list_of_plugins
     get_list_of_plugins(args,config)
     return None
+
+
+# END OF USER FUNCTIONS
 
 
 def register_command(COMMANDS:dict,TOML_DATA_FILE,fn):

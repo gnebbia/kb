@@ -20,7 +20,11 @@ def print_list(args, config, results):
         toml_data_file = plugin['info']
         X = load_plugin_data('metadata',toml_data_file)
         print_metadata(args,X,config,plugin['status'],results['list_type'])
-    return 0
+    return None
 
+def print_managed_list(args, config, results):
+    for res in results:
+        print(res)
+    return None
 
 

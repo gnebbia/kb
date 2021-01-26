@@ -1,0 +1,36 @@
+# -*- encoding: utf-8 -*-
+# kb v0.1.6
+# A knowledge base organizer
+# Copyright © 2020, gnc.
+# See /LICENSE for licensing information.
+
+#
+# Plugin extension plugin configuration file
+#
+# :Copyright: © 2021, alshapton.
+# :License: GPLv3 (see /LICENSE).
+#
+
+title = "KB Example plugin configuration file"
+
+[config]
+name = "example"
+version = "0.0.1"
+guid = "94b6bf94-e3ef-4e45-bc32-d0ad02a71168"
+help = "Example plugin"
+
+[metadata]
+source= "https://github.com/gnebbia/kb/tree/test/plugins"
+author = "Andrew Shapton"
+contact = "alshapton@gmail.com"
+
+[parser]
+prefix = 'example'
+entry ='example_command'
+help = 'Example plugin'
+detail = 'Demonstration of the structure of a plugin'
+
+[[commands]]
+command = 'lastchanged'
+function = 'show_lastchange'
+help = 'Show the last changed time of an article'

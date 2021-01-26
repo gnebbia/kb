@@ -5,7 +5,7 @@
 # See /LICENSE for licensing information.
 
 """
-Plugin extension manager
+Example plugin
 
 :Copyright: © 2021, alshapton.
 :License: GPLv3 (see /LICENSE).
@@ -49,67 +49,51 @@ def register_plugin(parser:argparse, subparsers, config):
 
     # ADD YOUR PARSER CODE HERE:
     # User-supplied commands
-    _parser_list = globals()[PS].add_parser('list', help='Show information about plugins')
-    _parser_list.add_argument(
+    _parser_lastchanged = globals()[PS].add_parser('lastchanged', help='Show the last changed information for an artifact')
+    _parser_lastchanged.add_argument(
+        "id",
+        help="article ID",
+        )
+    _parser_lastchanged.add_argument(
         "-v", "--verbose",
-        help="Show ALL plugin information",
+        help="Show ALL document information",
         action='store_true',
         dest='verbose',
-        default=False)
-    _parser_list.add_argument(
+        default=False)   
+    _parser_lastchanged.add_argument(
         "-n", "--no-color",
         help="Enable no-color mode",
         action='store_false',
         dest='no_color',
         default=True)
-    _parser_list.add_argument(
-        '-s','--status',
-        choices = ['enabled', 'disabled', 'all'],
-        help = 'list enabled, disabled, or all (default)',
-        default = 'all')
+    _parser_lastchanged.add_argument(
+        "-d", "--dateformat",
+        help="Format date/time in Arrow format",
+        nargs='?',
+        dest='dateformat',
+        default='')
+    _parser_lastchanged.add_argument(
+        "-t", "--timesince",
+        help="Show time since last change",
+        action='store_true',
+        dest='timesince',
+        default='')
+    _parser_lastchanged.add_argument(
+        "-g", "--granularity",
+        help="Indicate granularity of time since last change",
+        nargs='*',
+        dest='granularity',
+        default='')
 
-    _plugins_parser_disable = globals()[PS].add_parser('disable', help='Disable an installed plugin')
-    _plugins_parser_disable.add_argument(
-        "name",
-        help="Name of plugin to disable",
-        type=str,
-        nargs="*")
-    
-    _plugins_parser_disable.add_argument(
-        "-v", "--verbose",
-        help="Be verbose in response",
-        action='store_true',
-        dest='verbose',
-        default=False)
-    
-    _plugins_parser_enable = globals()[PS].add_parser('enable', help='Enable an installed plugins')
-    _plugins_parser_enable.add_argument(
-        "name",
-        help="Name of plugin to enable",
-        type=str,
-        nargs="*")
-    
-    _plugins_parser_enable.add_argument(
-        "-v", "--verbose",
-        help="Be verbose in response",
-        action='store_true',
-        dest='verbose',
-        default=False)
-    
     return subparsers
 
 
 # START OF USER FUNCTIONS
 
-def manage_plugins(args: Dict[str, str], config: Dict[str, str]): 
-    from kb.plugins.plugins.commands.manage import manage_plugins as manage_the_plugins
-    manage_the_plugins(args,config,__file__)
-    return None
-
-def list_plugins(args: Dict[str, str], config: Dict[str, str]): 
-    from kb.plugins.plugins.commands.list import list_plugins as get_list_of_plugins
-    get_list_of_plugins(args,config)
-    return None
+def show_lastchange(args: Dict[str, str], config: Dict[str, str]): 
+    from kb.plugins.example.commands.lastchanged import last_changed
+    results = last_changed(args,config)
+    return results
 
 # END OF USER FUNCTIONS
 

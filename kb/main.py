@@ -31,7 +31,6 @@ from kb.commands.search import search
 from kb.commands.template import template
 from kb.commands.update import update
 from kb.commands.view import view
-from kb.plugin import loadModules # Functionality for plugin architecture
 
 COMMANDS = {
     'add': add,
@@ -65,8 +64,10 @@ def main():
     args = parse_args(sys.argv[1:])
     cmd = args.command
     cmd_params = vars(args)
-    
-    loadModules('commands','','',COMMANDS,DEFAULT_CONFIG,cmd) # Load any plugins that are available
-    
+    try:                                                            # Attempt to load the 
+        from kb.plugin import loadModules                           # functionality for plugin architecture
+        loadModules('commands','','',COMMANDS,DEFAULT_CONFIG,cmd)   # Load any plugins that are available
+    except ModuleNotFoundError:                                     # If the plugin mod. isnt installed, 
+        pass                                                        #  then ignore error
     dispatch(cmd, cmd_params, config=DEFAULT_CONFIG)
 

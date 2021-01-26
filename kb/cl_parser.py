@@ -19,7 +19,6 @@ from typing import Sequence
 
 from kb import __version__
 from kb.config import DEFAULT_CONFIG,DEFAULT_KNOWLEDGEBASE
-from kb.plugin import loadModules # Functionality for plugin architecture
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -653,9 +652,11 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         parser.print_help(sys.stderr)
         sys.exit(1)
     
-
-    loadModules('parser', parser, subparsers, '',DEFAULT_CONFIG,'') # Load any plugins that are available
-
+    try:                                                                    # Attempt to load
+        from kb.plugin import loadModules                                   # functionality for plugin architecture
+        loadModules('parser', parser, subparsers, '',DEFAULT_CONFIG,'')     # Load any plugins that are available
+    except ModuleNotFoundError:                                             # If the plugin mod. isnt installed, 
+        pass                                                                #  then ignore error
 
     parsed_args = parser.parse_args()
     if parsed_args.command == 'help':

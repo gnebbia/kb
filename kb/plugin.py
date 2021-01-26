@@ -11,6 +11,8 @@ plugin enabler module
 :License: GPLv3 (see /LICENSE).
 """
 
+from typing import Dict
+
 __all__ = ()
 
 def loadModules(function, parser, subparsers, COMMANDS,config,cmd):
@@ -181,3 +183,4 @@ def get_plugin_commands(filename):
         cmd = [command['command'] , command['function']]
         cmds.append(cmd)
     return cmds
+

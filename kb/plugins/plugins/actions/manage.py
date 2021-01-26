@@ -11,7 +11,6 @@ Plugin extension manager (manage plugins action)
 :License: GPLv3 (see /LICENSE).
 """
 
-
 from typing import Dict
 
 def manage_plugins(args: Dict[str, str], config: Dict[str, str],filename): 

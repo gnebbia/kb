@@ -65,7 +65,7 @@ kb-plugin consists of:
 
 ## Installation
 
-**Prequisites:**
+**Prerequisites:**
 - Python 3.6 or above
 - kb-manager or above 
 

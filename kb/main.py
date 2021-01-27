@@ -67,7 +67,7 @@ def main():
     try:                                                            # Attempt to load the 
         from kb.plugin import loadModules                           # functionality for plugin architecture
         loadModules('commands','','',COMMANDS,DEFAULT_CONFIG,cmd)   # Load any plugins that are available
-    except ModuleNotFoundError:                                     # If the plugin mod. isnt installed, 
+    except ModuleNotFoundError:                                     # If the plugin mod. isn't installed, 
         pass                                                        #  then ignore error
     dispatch(cmd, cmd_params, config=DEFAULT_CONFIG)
 

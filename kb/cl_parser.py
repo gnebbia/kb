@@ -655,7 +655,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     try:                                                                    # Attempt to load
         from kb.plugin import loadModules                                   # functionality for plugin architecture
         loadModules('parser', parser, subparsers, '',DEFAULT_CONFIG,'')     # Load any plugins that are available
-    except ModuleNotFoundError:                                             # If the plugin mod. isnt installed, 
+    except ModuleNotFoundError:                                             # If the plugin mod. isn't installed, 
         pass                                                                #  then ignore error
 
     parsed_args = parser.parse_args()

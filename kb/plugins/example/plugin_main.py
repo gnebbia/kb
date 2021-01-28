@@ -47,7 +47,17 @@ def register_plugin(parser:argparse, subparsers, config):
         default=True)
     # End of MANDATORY metadata parser
 
+# ==========================================#
+# YOU WILL NEEED TO EDIT THE FILE FROM HERE #
+# ==========================================#
+
     # ADD YOUR PARSER CODE HERE:
+    """
+    Below: you should :
+    * Create parsers with the name " _parser_<command_name> "
+    * Use the "argparse"-style of syntax for construction to built parsers (see https://docs.python.org/3/library/argparse.html)
+
+    """
     # User-supplied commands
     _parser_lastchanged = globals()[PS].add_parser('lastchanged', help='Show the last changed information for an artifact')
     _parser_lastchanged.add_argument(
@@ -90,6 +100,14 @@ def register_plugin(parser:argparse, subparsers, config):
 
 # START OF USER FUNCTIONS
 
+"""
+You will need to:
+ * Create Functions here for each of the commands you define
+   (there are always 2 arguments - args & config)
+ * Import the corresponding function to carry out the commnd from the "commands" module
+ * You will need to return a "results" object (content is user-definable)
+""" 
+
 def show_lastchange(args: Dict[str, str], config: Dict[str, str]): 
     from kb.plugins.example.commands.lastchanged import last_changed
     results = last_changed(args,config)
@@ -97,7 +115,13 @@ def show_lastchange(args: Dict[str, str], config: Dict[str, str]):
 
 # END OF USER FUNCTIONS
 
-# DO NOT EDIT ANY FURTHER IN THIS FILE !
+
+
+
+# =======================================#
+# DO NOT EDIT ANY FURTHER IN THIS FILE ! #
+# =======================================#
+
 
 def register_command(COMMANDS:dict,_None,fn):
     # DO NOT EDIT THIS FUNCTION IN ANY WAY !

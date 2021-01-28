@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="img/kb_logo.png?raw=true" width="200"/>
+    <img src="img/kb-plugin-logo.png?raw=true" width="400"/>
 </p>
 
 # kb-plugins. A plugin manager for kb, minimalist knowledge base manager
@@ -9,7 +9,7 @@
 
 #### You can get support for kb [here](https://xscode.com/gnebbia/kb)
 
-Author: gnc <nebbionegiuseppe@gmail.com>
+Author: gnc <nebbionegiuseppe@gmail.com>˜
 
 Copyright: © 2021, alshapton
 
@@ -36,7 +36,7 @@ targeted on text-based note collection, it supports non-text files as well
 
 In few words kb allows a user to quickly and efficiently:
 
-- collect items containing notes,guides,procedures,cheatsheets into
+- collect items containing notes, guides, procedures, cheatsheets into
   an organized knowledge base;
 - filter the knowledge base on different metadata: title, category,
   tags and others;
@@ -49,7 +49,7 @@ Basically, kb provides a clean text-based way to organize your knowledge.
 
 ## Purpose of kb-plugin
 
-kb-plugin is an extension to kb which will allow 3rd-parties to include new commands and features 
+kb-plugin is an extension to kb which will allow 3rd-parties to include new commands and features
 within kb.
 
 kb-plugin consists of:
@@ -67,7 +67,7 @@ kb-plugin consists of:
 
 **Prerequisites:**
 - Python 3.6 or above
-- kb-manager or above 
+- kb-manager or above
 
 To install the most recent stable version of kb just type:
 ```sh
@@ -99,10 +99,10 @@ If you want to upgrade kb to the most recent stable release do:
 pip install -U kb-manager
 ```
 
-If instead you want to update kb to the most recent release 
+If instead you want to update kb to the most recent release
 (that may be bugged), do:
 ```sh
-git clone https://github.com/gnebbia/kb 
+git clone https://github.com/gnebbia/kb
 cd kb
 pip install --upgrade .
 ```

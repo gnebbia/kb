@@ -22,7 +22,6 @@ def print_last_changed(args, results):
     granularity = ''
     if (args['granularity'] != ''):
         granularity = args['granularity']
-    print(args)
     if (args['timesince']!=''):
         intermediate = arrow.get(results['last_updated'] ,'YYYY-MM-DD HH:mm:ss')
         if (granularity != ''):

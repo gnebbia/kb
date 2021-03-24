@@ -4,7 +4,6 @@
 
 # kb. A minimalist knowledge base manager
 
-[![Foo](https://xscode.com/assets/promo-banner.svg)](https://xscode.com/gnebbia/kb)
 
 
 [![Build Status](https://travis-ci.com/gnebbia/kb.svg?branch=master)](https://travis-ci.com/gnebbia/kb)

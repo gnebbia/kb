@@ -204,3 +204,26 @@ def print_search_result_verbose(
             print(ALT_BGROUND + result_line + RESET)
         else:
             print(result_line)
+
+
+def print_search_result_full_mode(
+        search_result: List[Artifact],
+) -> None:
+    """
+    Print kb query search results in full-identifier mode, that is:
+    category/title
+
+    Arguments:
+    search_result   - the list of Artifacts to print
+                      in the form of search result
+    """
+    if not search_result:
+        return
+    # Print results
+    for view_id, artifact in enumerate(search_result):
+
+        result_line = "{category}/{title}".format(
+            category=artifact.category,
+            title=artifact.title)
+
+        print(result_line)

@@ -11,7 +11,10 @@ kb printer for grep command module
 :License: GPLv3 (see /LICENSE).
 """
 
+import pathlib
 from typing import List
+from kb.config import DEFAULT_CONFIG as config
+import kb.filesystem as fs
 from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 from kb.entities.artifact import Artifact
 
@@ -238,7 +241,7 @@ def print_grep_result_verbose(
 # This function still has to be implemented, this is just a placeholder
 
 
-def print_grep_matches(grep_matches, hits_list, color=True):
+def print_grep_matches(grep_matches, color=True):
     """
     Print text associated to grep matches.
 
@@ -248,39 +251,17 @@ def print_grep_matches(grep_matches, hits_list, color=True):
     color           - a boolean, if True, color is enabled
     """
 
-    generate_grep_header
+    for view_id, match in enumerate(grep_matches):
+        path =  "/".join(fs.get_filename_parts_wo_prefix(match[0], config["PATH_KB_DATA"]))
+        line_number = match[1]
+        matched_text = match[2]
 
-    num_results_digits = len(str(len(grep_matches) - 1))
+        if color:
+            path = BOLD + str(path) + RESET
+            line_number = BOLD + str(line_number) + RESET
 
-    header = "{} {} {} {} {}".format(
-        "Category".ljust(20),
-        "Title".ljust(20),
-        "Line".ljust(20),
-        "Match".ljust(20))
-
-    # Print header
-    print(UND + BOLD + header + RESET)
-    print()
-
-    # Print results
-    for view_id, artifact in enumerate(grep_matches):
-        tags = artifact.tags if artifact.tags else ""
-
-        status = artifact.status if artifact.status else ""
-        author = artifact.author if artifact.author else ""
-        hits_id = view_id
-        hits = str(hits_list[hits_id])
-
-        result_line = " - [ {} ] {} {} {} {} {} {}".format(
-            str(view_id).rjust(num_results_digits),
-            artifact.title.ljust(20),
-            artifact.category.ljust(20),
-            hits.ljust(6),
-            tags.ljust(20),
-            status.ljust(20),
-            author.ljust(20))
-
-        if color and (view_id % 2 == 0):
-            print(ALT_BGROUND + result_line + RESET)
-        else:
-            print(result_line)
+        result_line = "{path}:{line_number}:{matched_text}".format(
+            path=path,
+            line_number=line_number,
+            matched_text=matched_text)
+        print(result_line)

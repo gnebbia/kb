@@ -19,3 +19,4 @@ ALT_BGROUND = styler.set_bg('#303030')
 BOLD = styler.set_style('bold')
 UND = styler.set_style('underlined')
 RESET = styler.reset()
+

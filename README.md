@@ -55,6 +55,7 @@ Version: 0.1.5
          * [Grep through the knowledge base](#grep-through-the-knowledge-base)
          * [Grep (case-insensitive) through the knowledge base](#grep-case-insensitive-through-the-knowledge-base)
          * [Grep in "verbose mode" through the knowledge base](#grep-in-verbose-mode-through-the-knowledge-base)
+         * [Grep through the knowledge base and show matching lines](#grep-through-the-knowledge-base-and-show-matching-lines)
       * [Import/Export/Erase a knowledge base](#importexporterase-a-knowledge-base)
          * [Export the current knowledge base](#export-the-current-knowledge-base)
          * [Import a knowledge base](#import-a-knowledge-base)
@@ -469,6 +470,11 @@ kb grep -i "[BG]ZIP"
 #### Grep in "verbose mode" through the knowledge base
 ```sh
 kb grep -v "[bg]zip"
+```
+
+#### Grep through the knowledge base and show matching lines
+```sh
+kb grep -m "[bg]zip"
 ```
 
 ### Import/Export/Erase a knowledge base

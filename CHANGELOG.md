@@ -35,4 +35,9 @@
     * Implemented a faster edit/view functionality by guessing input id/title
     * Updated bash shortcuts
     * Updated Documentation
+0.1.6
+    * Added full path list mode (kb list -f)
+    * Added rofi custom mode
+    * Added grep matches mode (kb grep "string" -m)
+    * Fixed important bug in grep mode
 

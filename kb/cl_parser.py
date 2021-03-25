@@ -201,6 +201,13 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         default=False,
     )
     list_parser.add_argument(
+        "-f", "--full-identifier",
+        help="Print results in full-identifier mode",
+        action='store_true',
+        dest='full_identifier',
+        default=False,
+    )
+    list_parser.add_argument(
         "-n", "--no-color",
         help="Enabled no-color mode",
         action='store_true',

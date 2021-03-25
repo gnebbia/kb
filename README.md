@@ -69,6 +69,8 @@ Version: 0.1.5
          * [Apply a template to all artifacts of a category](#apply-a-template-to-all-artifacts-of-a-category)
          * [Apply a template to all artifacts having zip in their title](#apply-a-template-to-all-artifacts-having-zip-in-their-title)
          * [Apply a template to all artifacts having specific properties](#apply-a-template-to-all-artifacts-having-specific-properties)
+      * [Integrating kb with other tools](#integrating-kb-with-other-tools)
+         * [kb and rofi](#kb-and-rofi)
    * [UPGRADE](#upgrade)
    * [DONATIONS](#donations)
    * [COPYRIGHT](#copyright)
@@ -602,6 +604,22 @@ We can apply the template "light" to all artifacts of the category
 ```sh
 kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
+
+### Integrating kb with other tools
+
+kb can be integrated with other tools.
+
+#### kb and rofi
+
+We can integrate kb with rofi, a custom mode has been developed
+accessible in the "misc" directory within this repository.
+
+We can launch rofi with this mode by doing:
+
+```sh
+rofi -show kb -modi kb:/path/to/rofi-kb-mode.sh
+```
+
 
 ## UPGRADE
 

@@ -534,9 +534,10 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'operation', 
         help="""Use \"init\" to initialize the remote repo,
                 Use \"push\" to git push (write local -> remote) the knowledge base,
-                Use \"pull\" to git pull (retrieve remote -> local) the remote kb
+                Use \"pull\" to git pull (retrieve remote -> local) the remote kb,
+                Use \"info\" to show information about the repository
              """,
-        choices=['init','push', 'pull'])
+        choices=['init','push','pull','info'])
 
     help_parser.add_argument(
         'cmd',

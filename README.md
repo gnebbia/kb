@@ -172,16 +172,16 @@ brew upgrade gnebbia/kb/kb
 
 ### Installation from AUR
 
-Arch Linux users can install [python-kb](https://aur.archlinux.org/packages/python-kb) or [python-kb-git](https://aur.archlinux.org/packages/python-kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
+Arch Linux users can install [kb](https://aur.archlinux.org/packages/kb) or [kb-git](https://aur.archlinux.org/packages/kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
 
 Stable:
 ```sh
-yay -S python-kb
+yay -S kb
 ```
 
 Dev:
 ```sh
-yay -S python-kb-git
+yay -S kb-git
 ```
 
 ### Notes for Windows users

@@ -1,26 +1,28 @@
-# Maintainer: Giuseppe Nebbione <giuseppenebbione at gmail dot com>
+# Maintainer: Giuseppe Nebbione <nebbionegiuseppe at gmail dot com>
 
-pkgbase='kb'
-pkgname=('kb')
-_module='kb-manager'
-pkgver='0.1.6'
+pkgname=kb-git
+_reponame="kb"
+pkgver=r180.40d361d
 pkgrel=1
 pkgdesc="A command line minimalist knowledge base manager"
-url="https://github.com/gnebbia/kb"
-depends=('python')
-makedepends=('python-setuptools')
+arch=(any)
+url="https://github.com/gnebbia/kb.git"
 license=('GPL3')
-arch=('any')
-source=("https://files.pythonhosted.org/packages/source/${_module::1}/$_module/$_module-$pkgver.tar.gz")
-sha256sums=('78e14f6eef30a4742925cc75ba9a5509c032ae42e73e26582cd7ed91794f41df')
+depends=()
+makedepends=('git')
+provides=("kb-git")
+conflicts=("python-kb-git" "python-kb" "kb")
+source=("git+$url")
+md5sums=('SKIP')
 
-build() {
-    cd "${srcdir}/${_module}-${pkgver}"
-    python setup.py build
+pkgver() {
+	cd "$srcdir/${_reponame}"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
-    depends+=()
-    cd "${srcdir}/${_module}-${pkgver}"
-    python setup.py install --root="${pkgdir}" --optimize=1 --skip-build
+	cd "$srcdir/${_reponame}"
+	python setup.py install --root="${pkgdir}/" --optimize=1
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
+

@@ -27,6 +27,7 @@ from kb.commands.grep import grep
 from kb.commands.erase import erase
 from kb.commands.ingest import ingest
 from kb.commands.export import export
+from kb.commands.sync import sync
 
 from kb.config import DEFAULT_CONFIG
 
@@ -43,6 +44,7 @@ COMMANDS = {
     'import': ingest,
     'export': export,
     'template': template,
+    'sync': sync,
 }
 
 

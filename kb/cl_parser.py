@@ -67,6 +67,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'export', help='Export the knowledge base')
     erase_parser = subparsers.add_parser(
         'erase', help='Erase the entire kb knowledge base')
+    sync_parser = subparsers.add_parser(
+        'sync', help='Synchronize the knowledge base with a remote git repository')
     help_parser = subparsers.add_parser(
         'help', help='Show help of a particular command')
 
@@ -526,6 +528,15 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         dest='db',
         default=False,
     )
+
+    # sync parser
+    sync_parser.add_argument(
+        'operation', 
+        help="""Use \"init\" to initialize the remote repo,
+                Use \"push\" to git push (write local -> remote) the knowledge base,
+                Use \"pull\" to git pull (retrieve remote -> local) the remote kb
+             """,
+        choices=['init','push', 'pull'])
 
     help_parser.add_argument(
         'cmd',

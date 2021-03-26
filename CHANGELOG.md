@@ -40,4 +40,5 @@
     * Added rofi custom mode
     * Added grep matches mode (kb grep "string" -m)
     * Fixed important bug in grep mode
+    * Added sync mode
 

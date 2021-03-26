@@ -9,9 +9,9 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-10-16
+Date: 2021-03-26
 
-Version: 0.1.5
+Version: 0.1.6
 
 
 ## Purpose

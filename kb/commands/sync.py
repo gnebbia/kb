@@ -89,7 +89,7 @@ def git_push(repo_path):
         kb_repo.remote(name='origin').push(refspec='{}:{}'.format("main", "main"))
         print("Repository correctly synchronized to remote!")
     except:
-        print('Some error occured while pushing the code')
+        print('Some error occurred while pushing the code')
         print('Check your internet connection or the existence of the remote repository')
 
 
@@ -100,7 +100,7 @@ def git_pull(repo_path):
         origin.pull(origin.refs[0].remote_head)
         print("Repository correctly synchronized from remote!")
     except:
-        print('Some error occured while pulling the code')    
+        print('Some error occurred while pulling the code')    
         print('Check your internet connection or the existence of the remote repository')    
 
 def git_clone(repo_path):

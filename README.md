@@ -39,6 +39,7 @@ Version: 0.1.6
          * [Add a file to the artifacts](#add-a-file-to-the-artifacts)
          * [Add all files contained in a directory to kb](#add-all-files-contained-in-a-directory-to-kb)
          * [Create a new artifact from scratch](#create-a-new-artifact-from-scratch)
+         * [Create a new artifact from the output of another program](#create-a-new-artifact-from-the-output-of-another-program)
       * [Delete artifacts](#delete-artifacts)
          * [Delete an artifact by ID](#delete-an-artifact-by-id)
          * [Delete multiple artifacts by ID](#delete-multiple-artifacts-by-id)
@@ -357,6 +358,11 @@ kb add --title "ftp" --category "notes" --tags "protocol;network"
 # a text editor ($EDITOR) will be launched for editing
 ```
 ![](img/kb_add_from_scratch.gif)
+
+#### Create a new artifact from the output of another program
+```sh
+kb add --title "my_network_scan" --category "scans" --body "$(nmap -T5 -p80 192.168.1.0/24)"
+```
 
 ### Delete artifacts
 

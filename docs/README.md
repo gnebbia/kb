@@ -107,16 +107,16 @@ brew upgrade gnebbia/kb/kb
 
 ### Installation from AUR
 
-Arch Linux users can install [python-kb](https://aur.archlinux.org/packages/python-kb) or [python-kb-git](https://aur.archlinux.org/packages/python-kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
+Arch Linux users can install [kb](https://aur.archlinux.org/packages/kb) or [kb-git](https://aur.archlinux.org/packages/kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
 
 Stable:
 ```sh
-yay -S python-kb
+yay -S kb
 ```
 
 Dev:
 ```sh
-yay -S python-kb-git
+yay -S kb-git
 ```
 
 ### Notes for Windows users
@@ -132,7 +132,7 @@ EDITOR="C:\Program Files\Editor\my cool editor.exe"    -> OK!
 
 To set the "EDITOR" Environment variable by using cmd.exe, just issue
 the following commands, after having inserted the path to your desired
-text editor instead of the placeholder:
+text editor:
 ```sh
 set EDITOR="C:\path\to\editor\here.exe"
 setx EDITOR "\"C:\path\to\editor\here.exe\""
@@ -140,7 +140,7 @@ setx EDITOR "\"C:\path\to\editor\here.exe\""
 
 To set the "EDITOR" Environment variable by using Powershell, just issue
 the following commands, after having inserted the path to your desired
-text editor instead of the placeholder:
+text editor:
 ```sh
 $env:EDITOR="C:\path\to\editor\here.exe"
 [System.Environment]::SetEnvironmentVariable('EDITOR','"C:\path\to\editor\here.exe"', [System.EnvironmentVariableTarget]::User)
@@ -200,13 +200,6 @@ the `/data` directory in the container.
 
 ## Usage
 
-A quick demo of a typical scenario using kb:
-
-
-A quick demo with kb aliases enabled:
-
-
-A quick demo for non-text documents:
 
 
 ### List artifacts
@@ -281,6 +274,11 @@ kb add --title "ftp" --category "notes" --tags "protocol;network"
 # a text editor ($EDITOR) will be launched for editing
 ```
 
+#### Create a new artifact from the output of another program
+```sh
+kb add --title "my_network_scan" --category "scans" --body "$(nmap -T5 -p80 192.168.1.0/24)"
+```
+
 ### Delete artifacts
 
 #### Delete an artifact by ID
@@ -312,8 +310,9 @@ kb delete --title zap --category cheatsheet
 kb view --id 3
 # or
 kb view -i 3
-# or
+# or 
 kb view 3
+
 # or if aliases are used:
 kbv 3
 ```
@@ -353,7 +352,7 @@ variable.
 ```sh
 kb edit --id 13
 # or
-kb edit 13
+kbe 13
 # or if aliases are used:
 kbe 13 
 ```
@@ -363,7 +362,7 @@ kbe 13
 kb edit --title "git" --category "cheatsheet"
 # or
 kb edit -t "git" -c "cheatsheet"
-# or if git is a unique artifact
+# or if git is unique as artifact
 kb edit git
 ```
 
@@ -387,6 +386,11 @@ kb grep -i "[BG]ZIP"
 kb grep -v "[bg]zip"
 ```
 
+#### Grep through the knowledge base and show matching lines
+```sh
+kb grep -m "[bg]zip"
+```
+
 ### Import/Export/Erase a knowledge base
 
 #### Export the current knowledge base
@@ -395,7 +399,6 @@ To export the entire knowledge base, do:
 ```sh
 kb export
 ```
-
 This will generate a .kb.tar.gz archive that can
 be later be imported by kb.
 
@@ -420,6 +423,7 @@ data. Basically it erases everything and imports the new knowledge base.
 ```sh
 kb erase
 ```
+
 
 ### Manage Templates
 
@@ -518,6 +522,50 @@ We can apply the template "light" to all artifacts of the category
 kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
 
+### Integrating kb with other tools
+
+kb can be integrated with other tools.
+
+#### kb and rofi
+
+We can integrate kb with rofi, a custom mode has been developed
+accessible in the "misc" directory within this repository.
+
+We can launch rofi with this mode by doing:
+
+```sh
+rofi -show kb -modi kb:/path/to/rofi-kb-mode.sh
+```
+
+### Experimental
+
+#### Synchronize kb with a remote git repository
+
+Synchronization with a remote git repository is experimental at the moment.
+Anyway we can initialize our knowledge base to a created empty
+github/gitlab (other git service) repository by doing:
+```sh
+kb sync init
+```
+
+We can then push our knowledge base to the remote git repository with:
+```sh
+kb sync push
+```
+
+We can pull (e.g., from another machine) our knowledge base from the
+remote git repository with:
+```sh
+kb sync pull
+```
+
+We can at any time view to what remote endpoint our knowledge is synchronizing
+to with:
+```sh
+kb sync info
+```
+
+
 ## UPGRADE
 
 If you want to upgrade kb to the most recent stable release do:
@@ -538,7 +586,7 @@ pip install --upgrade .
 I am an independent developer working on kb in my free time,
 if you like kb and would like to say thank you, buy me a beer!
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nebbionegiuseppe%40gmail.com&currency_code=EUR&source=url)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/nebbione)
 
 ## COPYRIGHT
 

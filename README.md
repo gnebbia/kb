@@ -650,6 +650,12 @@ remote git repository with:
 kb sync pull
 ```
 
+We can at any time view to what remote endpoint our knowledge is synchronizing
+to with:
+```sh
+kb sync info
+```
+
 
 ## UPGRADE
 

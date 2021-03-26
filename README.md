@@ -72,6 +72,8 @@ Version: 0.1.5
          * [Apply a template to all artifacts having specific properties](#apply-a-template-to-all-artifacts-having-specific-properties)
       * [Integrating kb with other tools](#integrating-kb-with-other-tools)
          * [kb and rofi](#kb-and-rofi)
+      * [Experimental](#experimental)
+         * [Synchronize kb with a remote git repository](#synchronize-kb-with-a-remote-git-repository)
    * [UPGRADE](#upgrade)
    * [DONATIONS](#donations)
    * [COPYRIGHT](#copyright)
@@ -624,6 +626,28 @@ We can launch rofi with this mode by doing:
 
 ```sh
 rofi -show kb -modi kb:/path/to/rofi-kb-mode.sh
+```
+
+### Experimental
+
+#### Synchronize kb with a remote git repository
+
+Synchronization with a remote git repository is experimental at the moment.
+Anyway we can initialize our knowledge base to a created empty
+github/gitlab (other git service) repository by doing:
+```sh
+kb sync init
+```
+
+We can then push our knowledge base to the remote git repository with:
+```sh
+kb sync push
+```
+
+We can pull (e.g., from another machine) our knowledge base from the
+remote git repository with:
+```sh
+kb sync pull
 ```
 
 

@@ -14,9 +14,9 @@ kb database module
 __all__ = ()
 
 import sqlite3
+from dataclasses import astuple
 from pathlib import Path
 from typing import List, Optional
-import attr
 
 from kb.entities.artifact import Artifact
 
@@ -570,7 +570,7 @@ def update_artifact_by_id(
                      artifact.author, artifact.template)
 
     new_record = list()
-    for i, elem in enumerate(attr.astuple(current_artifact)):
+    for i, elem in enumerate(astuple(current_artifact)):
         new_record.append(update_record[i] or elem or None)
 
     delete_artifact_by_id(conn, artifact_id)

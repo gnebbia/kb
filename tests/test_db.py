@@ -12,21 +12,18 @@ imp.reload(kb.db)
 imp.reload(kb.filesystem)
 """
 
-import attr
-import os
 import sqlite3
 import pytest
 from pathlib import Path
-import kb
 import kb.db as db
-import kb.filesystem as fs
 from kb.entities.artifact import Artifact
 
 
 @pytest.fixture()
 def db_connect():
-    conn = sqlite3.connect(str(Path("tests","data","mydb.db")))
+    conn = sqlite3.connect(str(Path("tests", "data", "mydb.db")))
     return conn
+
 
 def _list_tables(conn):
     """
@@ -52,12 +49,12 @@ def _list_tables(conn):
 
 
 def test_create_connection():
-    ok_db_path = Path("tests","data",".kb","kb.db")
+    ok_db_path = Path("tests", "data", ".kb", "kb.db")
     assert db.create_connection(str(ok_db_path)) is not None
-    
+
 
 def test_create_connection_2():
-    failing_db_path = Path("tests","data","non_existing","kb.db")
+    failing_db_path = Path("tests", "data", "non_existing", "kb.db")
     assert db.create_connection(str(failing_db_path)) is None
 
 
@@ -67,7 +64,7 @@ def test_create_connection_3():
 
 
 def test_list_tables_blank():
-    db_path = Path("tests","data","empty.db")
+    db_path = Path("tests", "data", "empty.db")
     conn = db.create_connection(str(db_path))
     with conn:
         assert _list_tables(conn) == []
@@ -84,7 +81,7 @@ def test_list_tables():
                                 );
                              """
 
-    db_path = Path("tests","data","two_tables.db")
+    db_path = Path("tests", "data", "two_tables.db")
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -109,7 +106,7 @@ def test_create_table(db_connect):
                                 template text);
                           """
 
-    db_path = Path("tests","data","mydb.db")
+    db_path = Path("tests", "data", "mydb.db")
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -132,7 +129,7 @@ def test_create_table_2(db_connect):
                                 author text,
                                 template text);
                           """
-    db_path = Path("tests","data","mydb2.db")
+    db_path = Path("tests", "data", "mydb2.db")
 
     conn = db.create_connection(str(db_path))
     with conn:
@@ -146,7 +143,7 @@ def test_create_table_2(db_connect):
 
 
 def test_create_kb_database_table():
-    db_path = Path("tests","data","mydb3.db")
+    db_path = Path("tests", "data", "mydb3.db")
     schema_version = 1
     db.create_kb_database(str(db_path), schema_version)
 
@@ -160,91 +157,144 @@ def test_create_kb_database_table():
         # Make sure, the database has the correct number of tables
         kb_tables = _list_tables(conn)
         assert len(kb_tables) == 2
-        assert kb_tables == [("artifacts",),("tags",)]
-
+        assert kb_tables == [("artifacts",), ("tags",)]
 
 
 def test_insert_artifact():
-    db_path = Path("tests","data","test_insert.db")
+    db_path = Path("tests", "data", "test_insert.db")
     schema_version = 1
     db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
-        db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb", category="procedure", 
-                tags='pt;smb', status="OK", author="gnc"))
-        db.insert_artifact(conn, Artifact(id=None, path="protocol/ftp", title="ftp", category="cheatsheet", 
-                status="Draft", author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="pentest/smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="OK",
+                author="gnc",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="protocol/ftp",
+                title="ftp",
+                category="cheatsheet",
+                status="Draft",
+                author="elektroniz",
+            ),
+        )
 
         kb_tables = _list_tables(conn)
         assert len(kb_tables) == 2
-        assert kb_tables == [("artifacts",),("tags",)]
+        assert kb_tables == [("artifacts",), ("tags",)]
 
         sql = "SELECT * FROM artifacts;"
         cur = conn.cursor()
         cur.execute(sql)
-    
+
         rows = cur.fetchall()
         print(rows)
-        assert set(rows) == {(1, 'pentest_smb', 'procedure',
-                            'pentest/smb', 'pt;smb', 'OK', 'gnc', None),
-                            (2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz', None)}
-
+        assert set(rows) == {
+            (1, "pentest_smb", "procedure", "pentest/smb", "pt;smb", "OK", "gnc", None),
+            (2, "ftp", "cheatsheet", "protocol/ftp", None, "Draft", "elektroniz", None),
+        }
 
 
 def test_is_artifact_existing():
-    db_path = Path("tests","data","test_exist.db")
+    db_path = Path("tests", "data", "test_exist.db")
     schema_version = 1
     db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
-        db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="OK", author="gnc"))
-        db.insert_artifact(conn, Artifact(id=None, path="protocol/ftp", title="ftp",
-                category="cheatsheet", status="Draft", author="elektroniz"))
-        
-        assert db.is_artifact_existing(conn,title="pentest_smb",
-                                    category="procedure")
-        assert db.is_artifact_existing(conn,title="ftp",
-                                    category="cheatsheet")
-        assert not db.is_artifact_existing(conn,title="pentest_smb",
-                                        category="nonexist")
-        assert not db.is_artifact_existing(conn,title="nonexist",
-                                        category="procedure")
-        assert not db.is_artifact_existing(conn,title="",
-                                        category="cheatsheet")
-        assert not db.is_artifact_existing(conn,title="", category="")
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="pentest/smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="OK",
+                author="gnc",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="protocol/ftp",
+                title="ftp",
+                category="cheatsheet",
+                status="Draft",
+                author="elektroniz",
+            ),
+        )
+
+        assert db.is_artifact_existing(conn, title="pentest_smb", category="procedure")
+        assert db.is_artifact_existing(conn, title="ftp", category="cheatsheet")
+        assert not db.is_artifact_existing(
+            conn, title="pentest_smb", category="nonexist"
+        )
+        assert not db.is_artifact_existing(conn, title="nonexist", category="procedure")
+        assert not db.is_artifact_existing(conn, title="", category="cheatsheet")
+        assert not db.is_artifact_existing(conn, title="", category="")
 
 
 def test_delete_artifact_by_id():
-    db_path = Path("tests","data","test_id.db")
+    db_path = Path("tests", "data", "test_id.db")
 
     schema_version = 1
     db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
-        db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="OK", author="gnc"))
-        db.insert_artifact(conn, Artifact(id=None, path="protocol/ftp", title="ftp",
-                category="cheatsheet", status="Draft", author="elektroniz"))
-        
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="pentest/smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="OK",
+                author="gnc",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="protocol/ftp",
+                title="ftp",
+                category="cheatsheet",
+                status="Draft",
+                author="elektroniz",
+            ),
+        )
+
         db.delete_artifact_by_id(conn, 1)
 
         sql = "SELECT * FROM artifacts;"
         cur = conn.cursor()
         cur.execute(sql)
-    
+
         rows = cur.fetchall()
         assert len(rows) == 1
-        assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz', None)}
+        assert set(rows) == {
+            (2, "ftp", "cheatsheet", "protocol/ftp", None, "Draft", "elektroniz", None)
+        }
 
-        db.delete_artifact_by_id(conn,2)
+        db.delete_artifact_by_id(conn, 2)
 
         sql = "SELECT * FROM artifacts;"
         cur = conn.cursor()
         cur.execute(sql)
-    
+
         rows = cur.fetchall()
         assert len(rows) == 0
     # try:
@@ -254,22 +304,41 @@ def test_delete_artifact_by_id():
 
 
 def test_delete_artifact_by_name():
-    db_path = Path("tests","data","test_name.db")
+    db_path = Path("tests", "data", "test_name.db")
 
     schema_version = 1
     db.create_kb_database(str(db_path), schema_version)
     conn = db.create_connection(str(db_path))
     with conn:
-        db.insert_artifact(conn, Artifact(id=None, path="pentest/smb", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="OK", author="gnc"))
-        db.insert_artifact(conn, Artifact(id=None, path="protocol/ftp", title="ftp",
-                category="cheatsheet", status="Draft", author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="pentest/smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="OK",
+                author="gnc",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="protocol/ftp",
+                title="ftp",
+                category="cheatsheet",
+                status="Draft",
+                author="elektroniz",
+            ),
+        )
 
         db.delete_artifact_by_name(conn, title="pentest_smb", category="")
         sql = "SELECT * FROM artifacts;"
         cur = conn.cursor()
         cur.execute(sql)
-    
+
         rows = cur.fetchall()
         assert len(rows) == 2
 
@@ -277,11 +346,12 @@ def test_delete_artifact_by_name():
         sql = "SELECT * FROM artifacts;"
         cur = conn.cursor()
         cur.execute(sql)
-    
+
         rows = cur.fetchall()
         assert len(rows) == 1
-        assert set(rows) == {(2, 'ftp', 'cheatsheet', 'protocol/ftp', None,
-                            'Draft', 'elektroniz',None)}
+        assert set(rows) == {
+            (2, "ftp", "cheatsheet", "protocol/ftp", None, "Draft", "elektroniz", None)
+        }
     # try:
     #     os.unlink(db_path)
     # except FileNotFoundError:
@@ -289,21 +359,69 @@ def test_delete_artifact_by_name():
 
 
 def test_get_artifacts_by_tags():
-    db_path = Path("tests","data","kb_art_tags.db")
+    db_path = Path("tests", "data", "kb_art_tags.db")
     conn = db.create_connection(str(db_path))
     with conn:
         schema_version = 1
         db.create_kb_database(str(db_path), schema_version)
-        db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_smb", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="ok", author="gnc"))
-        db.insert_artifact(conn, Artifact(id=None, path="guides/ftp", title="ftp", category="cheatsheet", 
-                status="draft", author="elektroniz"))
-        db.insert_artifact(conn, Artifact(id=None, path="guides/http", title="http", category="cheatsheet", 
-                status="OK", author="elektroniz"))
-        db.insert_artifact(conn, Artifact(id=None, path="guides/irc", title="irc", category="cheatsheet", 
-                tags="protocol", status="draft", author="elektroniz"))
-        db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_ftp", title="pentest_ftp", category="cheatsheet", 
-                tags="pt", status="draft", author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="cheatsheet/pentest_smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="ok",
+                author="gnc",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/ftp",
+                title="ftp",
+                category="cheatsheet",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/http",
+                title="http",
+                category="cheatsheet",
+                status="OK",
+                author="elektroniz",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/irc",
+                title="irc",
+                category="cheatsheet",
+                tags="protocol",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="cheatsheet/pentest_ftp",
+                title="pentest_ftp",
+                category="cheatsheet",
+                tags="pt",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
         rows = db.get_artifacts_by_tags(conn, tags=["pt"], is_strict=False)
         assert len(rows) == 2
@@ -316,62 +434,173 @@ def test_get_artifacts_by_tags():
 
 
 def test_get_artifacts_by_title():
-    db_path = Path("tests","data","kb_filter_title.db")
+    db_path = Path("tests", "data", "kb_filter_title.db")
     conn = db.create_connection(str(db_path))
     with conn:
         schema_version = 1
         db.create_kb_database(str(db_path), schema_version)
-        db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_smb", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="ok", author="gnc"))
-        db.insert_artifact(conn, Artifact(id=None, path="guides/ftp", title="ftp", category="cheatsheet", 
-                status="draft", author="elektroniz"))
-        db.insert_artifact(conn, Artifact(id=None, path="guides/http", title="http", category="cheatsheet", 
-                status="OK", author="elektroniz"))
-        db.insert_artifact(conn, Artifact(id=None, path="guides/irc", title="irc", category="cheatsheet", 
-                tags="protocol", status="draft", author="elektroniz"))
-        db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_ftp", title="pentest_ftp", category="cheatsheet", 
-                tags="pt", status="draft", author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="cheatsheet/pentest_smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="ok",
+                author="gnc",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/ftp",
+                title="ftp",
+                category="cheatsheet",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/http",
+                title="http",
+                category="cheatsheet",
+                status="OK",
+                author="elektroniz",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/irc",
+                title="irc",
+                category="cheatsheet",
+                tags="protocol",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="cheatsheet/pentest_ftp",
+                title="pentest_ftp",
+                category="cheatsheet",
+                tags="pt",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
         rows = db.get_artifacts_by_title(conn, query_string="", is_strict=False)
         assert len(rows) == 5
-        
+
         rows = db.get_artifacts_by_title(conn, query_string="", is_strict=True)
         assert len(rows) == 0
 
 
 def test_get_artifacts_by_category():
-    db_path = Path("tests","data","kb_filter_cat.db")
+    db_path = Path("tests", "data", "kb_filter_cat.db")
 
     conn = db.create_connection(str(db_path))
     with conn:
         schema_version = 1
         db.create_kb_database(str(db_path), schema_version)
 
-        db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_smb", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="ok", author="gnc"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="cheatsheet/pentest_smb",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="ok",
+                author="gnc",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="guides/ftp", title="ftp",
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/ftp",
+                title="ftp",
                 category="cheatsheet",
-                status="draft", author="elektroniz"))
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="guides/http", title="http",
-                category="cheatsheet", status="OK", author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/http",
+                title="http",
+                category="cheatsheet",
+                status="OK",
+                author="elektroniz",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="guides/irc", title="irc",
-                        category="cheatsheet", tags="protocol", status="draft",
-                        author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="guides/irc",
+                title="irc",
+                category="cheatsheet",
+                tags="protocol",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="cheatsheet/pentest_ftp", title="pentest_ftp",
-                        category="cheatsheet", tags="pt", status="draft",
-                        author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="cheatsheet/pentest_ftp",
+                title="pentest_ftp",
+                category="cheatsheet",
+                tags="pt",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="sheet/math", title="math_formulas",
-                        category="sheet", tags="math", status="draft",
-                        author="gnc"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="sheet/math",
+                title="math_formulas",
+                category="sheet",
+                tags="math",
+                status="draft",
+                author="gnc",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="sheet/math2", title="geometry_formulas",
-                        category="sheet", tags="math", status="draft",
-                        author="gnc"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="sheet/math2",
+                title="geometry_formulas",
+                category="sheet",
+                tags="math",
+                status="draft",
+                author="gnc",
+            ),
+        )
 
         rows = db.get_artifacts_by_category(conn, query_string="", is_strict=False)
         assert len(rows) == 7
@@ -384,58 +613,145 @@ def test_get_artifacts_by_category():
 
 
 def test_get_artifacts_by_filter():
-    db_path = Path("tests","data","kb_filter.db")
+    db_path = Path("tests", "data", "kb_filter.db")
     conn = db.create_connection(str(db_path))
     with conn:
         schema_version = 1
         db.create_kb_database(str(db_path), schema_version)
 
-        db.insert_artifact(conn, Artifact(id=None, path="", title="pentest_smb",
-                category="procedure", tags='pt;smb', status="ok", 
-                author="gnc"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="",
+                title="pentest_smb",
+                category="procedure",
+                tags="pt;smb",
+                status="ok",
+                author="gnc",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="", title="ftp",
-                category="cheatsheet", tags="protocol", status="draft",
-                author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="",
+                title="ftp",
+                category="cheatsheet",
+                tags="protocol",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="", title="pentest_ftp",
-                category="procedure", tags="pt;ftp", status="draft",
-                author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="",
+                title="pentest_ftp",
+                category="procedure",
+                tags="pt;ftp",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
-        db.insert_artifact(conn, Artifact(id=None, path="general/CORS", title="CORS",
-                category="general", tags="web", status="draft",
-                author="elektroniz"))
+        db.insert_artifact(
+            conn,
+            Artifact(
+                id=None,
+                path="general/CORS",
+                title="CORS",
+                category="general",
+                tags="web",
+                status="draft",
+                author="elektroniz",
+            ),
+        )
 
-        rows = db.get_artifacts_by_filter(conn, title="pentest",
-                                        category="cheatsheet",
-                                        tags=["pt"], is_strict=False)
+        rows = db.get_artifacts_by_filter(
+            conn, title="pentest", category="cheatsheet", tags=["pt"], is_strict=False
+        )
 
         assert len(rows) == 0
 
-        rows = db.get_artifacts_by_filter(conn, category="procedure",
-                                        tags=["pt"], is_strict=False)
-        
-        assert sorted(list(set(rows)), key=lambda i: i.id) == [Artifact(1,"pentest_smb","procedure","procedure/pentest_smb","pt;smb","ok","gnc", None),
-                            Artifact(3,"pentest_ftp","procedure","procedure/pentest_ftp","pt;ftp","draft", "elektroniz", None)]
+        rows = db.get_artifacts_by_filter(
+            conn, category="procedure", tags=["pt"], is_strict=False
+        )
 
+        assert sorted(list(set(rows)), key=lambda i: i.id) == [
+            Artifact(
+                1,
+                "pentest_smb",
+                "procedure",
+                "procedure/pentest_smb",
+                "pt;smb",
+                "ok",
+                "gnc",
+                None,
+            ),
+            Artifact(
+                3,
+                "pentest_ftp",
+                "procedure",
+                "procedure/pentest_ftp",
+                "pt;ftp",
+                "draft",
+                "elektroniz",
+                None,
+            ),
+        ]
 
         rows = db.get_artifacts_by_filter(conn, title="OR")
-        assert set(rows) == {Artifact(4,"CORS","general", "general/CORS", "web", "draft","elektroniz", None)}
+        assert set(rows) == {
+            Artifact(
+                4, "CORS", "general", "general/CORS", "web", "draft", "elektroniz", None
+            )
+        }
 
+        rows = db.get_artifacts_by_filter(conn, category="cheatsheet", is_strict=False)
+        assert set(rows) == {
+            Artifact(
+                2,
+                "ftp",
+                "cheatsheet",
+                "cheatsheet/ftp",
+                "protocol",
+                "draft",
+                "elektroniz",
+                None,
+            )
+        }
 
-        rows = db.get_artifacts_by_filter(conn, category="cheatsheet",
-                                        is_strict=False)
-        assert set(rows) == {Artifact(2,"ftp","cheatsheet","cheatsheet/ftp","protocol", "draft", "elektroniz", None)}
+        rows = db.get_artifacts_by_filter(conn, category="sheet", is_strict=False)
+        assert set(rows) == {
+            Artifact(
+                2,
+                "ftp",
+                "cheatsheet",
+                "cheatsheet/ftp",
+                "protocol",
+                "draft",
+                "elektroniz",
+                None,
+            )
+        }
 
+        rows = db.get_artifacts_by_filter(conn, category="cheatsheet", is_strict=True)
+        assert set(rows) == {
+            Artifact(
+                2,
+                "ftp",
+                "cheatsheet",
+                "cheatsheet/ftp",
+                "protocol",
+                "draft",
+                "elektroniz",
+                None,
+            )
+        }
 
-        rows = db.get_artifacts_by_filter(conn, category="sheet",
-                                        is_strict=False)
-        assert set(rows) == {Artifact(2,"ftp","cheatsheet","cheatsheet/ftp","protocol", "draft", "elektroniz", None)}
-
-        rows = db.get_artifacts_by_filter(conn, category="cheatsheet",
-                                        is_strict=True)
-        assert set(rows) == {Artifact(2,"ftp","cheatsheet","cheatsheet/ftp","protocol", "draft", "elektroniz", None)}
-
-        rows = db.get_artifacts_by_filter(conn, category="sheet",
-                                        is_strict=True)
+        rows = db.get_artifacts_by_filter(conn, category="sheet", is_strict=True)
         assert len(rows) == 0

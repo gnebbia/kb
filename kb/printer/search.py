@@ -16,10 +16,7 @@ from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 from kb.entities.artifact import Artifact
 
 
-def generate_search_header(
-        search_result: List[Artifact],
-        color: bool = True
-) -> str:
+def generate_search_header(search_result: List[Artifact], color: bool = True) -> str:
     """
     Generates kb query search results header.
 
@@ -39,17 +36,22 @@ def generate_search_header(
     len_id = max(len(str(len(search_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in search_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in search_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in search_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in search_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length)
+        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length
+    )
 
     header = "   [ {id} ]  {title} {category} {tags}".format(
         id="ID".rjust(len_id),
         title="Title".ljust(len_title),
         category="Category".ljust(len_categ),
-        tags="Tags".ljust(len_tags))
+        tags="Tags".ljust(len_tags),
+    )
 
     if color:
         return UND + BOLD + header + RESET
@@ -57,8 +59,7 @@ def generate_search_header(
 
 
 def generate_search_header_verbose(
-        search_result: List[Artifact],
-        color: bool = True
+    search_result: List[Artifact], color: bool = True
 ) -> str:
     """
     Generates kb query search results header in verbose mode.
@@ -79,36 +80,46 @@ def generate_search_header_verbose(
     len_id = max(len(str(len(search_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in search_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in search_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in search_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in search_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length)
-    len_author = max(max(
-        [len(art.author) if art.author else 0 for art in search_result]), sec_min_length)
-    len_status = max(max(
-        [len(art.status) if art.status else 0 for art in search_result]), sec_min_length)
-    len_template = max(max(
-        [len(art.template) if art.template else 0 for art in search_result]), sec_min_length)
+        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length
+    )
+    len_author = max(
+        max([len(art.author) if art.author else 0 for art in search_result]),
+        sec_min_length,
+    )
+    len_status = max(
+        max([len(art.status) if art.status else 0 for art in search_result]),
+        sec_min_length,
+    )
+    len_template = max(
+        max([len(art.template) if art.template else 0 for art in search_result]),
+        sec_min_length,
+    )
 
-    header = "   [ {id} ]  {title} {category} {tags} {author} {status} {template}".format(
-        id="ID".rjust(len_id),
-        title="Title".ljust(len_title),
-        category="Category".ljust(len_categ),
-        tags="Tags".ljust(len_tags),
-        author="Author".ljust(len_author),
-        status="Status".ljust(len_status),
-        template="Template".ljust(len_template))
+    header = (
+        "   [ {id} ]  {title} {category} {tags} {author} {status} {template}".format(
+            id="ID".rjust(len_id),
+            title="Title".ljust(len_title),
+            category="Category".ljust(len_categ),
+            tags="Tags".ljust(len_tags),
+            author="Author".ljust(len_author),
+            status="Status".ljust(len_status),
+            template="Template".ljust(len_template),
+        )
+    )
 
     if color:
         return UND + BOLD + header + RESET
     return header
 
 
-def print_search_result(
-        search_result: List[Artifact],
-        color: bool = True
-) -> None:
+def print_search_result(search_result: List[Artifact], color: bool = True) -> None:
     """
     Print kb query search results
 
@@ -127,11 +138,15 @@ def print_search_result(
     len_id = max(len(str(len(search_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in search_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in search_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in search_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in search_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length)
+        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length
+    )
 
     # Print results
     for view_id, artifact in enumerate(search_result):
@@ -141,7 +156,8 @@ def print_search_result(
             id=str(view_id).rjust(len_id),
             title=artifact.title.ljust(len_title),
             category=artifact.category.ljust(len_categ),
-            tags=tags.ljust(len_tags))
+            tags=tags.ljust(len_tags),
+        )
 
         if color and (view_id % 2 == 0):
             print(ALT_BGROUND + result_line + RESET)
@@ -150,8 +166,7 @@ def print_search_result(
 
 
 def print_search_result_verbose(
-        search_result: List[Artifact],
-        color: bool = True
+    search_result: List[Artifact], color: bool = True
 ) -> None:
     """
     Print kb query search results in verbose mode.
@@ -172,17 +187,27 @@ def print_search_result_verbose(
     len_id = max(len(str(len(search_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in search_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in search_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in search_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in search_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length)
-    len_author = max(max(
-        [len(art.author) if art.author else 0 for art in search_result]), sec_min_length)
-    len_status = max(max(
-        [len(art.status) if art.status else 0 for art in search_result]), sec_min_length)
-    len_template = max(max(
-        [len(art.template) if art.template else 0 for art in search_result]), sec_min_length)
+        max([len(art.tags) if art.tags else 0 for art in search_result]), min_length
+    )
+    len_author = max(
+        max([len(art.author) if art.author else 0 for art in search_result]),
+        sec_min_length,
+    )
+    len_status = max(
+        max([len(art.status) if art.status else 0 for art in search_result]),
+        sec_min_length,
+    )
+    len_template = max(
+        max([len(art.template) if art.template else 0 for art in search_result]),
+        sec_min_length,
+    )
 
     # Print results
     for view_id, artifact in enumerate(search_result):
@@ -198,7 +223,8 @@ def print_search_result_verbose(
             tags=tags.ljust(len_tags),
             author=author.ljust(len_author),
             status=status.ljust(len_status),
-            template=template.ljust(len_template))
+            template=template.ljust(len_template),
+        )
 
         if color and (view_id % 2 == 0):
             print(ALT_BGROUND + result_line + RESET)
@@ -207,7 +233,7 @@ def print_search_result_verbose(
 
 
 def print_search_result_full_mode(
-        search_result: List[Artifact],
+    search_result: List[Artifact],
 ) -> None:
     """
     Print kb query search results in full-identifier mode, that is:
@@ -223,7 +249,7 @@ def print_search_result_full_mode(
     for view_id, artifact in enumerate(search_result):
 
         result_line = "{category}/{title}".format(
-            category=artifact.category,
-            title=artifact.title)
+            category=artifact.category, title=artifact.title
+        )
 
         print(result_line)

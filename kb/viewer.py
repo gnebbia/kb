@@ -44,7 +44,7 @@ def colorize_row(row, markers=None):
               the first element is a regex and the second
               element is the color value.
               Example:
-              markers = { 
+              markers = {
                     "TITLE":    ["^#.*", "blue"]
                     "WARNINGS": ["^!.*", "yellow"]
               }
@@ -55,13 +55,17 @@ def colorize_row(row, markers=None):
     """
     colored_row = row
     for mark in markers:
-        regex = re.compile(rf'{(markers[mark][0])}')
+        regex = re.compile(rf"{(markers[mark][0])}")
         color = markers[mark][1]
-        
+
         match = regex.search(row)
 
         if match:
-            colored_row = re.sub(regex, colorize_string(match.group(0).replace("\\","\\\\"), color), rf'{row}')
+            colored_row = re.sub(
+                regex,
+                colorize_string(match.group(0).replace("\\", "\\\\"), color),
+                rf"{row}",
+            )
             row = colored_row
 
     return colored_row

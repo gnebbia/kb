@@ -79,8 +79,11 @@ def delete_by_id(id: int, config: Dict[str, str]):
     if fs.count_files(category_path) == 0:
         fs.remove_directory(category_path)
 
-    print("Artifact {category}/{title} removed!".format(
-        category=artifact.category, title=artifact.title))
+    print(
+        "Artifact {category}/{title} removed!".format(
+            category=artifact.category, title=artifact.title
+        )
+    )
 
 
 def delete_by_name(title: str, category: str, config: Dict[str, str]):
@@ -98,16 +101,18 @@ def delete_by_name(title: str, category: str, config: Dict[str, str]):
                       EDITOR            - the editor program to call
     """
     conn = db.create_connection(config["PATH_KB_DB"])
-    artifacts = db.get_artifacts_by_filter(conn, title=title,
-                                           category=category,
-                                           is_strict=True)
+    artifacts = db.get_artifacts_by_filter(
+        conn, title=title, category=category, is_strict=True
+    )
     if len(artifacts) == 1:
         artifact = artifacts.pop()
         db.delete_artifact_by_id(conn, artifact.id)
         print("Artifact {}/{} removed!".format(artifact.category, artifact.title))
     elif len(artifacts) > 1:
         print(
-            "There is more than one artifact with that title, please specify a category")
+            "There is more than one artifact with that title, please specify a category"
+        )
     else:
         print(
-            "There is no artifact with that name, please specify a correct artifact name")
+            "There is no artifact with that name, please specify a correct artifact name"
+        )

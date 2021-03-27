@@ -33,18 +33,18 @@ from kb.config import DEFAULT_CONFIG
 
 
 COMMANDS = {
-    'add': add,
-    'delete': delete,
-    'edit': edit,
-    'update': update,
-    'list': search,
-    'view': view,
-    'grep': grep,
-    'erase': erase,
-    'import': ingest,
-    'export': export,
-    'template': template,
-    'sync': sync,
+    "add": add,
+    "delete": delete,
+    "edit": edit,
+    "update": update,
+    "list": search,
+    "view": view,
+    "grep": grep,
+    "erase": erase,
+    "import": ingest,
+    "export": export,
+    "template": template,
+    "sync": sync,
 }
 
 

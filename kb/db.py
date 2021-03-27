@@ -15,7 +15,6 @@ __all__ = ()
 
 import sqlite3
 from dataclasses import astuple
-from pathlib import Path
 from typing import List, Optional
 
 from kb.entities.artifact import Artifact
@@ -108,9 +107,12 @@ def is_artifact_existing(conn, title: str, category: str) -> bool:
     otherwise False
     """
     cur = conn.cursor()
-    cur.execute("""SELECT title,category
+    cur.execute(
+        """SELECT title,category
                    FROM artifacts
-                   WHERE title=? AND category=?""", [title, category])
+                   WHERE title=? AND category=?""",
+        [title, category],
+    )
 
     result = cur.fetchone()
     return result is not None
@@ -131,14 +133,15 @@ def insert_artifact(conn, artifact: Artifact) -> None:
     # Convert tags to a string with ';' separating tags
     tags_list = []
     if artifact.tags:
-        tags_list = list(set(artifact.tags.split(';')))
+        tags_list = list(set(artifact.tags.split(";")))
 
     path = ""
     if artifact.path:
         path = artifact.path
     else:
         path = "{category}/{title}".format(
-            category=artifact.category, title=artifact.title)
+            category=artifact.category, title=artifact.title
+        )
 
     cur = conn.cursor()
     if is_artifact_existing(conn, artifact.title, artifact.category):
@@ -146,23 +149,31 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         print("Run `kb update -h` to understand how to update an artifact")
         return
 
-    sql = '''INSERT INTO artifacts
+    sql = """INSERT INTO artifacts
              (title,category,path,tags,author,status,template)
-             VALUES(?,?,?,?,?,?,?)'''
-    args = (artifact.title, artifact.category,
-            path, artifact.tags, artifact.author, artifact.status, artifact.template)
+             VALUES(?,?,?,?,?,?,?)"""
+    args = (
+        artifact.title,
+        artifact.category,
+        path,
+        artifact.tags,
+        artifact.author,
+        artifact.status,
+        artifact.template,
+    )
 
     cur.execute(sql, args)
     last_artifact_id = cur.lastrowid
 
     for tag in tags_list:
-        sql = '''INSERT INTO tags
+        sql = """INSERT INTO tags
                  (artifact_id,tag)
-                 VALUES(?,?)'''
+                 VALUES(?,?)"""
         args = (last_artifact_id, tag)
         cur.execute(sql, args)
 
     conn.commit()
+
 
 def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     """
@@ -181,14 +192,15 @@ def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     # Convert tags to a string with ';' separating tags
     tags_list = []
     if artifact.tags:
-        tags_list = list(set(artifact.tags.split(';')))
+        tags_list = list(set(artifact.tags.split(";")))
 
     path = ""
     if artifact.path:
         path = artifact.path
     else:
         path = "{category}/{title}".format(
-            category=artifact.category, title=artifact.title)
+            category=artifact.category, title=artifact.title
+        )
 
     cur = conn.cursor()
     if is_artifact_existing(conn, artifact.title, artifact.category):
@@ -196,23 +208,32 @@ def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
         print("Run `kb update -h` to understand how to update an artifact")
         return
 
-    sql = '''INSERT INTO artifacts
+    sql = """INSERT INTO artifacts
              (id, title,category,path,tags,author,status,template)
-             VALUES(?,?,?,?,?,?,?,?)'''
-    args = (artifact.id, artifact.title, artifact.category,
-            path, artifact.tags, artifact.author, artifact.status, artifact.template)
+             VALUES(?,?,?,?,?,?,?,?)"""
+    args = (
+        artifact.id,
+        artifact.title,
+        artifact.category,
+        path,
+        artifact.tags,
+        artifact.author,
+        artifact.status,
+        artifact.template,
+    )
 
     cur.execute(sql, args)
     last_artifact_id = cur.lastrowid
 
     for tag in tags_list:
-        sql = '''INSERT INTO tags
+        sql = """INSERT INTO tags
                  (artifact_id,tag)
-                 VALUES(?,?)'''
+                 VALUES(?,?)"""
         args = (last_artifact_id, tag)
         cur.execute(sql, args)
 
     conn.commit()
+
 
 def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
@@ -265,13 +286,13 @@ def get_artifact_by_id(conn, artifact_id: int) -> Artifact:
 
 
 def get_artifacts_by_filter(
-        conn,
-        title: Optional[str] = None,
-        category: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        author: Optional[str] = None,
-        status: Optional[str] = None,
-        is_strict: bool = False
+    conn,
+    title: Optional[str] = None,
+    category: Optional[str] = None,
+    tags: Optional[List[str]] = None,
+    author: Optional[str] = None,
+    status: Optional[str] = None,
+    is_strict: bool = False,
 ) -> List[Artifact]:
     """
     Returns artifacts by applying a generic filter
@@ -295,23 +316,26 @@ def get_artifacts_by_filter(
 
     if title is not None:
         artifacts_by_title = get_artifacts_by_title(
-            conn, query_string=title, is_strict=is_strict)
+            conn, query_string=title, is_strict=is_strict
+        )
         artifact_id_list.append({art.id for art in artifacts_by_title})
     if category is not None:
         artifacts_by_cat = get_artifacts_by_category(
-            conn, query_string=category, is_strict=is_strict)
+            conn, query_string=category, is_strict=is_strict
+        )
         artifact_id_list.append({art.id for art in artifacts_by_cat})
     if tags:
-        artifacts_by_tags = get_artifacts_by_tags(
-            conn, tags=tags, is_strict=is_strict)
+        artifacts_by_tags = get_artifacts_by_tags(conn, tags=tags, is_strict=is_strict)
         artifact_id_list.append({art.id for art in artifacts_by_tags})
     if author:
         artifacts_by_author = get_artifacts_by_author(
-            conn, query_string=author, is_strict=is_strict)
+            conn, query_string=author, is_strict=is_strict
+        )
         artifact_id_list.append({art.id for art in artifacts_by_author})
     if status:
         artifacts_by_status = get_artifacts_by_status(
-            conn, query_string=status, is_strict=is_strict)
+            conn, query_string=status, is_strict=is_strict
+        )
         artifact_id_list.append({art.id for art in artifacts_by_status})
 
     if len(artifact_id_list) == 0:
@@ -330,9 +354,7 @@ def get_artifacts_by_filter(
 
 
 def get_artifacts_by_title(
-        conn,
-        query_string: str = "",
-        is_strict: bool = False
+    conn, query_string: str = "", is_strict: bool = False
 ) -> List[Artifact]:
     """
     Returns artifacts matching the string to search,
@@ -363,13 +385,13 @@ def get_artifacts_by_title(
 
 
 def get_uniq_artifact_by_filter(
-        conn,
-        title: Optional[str] = None,
-        category: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        author: Optional[str] = None,
-        status: Optional[str] = None,
-        is_strict: bool = False
+    conn,
+    title: Optional[str] = None,
+    category: Optional[str] = None,
+    tags: Optional[List[str]] = None,
+    author: Optional[str] = None,
+    status: Optional[str] = None,
+    is_strict: bool = False,
 ) -> Artifact:
     """
     Get the artifact with the specified query string
@@ -391,20 +413,21 @@ def get_uniq_artifact_by_filter(
     - None if there is more than one artifact matching the
     query string or no artifact matched at all
     """
-    artifacts = get_artifacts_by_filter(conn, title=title,
-                                        category=category,
-                                        tags=tags,
-                                        author=author,
-                                        status=status,
-                                        is_strict=is_strict)
+    artifacts = get_artifacts_by_filter(
+        conn,
+        title=title,
+        category=category,
+        tags=tags,
+        author=author,
+        status=status,
+        is_strict=is_strict,
+    )
     if len(artifacts) == 1:
         return artifacts.pop()
 
 
 def get_artifacts_by_status(
-        conn,
-        query_string: str = "",
-        is_strict: bool = False
+    conn, query_string: str = "", is_strict: bool = False
 ) -> List[Artifact]:
     """
     Returns artifacts matching the status string provided,
@@ -436,9 +459,7 @@ def get_artifacts_by_status(
 
 
 def get_artifacts_by_author(
-        conn,
-        query_string: str = "",
-        is_strict: bool = False
+    conn, query_string: str = "", is_strict: bool = False
 ) -> List[Artifact]:
     """
     Returns artifacts matching the string to search,
@@ -469,9 +490,7 @@ def get_artifacts_by_author(
 
 
 def get_artifacts_by_category(
-        conn,
-        query_string: str = "",
-        is_strict: bool = False
+    conn, query_string: str = "", is_strict: bool = False
 ) -> List[Artifact]:
     """
     Returns artifacts of the category matching the string to search,
@@ -503,9 +522,7 @@ def get_artifacts_by_category(
 
 
 def get_artifacts_by_tags(
-        conn,
-        tags: List[str] = [],
-        is_strict: bool = False
+    conn, tags: List[str] = [], is_strict: bool = False
 ) -> List[Artifact]:
     """
     Returns artifacts matching the provided list of tags,
@@ -543,11 +560,7 @@ def get_artifacts_by_tags(
     return artifacts
 
 
-def update_artifact_by_id(
-        conn,
-        artifact_id: int,
-        artifact: Artifact
-) -> None:
+def update_artifact_by_id(conn, artifact_id: int, artifact: Artifact) -> None:
     """
     Update an artifact in the database
 
@@ -565,9 +578,16 @@ def update_artifact_by_id(
     if not current_artifact:
         return None
 
-    update_record = (artifact_id, artifact.title, artifact.category,
-                     artifact.path, artifact.tags, artifact.status,
-                     artifact.author, artifact.template)
+    update_record = (
+        artifact_id,
+        artifact.title,
+        artifact.category,
+        artifact.path,
+        artifact.tags,
+        artifact.status,
+        artifact.author,
+        artifact.template,
+    )
 
     new_record = list()
     for i, elem in enumerate(astuple(current_artifact)):
@@ -577,6 +597,7 @@ def update_artifact_by_id(
     updated_artifact = Artifact(*new_record)
     insert_artifact_with_id(conn, updated_artifact, artifact_id)
 
+
 def get_schema_version(conn) -> int:
     """
     Check what is the version of the schema used by the
@@ -584,7 +605,7 @@ def get_schema_version(conn) -> int:
 
     Arguments:
     conn            - the database connection object
-    
+
     Returns:
     An int number representing the version of the
     schema used by kb.
@@ -594,6 +615,7 @@ def get_schema_version(conn) -> int:
     cur.execute(sql_query)
     return cur.fetchone()[0]
 
+
 def set_schema_version(conn, version: int) -> int:
     """
     Check what is the version of the schema used by the
@@ -602,7 +624,7 @@ def set_schema_version(conn, version: int) -> int:
     Arguments:
     conn            - the database connection object
     version         - the version of the schema to be set (integer)
-    
+
     Returns:
     An int number representing the version of the
     schema used by kb.
@@ -612,6 +634,7 @@ def set_schema_version(conn, version: int) -> int:
     cur.execute(sql_query)
     conn.commit()
 
+
 def is_schema_updated_to_version(conn, version: int) -> bool:
     """
     Check if the schema version of the database related to the
@@ -620,7 +643,7 @@ def is_schema_updated_to_version(conn, version: int) -> bool:
     Arguments:
     conn            - the database connection object
     version         - the version to check
-    
+
     Returns:
     A boolean that is True if the database schema version is
     equal to th passed version, False otherwise.

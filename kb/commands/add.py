@@ -75,15 +75,19 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     body = args["body"].replace("\\n", "\n")
                     art_file.write(body)
             else:
-                shell_cmd = shlex.split(
-                    config["EDITOR"]) + [artifact_path]
+                shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
                 call(shell_cmd)
 
         new_artifact = Artifact(
-            id=None, title=title, category=category,
+            id=None,
+            title=title,
+            category=category,
             path="{category}/{title}".format(category=category, title=title),
             tags=args["tags"],
-            status=args["status"], author=args["author"], template=args["template"])
+            status=args["status"],
+            author=args["author"],
+            template=args["template"],
+        )
         db.insert_artifact(conn, new_artifact)
 
 
@@ -102,10 +106,7 @@ def validate(args):
 
 
 def add_file_to_kb(
-        conn,
-        args: Dict[str, str],
-        config: Dict[str, str],
-        fname: str
+    conn, args: Dict[str, str], config: Dict[str, str], fname: str
 ) -> None:
     """
     Adds a file to the kb knowledge base.
@@ -138,8 +139,12 @@ def add_file_to_kb(
 
     new_artifact = Artifact(
         id=None,
-        title=title, category=category,
+        title=title,
+        category=category,
         path="{category}/{title}".format(category=category, title=title),
         tags=args["tags"],
-        status=args["status"], author=args["author"], template=template)
+        status=args["status"],
+        author=args["author"],
+        template=template,
+    )
     db.insert_artifact(conn, new_artifact)

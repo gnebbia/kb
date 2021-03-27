@@ -78,7 +78,6 @@ def create_kb_files(config):
 
     if current_schema_version == 0:
         db.migrate_v0_to_v1(conn)
-    
 
     # Create "data" directory
     fs.create_directory(data_path)
@@ -92,7 +91,7 @@ def create_kb_files(config):
         fs.create_directory(category_path)
 
     # Create markers file
-    with open(default_template_path, 'w') as cfg:
+    with open(default_template_path, "w") as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
 
@@ -119,7 +118,6 @@ def is_initialized(config) -> bool:
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
     templates_path = config["PATH_KB_TEMPLATES"]
-  
 
     for path in [kb_path, db_path, data_path, templates_path]:
         if not os.path.exists(path):

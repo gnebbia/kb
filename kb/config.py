@@ -14,7 +14,6 @@ kb config module
 __all__ = ()
 
 import os
-from sys import platform
 from pathlib import Path
 import toml
 
@@ -29,7 +28,9 @@ DEFAULT_CONFIG = {
     "PATH_KB_DEFAULT_TEMPLATE": str(Path(Path.home(), ".kb", "templates", "default")),
     "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
-    "INITIAL_CATEGORIES": ["default",]
+    "INITIAL_CATEGORIES": [
+        "default",
+    ],
 }
 
 

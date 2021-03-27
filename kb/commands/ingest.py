@@ -30,9 +30,11 @@ def ingest(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB           - the main path of KB
     """
     if args["file"].endswith(".tar.gz"):
-        answer = input("You are about to import a whole knowledge base "
-                       "are you sure you want to wipe your previous "
-                       " kb data ? [YES/NO]")
+        answer = input(
+            "You are about to import a whole knowledge base "
+            "are you sure you want to wipe your previous "
+            " kb data ? [YES/NO]"
+        )
         if answer.lower() == "yes":
             print("Previous kb knowledge base data wiped...")
             try:

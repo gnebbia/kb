@@ -23,11 +23,11 @@ A knowledge base organizer
 :License: GPLv3 (see /LICENSE).
 """
 
-__title__ = 'kb'
-__version__ = '0.1.6'
-__author__ = 'gnc'
-__license__ = 'GPLv3'
-__docformat__ = 'restructuredtext en'
+__title__ = "kb"
+__version__ = "0.1.6"
+__author__ = "gnc"
+__license__ = "GPLv3"
+__docformat__ = "restructuredtext en"
 
 __all__ = ()
 

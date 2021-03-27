@@ -30,8 +30,7 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
                       PATH_KB_HIST      - the history menu path of KB
     """
     if args["db"]:
-        answer = input(
-            "Are you sure you want to erase the kb database ? [YES/NO]")
+        answer = input("Are you sure you want to erase the kb database ? [YES/NO]")
         if answer.lower() == "yes":
             try:
                 fs.remove_file(config["PATH_KB_DB"])
@@ -41,7 +40,8 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
                 pass
     else:
         answer = input(
-            "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]")
+            "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]"
+        )
         if answer.lower() == "yes":
             try:
                 fs.remove_directory(config["PATH_KB"])

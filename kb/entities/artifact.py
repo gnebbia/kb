@@ -14,6 +14,7 @@ kb artifact frozen dataclass
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass(frozen=True)
 class Artifact:
     id: Optional[int]

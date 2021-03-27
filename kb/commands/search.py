@@ -41,7 +41,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
 
     tags_list = None
     if args["tags"] and args["tags"] != "":
-        tags_list = args["tags"].split(';')
+        tags_list = args["tags"].split(";")
 
     conn = db.create_connection(config["PATH_KB_DB"])
     rows = db.get_artifacts_by_filter(
@@ -50,7 +50,8 @@ def search(args: Dict[str, str], config: Dict[str, str]):
         category=args["category"],
         tags=tags_list,
         status=args["status"],
-        author=args["author"])
+        author=args["author"],
+    )
 
     # rows.sort(key=lambda x: x[1])
     artifacts = sorted(rows, key=lambda x: x.title)
@@ -58,7 +59,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)
 
-    # Is full_identifier mode enabled? 
+    # Is full_identifier mode enabled?
     if args["full_identifier"]:
         printer.print_search_result_full_mode(artifacts)
         return

@@ -65,4 +65,4 @@ def reset() -> str:
     Returns:
     A string representing the code to reset the style and colors to default
     """
-    return colored.attr('reset')
+    return colored.attr("reset")

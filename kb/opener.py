@@ -20,9 +20,9 @@ def open_non_text_file(filename):
     """
     Open a non-text file
     """
-    if platform.system() == 'Darwin':
-        subprocess.Popen(['open', filename])
-    elif platform.system() == 'Windows':
+    if platform.system() == "Darwin":
+        subprocess.Popen(["open", filename])
+    elif platform.system() == "Windows":
         os.startfile(filename)
     else:
-        subprocess.Popen(['xdg-open', filename])
+        subprocess.Popen(["xdg-open", filename])

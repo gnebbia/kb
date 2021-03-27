@@ -16,9 +16,7 @@ from kb.printer.style import ALT_BGROUND, BOLD, UND, RESET
 from kb.entities.artifact import Artifact
 
 
-def generate_template_search_header(
-        color: bool = True
-) -> str:
+def generate_template_search_header(color: bool = True) -> str:
     """
     Generates kb query template results header.
 
@@ -35,10 +33,8 @@ def generate_template_search_header(
     return header
 
 
-
 def print_template_search_result(
-        template_search_result: List[str],
-        color: bool = True
+    template_search_result: List[str], color: bool = True
 ) -> None:
     """
     Print kb template search results.
@@ -47,7 +43,7 @@ def print_template_search_result(
     template_search_result  - the list of templates
     color                   - a boolean, True if color is enabled
     """
-    
+
     print(generate_template_search_header(color=color))
     print()
 
@@ -55,8 +51,7 @@ def print_template_search_result(
 
     # Print template search results
     for view_id, template in enumerate(template_search_result):
-        result_line = " - {template}".format(
-            template=template.ljust(len_template_name))
+        result_line = " - {template}".format(template=template.ljust(len_template_name))
 
         if color and (view_id % 2 == 0):
             print(ALT_BGROUND + result_line + RESET)

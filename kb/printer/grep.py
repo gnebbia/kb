@@ -20,9 +20,7 @@ from kb.entities.artifact import Artifact
 
 
 def generate_grep_header(
-        grep_result: List[Artifact],
-        hits_list: List[int],
-        color: bool = True
+    grep_result: List[Artifact], hits_list: List[int], color: bool = True
 ) -> None:
     """
     Generates kb grep results header.
@@ -45,11 +43,15 @@ def generate_grep_header(
     len_id = max(len(str(len(grep_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in grep_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in grep_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in grep_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in grep_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length)
+        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length
+    )
 
     len_hits = max(len(str(max(hits_list))), 4)
 
@@ -58,7 +60,8 @@ def generate_grep_header(
         title="Title".ljust(len_title),
         category="Category".ljust(len_categ),
         hits="Hits".ljust(len_hits),
-        tags="Tags".ljust(len_tags))
+        tags="Tags".ljust(len_tags),
+    )
 
     if color:
         return UND + BOLD + header + RESET
@@ -66,9 +69,7 @@ def generate_grep_header(
 
 
 def generate_grep_header_verbose(
-        grep_result: List[Artifact],
-        hits_list: List[int],
-        color: bool = True
+    grep_result: List[Artifact], hits_list: List[int], color: bool = True
 ) -> None:
     """
     Generates kb grep results header in verbose mode.
@@ -93,15 +94,23 @@ def generate_grep_header_verbose(
     len_id = max(len(str(len(grep_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in grep_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in grep_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in grep_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in grep_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length)
-    len_author = max(max(
-        [len(art.author) if art.author else 0 for art in grep_result]), sec_min_length)
-    len_status = max(max(
-        [len(art.status) if art.status else 0 for art in grep_result]), sec_min_length)
+        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length
+    )
+    len_author = max(
+        max([len(art.author) if art.author else 0 for art in grep_result]),
+        sec_min_length,
+    )
+    len_status = max(
+        max([len(art.status) if art.status else 0 for art in grep_result]),
+        sec_min_length,
+    )
 
     len_hits = max(len(str(max(hits_list))), 4)
 
@@ -112,7 +121,8 @@ def generate_grep_header_verbose(
         hits="Hits".ljust(len_hits),
         tags="Tags".ljust(len_tags),
         author="Author".ljust(len_author),
-        status="Status".ljust(len_status))
+        status="Status".ljust(len_status),
+    )
 
     if color:
         return UND + BOLD + header + RESET
@@ -120,9 +130,7 @@ def generate_grep_header_verbose(
 
 
 def print_grep_result(
-        grep_result: List[Artifact],
-        hits_list: List[int],
-        color: bool = True
+    grep_result: List[Artifact], hits_list: List[int], color: bool = True
 ) -> None:
     """
     Print kb query grep results.
@@ -146,11 +154,15 @@ def print_grep_result(
     len_id = max(len(str(len(grep_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in grep_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in grep_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in grep_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in grep_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length)
+        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length
+    )
 
     len_hits = max(len(str(max(hits_list))), 4)
 
@@ -166,7 +178,8 @@ def print_grep_result(
             title=artifact.title.ljust(len_title),
             category=artifact.category.ljust(len_categ),
             hits=hits.ljust(len_hits),
-            tags=tags.ljust(len_tags))
+            tags=tags.ljust(len_tags),
+        )
 
         if color and (view_id % 2 == 0):
             print(ALT_BGROUND + result_line + RESET)
@@ -175,9 +188,7 @@ def print_grep_result(
 
 
 def print_grep_result_verbose(
-        grep_result: List[Artifact],
-        hits_list: List[int],
-        color: bool = True
+    grep_result: List[Artifact], hits_list: List[int], color: bool = True
 ) -> None:
     """
     Print more verbose kb query grep results.
@@ -202,15 +213,23 @@ def print_grep_result_verbose(
     len_id = max(len(str(len(grep_result) - 1)), 2)
 
     len_title = max(
-        max([len(art.title) if art.title else 0 for art in grep_result]), min_length)
-    len_categ = max(max(
-        [len(art.category) if art.category else 0 for art in grep_result]), min_length)
+        max([len(art.title) if art.title else 0 for art in grep_result]), min_length
+    )
+    len_categ = max(
+        max([len(art.category) if art.category else 0 for art in grep_result]),
+        min_length,
+    )
     len_tags = max(
-        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length)
-    len_author = max(max(
-        [len(art.author) if art.author else 0 for art in grep_result]), sec_min_length)
-    len_status = max(max(
-        [len(art.status) if art.status else 0 for art in grep_result]), sec_min_length)
+        max([len(art.tags) if art.tags else 0 for art in grep_result]), min_length
+    )
+    len_author = max(
+        max([len(art.author) if art.author else 0 for art in grep_result]),
+        sec_min_length,
+    )
+    len_status = max(
+        max([len(art.status) if art.status else 0 for art in grep_result]),
+        sec_min_length,
+    )
 
     len_hits = max(len(str(max(hits_list))), 4)
 
@@ -224,19 +243,23 @@ def print_grep_result_verbose(
         hits_id = view_id
         hits = str(hits_list[hits_id])
 
-        result_line = "   [ {id} ]  {title} {category} {hits} {tags} {author} {status}".format(
-            id=str(view_id).rjust(len_id),
-            title=artifact.title.ljust(len_title),
-            category=artifact.category.ljust(len_categ),
-            hits=hits.ljust(len_hits),
-            tags=tags.ljust(len_tags),
-            author=author.ljust(len_author),
-            status=status.ljust(len_status))
+        result_line = (
+            "   [ {id} ]  {title} {category} {hits} {tags} {author} {status}".format(
+                id=str(view_id).rjust(len_id),
+                title=artifact.title.ljust(len_title),
+                category=artifact.category.ljust(len_categ),
+                hits=hits.ljust(len_hits),
+                tags=tags.ljust(len_tags),
+                author=author.ljust(len_author),
+                status=status.ljust(len_status),
+            )
+        )
 
         if color and (view_id % 2 == 0):
             print(ALT_BGROUND + result_line + RESET)
         else:
             print(result_line)
+
 
 # This function still has to be implemented, this is just a placeholder
 
@@ -252,7 +275,9 @@ def print_grep_matches(grep_matches, color=True):
     """
 
     for view_id, match in enumerate(grep_matches):
-        path =  "/".join(fs.get_filename_parts_wo_prefix(match[0], config["PATH_KB_DATA"]))
+        path = "/".join(
+            fs.get_filename_parts_wo_prefix(match[0], config["PATH_KB_DATA"])
+        )
         line_number = match[1]
         matched_text = match[2]
 
@@ -261,7 +286,6 @@ def print_grep_matches(grep_matches, color=True):
             line_number = BOLD + str(line_number) + RESET
 
         result_line = "{path}:{line_number}:{matched_text}".format(
-            path=path,
-            line_number=line_number,
-            matched_text=matched_text)
+            path=path, line_number=line_number, matched_text=matched_text
+        )
         print(result_line)

@@ -252,7 +252,9 @@ def print_grep_matches(grep_matches, color=True):
     """
 
     for view_id, match in enumerate(grep_matches):
-        path =  "/".join(fs.get_filename_parts_wo_prefix(match[0], config["PATH_KB_DATA"]))
+        path = "/".join(
+            fs.get_filename_parts_wo_prefix(
+                match[0], config["PATH_KB_DATA"]))
         line_number = match[1]
         matched_text = match[2]
 

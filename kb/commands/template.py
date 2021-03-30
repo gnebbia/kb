@@ -37,6 +37,7 @@ def get_templates(templates_path: str) -> List[str]:
     """
     return fs.list_files(templates_path)
 
+
 def search(args: Dict[str, str], config: Dict[str, str]):
     """
     Search templates installed in kb.
@@ -58,7 +59,6 @@ def search(args: Dict[str, str], config: Dict[str, str]):
         template_list = [x for x in template_list if args["query"] in x]
     color_mode = not args["no_color"]
     printer.print_template_search_result(template_list, color_mode)
-
 
 
 def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
@@ -113,11 +113,11 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
 
     if fs.is_file(template_path):
-        print("ERROR: The template you inserted corresponds to an existing one. "
-                "Please specify another name for the new template")
+        print(
+            "ERROR: The template you inserted corresponds to an existing one. "
+            "Please specify another name for the new template")
         sys.exit(1)
 
-    
     fs.create_directory(Path(template_path).parent)
     # fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
 
@@ -149,6 +149,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
     else:
         dest_path = config["PATH_KB_TEMPLATES"]
     fs.copy_file(template_path, dest_path)
+
 
 def delete(args: Dict[str, str], config: Dict[str, str]):
     """
@@ -183,7 +184,7 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
 
     if not fs.is_file(template_path):
         print("ERROR: The template you want to edit does not exist. "
-                "Please specify a valid template to edit or create a new one")
+              "Please specify a valid template to edit or create a new one")
         sys.exit(1)
 
     shell_cmd = shlex.split(
@@ -212,7 +213,7 @@ def template(args: Dict[str, str], config: Dict[str, str]):
                                           "list" or "new".
                       file -> used if the command is add, representing the template
                               file to add to kb
-                      template -> used if the command is "delete", "edit" or "new" 
+                      template -> used if the command is "delete", "edit" or "new"
                                   to represent the name of the template
                       query -> used if the command is "list"
     config:         - a configuration dictionary containing at least

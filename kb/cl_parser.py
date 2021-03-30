@@ -390,7 +390,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
 
     # template parser
-    template_subparsers = template_parser.add_subparsers(help='template commands', dest="template_command")
+    template_subparsers = template_parser.add_subparsers(
+        help='template commands', dest="template_command")
     template_subparsers.required = True
 
     # template subcommands
@@ -413,7 +414,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     add_template_parser.add_argument(
-        "-t","--title",
+        "-t", "--title",
         help="The title to assign to the template added from a file to kb",
         type=str,
     )
@@ -484,7 +485,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     apply_template_parser.add_argument(
-        "-m","--extended-match",
+        "-m", "--extended-match",
         help="""
         Perform application query not on a strict match,
         for example:
@@ -531,13 +532,13 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
     # sync parser
     sync_parser.add_argument(
-        'operation', 
+        'operation',
         help="""Use \"init\" to initialize the remote repo,
                 Use \"push\" to git push (write local -> remote) the knowledge base,
                 Use \"pull\" to git pull (retrieve remote -> local) the remote kb,
                 Use \"info\" to show information about the repository
              """,
-        choices=['init','push','pull','info'])
+        choices=['init', 'push', 'pull', 'info'])
 
     help_parser.add_argument(
         'cmd',

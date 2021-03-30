@@ -201,5 +201,6 @@ def get_template(artifact: Artifact, config: Dict[str, str]) -> str:
     if template == "default":
         markers = get_markers(config["PATH_KB_DEFAULT_TEMPLATE"])
     else:
-        markers = get_markers(str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split('/'))))
+        markers = get_markers(
+            str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split('/'))))
     return markers

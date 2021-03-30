@@ -55,9 +55,6 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
             edit_by_name(args["nameid"], args["category"], config)
 
 
-
-
-
 def edit_by_id(id: int, config: Dict[str, str]):
     """
     Edit the content of an artifact by id.

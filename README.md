@@ -24,6 +24,8 @@ Version: 0.1.6
 
    * [Purpose](#purpose)
    * [Installation](#installation)
+      * [Installation from AUR](#installation-from-aur)
+      * [Installation from pkgsrc](#installation-from-pkgsrc)
       * [Installation with homebrew](#installation-with-homebrew)
       * [Notes for Windows users](#notes-for-windows-users)
    * [Docker](#docker)
@@ -157,6 +159,32 @@ Please remember to upgrade kb frequently by doing:
 pip install -U kb-manager
 ```
 
+### Installation from AUR
+
+Arch Linux users can install [kb](https://aur.archlinux.org/packages/kb) or [kb-git](https://aur.archlinux.org/packages/kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
+
+Stable:
+```sh
+yay -S kb
+```
+
+Dev:
+```sh
+yay -S kb-git
+```
+
+### Installation from pkgsrc
+
+Of course it runs on NetBSD (and on pkgsrc). We can install it from pkgsrc source tree
+(databases/py-kb) or as a binary package using pkgin:
+
+```sh
+pkgin in py38-kb
+```
+
+Note that at the moment the package is only available from -current repositories.
+
+
 ### Installation with homebrew
 
 To install using homebrew, use:
@@ -171,19 +199,6 @@ brew update
 brew upgrade gnebbia/kb/kb
 ```
 
-### Installation from AUR
-
-Arch Linux users can install [kb](https://aur.archlinux.org/packages/kb) or [kb-git](https://aur.archlinux.org/packages/kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
-
-Stable:
-```sh
-yay -S kb
-```
-
-Dev:
-```sh
-yay -S kb-git
-```
 
 ### Notes for Windows users
 

@@ -235,12 +235,13 @@ def get_filename_parts_wo_prefix(
     Returns:
     The provided filename without the provided prefix
     """
-    filename_str = str(filename)
-    prefix_str = str(prefix_to_remove)
-    return tuple(filename_str.replace(prefix_str, '')
-                 .replace("/", " ")
-                 .replace("\\", " ")
-                 .strip().split())
+    prefix_path = Path(prefix_to_remove)
+    file_path = Path(filename)
+
+    try:
+        return file_path.relative_to(prefix_path).parts
+    except ValueError:
+        file_path.parts
 
 
 def grep_in_files(

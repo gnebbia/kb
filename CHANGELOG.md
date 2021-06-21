@@ -41,4 +41,7 @@
     * Added grep matches mode (kb grep "string" -m)
     * Fixed important bug in grep mode
     * Added sync mode
-
+0.1.7 (draft)
+    * Fixed grep bug with pull request 89
+    * XDG Compliance: moving files to `$XDG_DATA_HOME/kb`, if it exists, and fall back 
+      to `$HOME/.local/share/kb` if that environment variable does not exist

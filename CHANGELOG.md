@@ -46,3 +46,6 @@
     * XDG Compliance: moving files to `$XDG_DATA_HOME/kb`, if it exists, and fall back 
       to `$HOME/.local/share/kb` if that environment variable does not exist
     * Added kb to pkgsrc
+    * Added stdin functionality to add artifacts. For example:
+      `cat ../script.py | python -m kb add -t mycoolscript`
+      `cat path/to/script.py | python -m kb add -t mycoolscript -c python_scripts`

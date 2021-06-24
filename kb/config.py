@@ -18,7 +18,8 @@ from sys import platform
 from pathlib import Path
 import toml
 
-BASE_PATH = os.environ.get("XDG_DATA_HOME",Path(Path.home(),".local","share","kb"))
+BASE_PATH = Path(os.environ.get("XDG_DATA_HOME",Path(Path.home(),".local","share")),"kb")
+
 
 DEFAULT_CONFIG = {
     "PATH_KB": str(Path(BASE_PATH)),

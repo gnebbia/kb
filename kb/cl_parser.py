@@ -388,6 +388,12 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         default=None,
         type=str,
     )
+    delete_parser.add_argument(
+        "-f", "--force",
+        help="Force removal without asking for confirmation prompt",
+        action='store_true',
+        default=False,
+    )
 
     # template parser
     template_subparsers = template_parser.add_subparsers(

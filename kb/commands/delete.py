@@ -40,13 +40,13 @@ def delete(args: Dict[str, str], config: Dict[str, str]):
 
     if args["id"]:
         for i in args["id"]:
-            delete_by_id(i, config)
+            delete_by_id(i, args["force"], config)
 
     elif args["title"]:
-        delete_by_name(args["title"], args["category"], config)
+        delete_by_name(args["title"], args["category"], args["force"], config)
 
 
-def delete_by_id(id: int, config: Dict[str, str]):
+def delete_by_id(id: int, is_forced: bool, config: Dict[str, str]):
     """
     Edit the content of an artifact by id.
 
@@ -64,8 +64,11 @@ def delete_by_id(id: int, config: Dict[str, str]):
     artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
     artifact = db.get_artifact_by_id(conn, artifact_id)
 
-    if not artifact:
-        return
+    if not is_forced: 
+        confirm = ask_confirmation(artifact.title,artifact.category)
+        if not artifact or not confirm:
+            print("No artifact was removed")
+            return
 
     db.delete_artifact_by_id(conn, artifact_id)
 
@@ -83,7 +86,7 @@ def delete_by_id(id: int, config: Dict[str, str]):
         category=artifact.category, title=artifact.title))
 
 
-def delete_by_name(title: str, category: str, config: Dict[str, str]):
+def delete_by_name(title: str, category: str, is_forced: bool, config: Dict[str, str]):
     """
     Edit the content of an artifact by name, that is title/category
 
@@ -103,6 +106,13 @@ def delete_by_name(title: str, category: str, config: Dict[str, str]):
                                            is_strict=True)
     if len(artifacts) == 1:
         artifact = artifacts.pop()
+
+        if not is_forced:
+            confirm = ask_confirmation(artifact.title,artifact.category)
+            if not artifact or not confirm:
+                print("No artifact was removed")
+                return
+
         db.delete_artifact_by_id(conn, artifact.id)
         print("Artifact {}/{} removed!".format(artifact.category, artifact.title))
     elif len(artifacts) > 1:
@@ -111,3 +121,22 @@ def delete_by_name(title: str, category: str, config: Dict[str, str]):
     else:
         print(
             "There is no artifact with that name, please specify a correct artifact name")
+
+
+def ask_confirmation(title: str, category: str):
+    """
+    Ask confirmation for the deletion of an artifact
+
+    Arguments:
+    title:          - the title assigned to the artifact to delete
+    category:       - the category assigned to the artifact to delete
+
+    Returns:
+    A boolean that is true if the user really wants to remove
+    an artifact, i.e., "y" or "yes" have been typed at the prompt
+    """
+    answer = input(
+        "Are you sure you want to delete {category}/{title}? [y/n]".format(
+            category=category, title=title))
+
+    return not (answer.lower() not in ["y","yes"])

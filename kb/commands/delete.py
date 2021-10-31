@@ -63,6 +63,10 @@ def delete_by_id(id: int, is_forced: bool, config: Dict[str, str]):
     conn = db.create_connection(config["PATH_KB_DB"])
     artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
     artifact = db.get_artifact_by_id(conn, artifact_id)
+    
+    if not artifact:
+        print("Error: Invalid artifact referenced")
+        return
 
     if not is_forced: 
         confirm = ask_confirmation(artifact.title,artifact.category)

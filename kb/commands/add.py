@@ -16,9 +16,10 @@ import sys
 from pathlib import Path
 from subprocess import call
 from typing import Dict
+
 import kb.db as db
-import kb.initializer as initializer
 import kb.filesystem as fs
+import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 
 
@@ -53,6 +54,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
     if args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):
+                print("Error:", fname, "is a directory, ignored.")
                 continue
             add_file_to_kb(conn, args, config, fname)
     else:
@@ -81,15 +83,19 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     body_lines = sys.stdin.readlines()
                     art_file.writelines(body_lines)
             else:
-                shell_cmd = shlex.split(
-                    config["EDITOR"]) + [artifact_path]
+                shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
                 call(shell_cmd)
 
         new_artifact = Artifact(
-            id=None, title=title, category=category,
+            id=None,
+            title=title,
+            category=category,
             path="{category}/{title}".format(category=category, title=title),
             tags=args["tags"],
-            status=args["status"], author=args["author"], template=args["template"])
+            status=args["status"],
+            author=args["author"],
+            template=args["template"],
+        )
         db.insert_artifact(conn, new_artifact)
 
 
@@ -108,10 +114,7 @@ def validate(args):
 
 
 def add_file_to_kb(
-        conn,
-        args: Dict[str, str],
-        config: Dict[str, str],
-        fname: str
+    conn, args: Dict[str, str], config: Dict[str, str], fname: str
 ) -> None:
     """
     Adds a file to the kb knowledge base.
@@ -144,8 +147,12 @@ def add_file_to_kb(
 
     new_artifact = Artifact(
         id=None,
-        title=title, category=category,
+        title=title,
+        category=category,
         path="{category}/{title}".format(category=category, title=title),
         tags=args["tags"],
-        status=args["status"], author=args["author"], template=template)
+        status=args["status"],
+        author=args["author"],
+        template=template,
+    )
     db.insert_artifact(conn, new_artifact)

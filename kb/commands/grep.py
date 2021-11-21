@@ -49,10 +49,14 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     rows = db.get_artifacts_by_filter(conn, title="")
 
     # Get all the file paths related to the artifacts in the database
-    file_list = [Path(config["PATH_KB_DATA"], r.category, r.title) for r in rows]
+    file_list = [Path(config["PATH_KB_DATA"], r.category, r.title)
+                 for r in rows]
 
     # Grep in the files
-    results = fs.grep_in_files(file_list, args["regex"], args["case_insensitive"])
+    results = fs.grep_in_files(
+        file_list,
+        args["regex"],
+        args["case_insensitive"])
 
     # If user specified --matches -> just show matching lines and exit
     color_mode = not args["no_color"]
@@ -95,7 +99,8 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
 
     color_mode = not args["no_color"]
     if args["verbose"]:
-        printer.print_grep_result_verbose(grep_artifacts, grep_hits, color_mode)
+        printer.print_grep_result_verbose(
+            grep_artifacts, grep_hits, color_mode)
     else:
         printer.print_grep_result(grep_artifacts, grep_hits, color_mode)
 

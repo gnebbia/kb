@@ -13,7 +13,7 @@ kb history module
 
 from typing import List
 
-import kb.db as db
+from kb import db
 from kb.entities.artifact import Artifact
 
 

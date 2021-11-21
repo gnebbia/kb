@@ -58,7 +58,8 @@ def update(args: Dict[str, str], config: Dict[str, str]):
 
     # if an ID is specified, load artifact with that ID
     if args["id"]:
-        old_artifact = history.get_artifact(conn, config["PATH_KB_HIST"], args["id"])
+        old_artifact = history.get_artifact(
+            conn, config["PATH_KB_HIST"], args["id"])
         if not old_artifact:
             print(
                 "The artifact you are trying to update does not exist! "
@@ -79,10 +80,12 @@ def update(args: Dict[str, str], config: Dict[str, str]):
         db.update_artifact_by_id(conn, old_artifact.id, updated_artifact)
         # If either title or category has been changed, we must move the file
         if args["category"] or args["title"]:
-            old_category_path = Path(config["PATH_KB_DATA"], old_artifact.category)
+            old_category_path = Path(
+                config["PATH_KB_DATA"],
+                old_artifact.category)
             new_category_path = Path(
-                config["PATH_KB_DATA"], args["category"] or old_artifact.category
-            )
+                config["PATH_KB_DATA"],
+                args["category"] or old_artifact.category)
             fs.create_directory(new_category_path)
 
             fs.move_file(

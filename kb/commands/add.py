@@ -139,7 +139,9 @@ def add_file_to_kb(
     try:
         fs.copy_file(fname, Path(category_path, title))
     except FileNotFoundError:
-        print("Error: The specified file {fname} does not exist!".format(fname=fname))
+        print(
+            "Error: The specified file {fname} does not exist!".format(
+                fname=fname))
         sys.exit(1)
 
     if not db.is_artifact_existing(conn, title, category):

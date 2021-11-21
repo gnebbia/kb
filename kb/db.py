@@ -328,7 +328,8 @@ def get_artifacts_by_filter(
         )
         artifact_id_list.append({art.id for art in artifacts_by_cat})
     if tags:
-        artifacts_by_tags = get_artifacts_by_tags(conn, tags=tags, is_strict=is_strict)
+        artifacts_by_tags = get_artifacts_by_tags(
+            conn, tags=tags, is_strict=is_strict)
         artifact_id_list.append({art.id for art in artifacts_by_tags})
     if author:
         artifacts_by_author = get_artifacts_by_author(

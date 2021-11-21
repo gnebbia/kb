@@ -88,7 +88,11 @@ def git_push(repo_path):
         kb_repo.git.add("--all")
         timestamp = time.strftime("%d/%m/%Y-%H:%M:%S")
         kb_repo.index.commit("kb synchronization {ts}".format(ts=timestamp))
-        kb_repo.remote(name="origin").push(refspec="{}:{}".format("main", "main"))
+        kb_repo.remote(
+            name="origin").push(
+            refspec="{}:{}".format(
+                "main",
+                "main"))
         print("Repository correctly synchronized to remote!")
     except BaseException:
         print("Some error occurred while pushing the code")

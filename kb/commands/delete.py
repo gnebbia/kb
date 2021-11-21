@@ -94,7 +94,8 @@ def delete_by_id(id: int, is_forced: bool, config: Dict[str, str]):
     )
 
 
-def delete_by_name(title: str, category: str, is_forced: bool, config: Dict[str, str]):
+def delete_by_name(title: str, category: str,
+                   is_forced: bool, config: Dict[str, str]):
     """
     Edit the content of an artifact by name, that is title/category
 

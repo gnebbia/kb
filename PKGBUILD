@@ -1,0 +1,28 @@
+# Maintainer: Giuseppe Nebbione <nebbionegiuseppe at gmail dot com>
+
+pkgname=kb-git
+_reponame="kb"
+pkgver=r180.40d361d
+pkgrel=1
+pkgdesc="A command line minimalist knowledge base manager"
+arch=(any)
+url="https://github.com/gnebbia/kb.git"
+license=('GPL3')
+depends=('python' 'python-colored' 'python-gitpython' 'python-toml' 'python-attrs')
+makedepends=('git')
+provides=("kb-git")
+conflicts=("python-kb-git" "python-kb" "kb")
+source=("git+$url")
+md5sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/${_reponame}"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+package() {
+	cd "$srcdir/${_reponame}"
+	python setup.py install --root="${pkgdir}/" --optimize=1
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+

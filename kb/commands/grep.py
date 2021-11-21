@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -57,14 +57,15 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
         args["regex"],
         args["case_insensitive"])
 
+    # If user specified --matches -> just show matching lines and exit
+    color_mode = not args["no_color"]
+    if args["matches"]:
+        printer.print_grep_matches(results, color_mode)
+        sys.exit(0)
+
     # Get the list of artifact tuples in the form (category,title)
     artifact_names = [fs.get_filename_parts_wo_prefix(
         res[0], config["PATH_KB_DATA"]) for res in results]
-
-    # If user specified --matches -> just show matching lines and exit
-    if args["matches"]:
-        printer.print_grep_matches(artifact_names)
-        sys.exit(0)
 
     # Get the set of uniq artifacts
     uniq_artifact_names = set(artifact_names)
@@ -75,8 +76,10 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     grep_result = list()
 
     for art in uniq_artifact_names:
+
         artifact = db.get_artifacts_by_filter(
-            conn, category=art[0], title=art[1])[0]
+            conn, category="/".join(art[:-1]), title=art[-1], is_strict=True)[0]
+
         if artifact:
             no_of_hits = filecounts[art]
             grep_result.append((artifact, no_of_hits))

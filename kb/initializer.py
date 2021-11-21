@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -78,7 +78,6 @@ def create_kb_files(config):
 
     if current_schema_version == 0:
         db.migrate_v0_to_v1(conn)
-    
 
     # Create "data" directory
     fs.create_directory(data_path)
@@ -119,7 +118,6 @@ def is_initialized(config) -> bool:
     db_path = config["PATH_KB_DB"]
     data_path = config["PATH_KB_DATA"]
     templates_path = config["PATH_KB_TEMPLATES"]
-  
 
     for path in [kb_path, db_path, data_path, templates_path]:
         if not os.path.exists(path):

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -149,8 +149,14 @@ def insert_artifact(conn, artifact: Artifact) -> None:
     sql = '''INSERT INTO artifacts
              (title,category,path,tags,author,status,template)
              VALUES(?,?,?,?,?,?,?)'''
-    args = (artifact.title, artifact.category,
-            path, artifact.tags, artifact.author, artifact.status, artifact.template)
+    args = (
+        artifact.title,
+        artifact.category,
+        path,
+        artifact.tags,
+        artifact.author,
+        artifact.status,
+        artifact.template)
 
     cur.execute(sql, args)
     last_artifact_id = cur.lastrowid
@@ -163,6 +169,7 @@ def insert_artifact(conn, artifact: Artifact) -> None:
         cur.execute(sql, args)
 
     conn.commit()
+
 
 def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     """
@@ -199,8 +206,15 @@ def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
     sql = '''INSERT INTO artifacts
              (id, title,category,path,tags,author,status,template)
              VALUES(?,?,?,?,?,?,?,?)'''
-    args = (artifact.id, artifact.title, artifact.category,
-            path, artifact.tags, artifact.author, artifact.status, artifact.template)
+    args = (
+        artifact.id,
+        artifact.title,
+        artifact.category,
+        path,
+        artifact.tags,
+        artifact.author,
+        artifact.status,
+        artifact.template)
 
     cur.execute(sql, args)
     last_artifact_id = cur.lastrowid
@@ -213,6 +227,7 @@ def insert_artifact_with_id(conn, artifact: Artifact, id: int) -> None:
         cur.execute(sql, args)
 
     conn.commit()
+
 
 def delete_artifact_by_id(conn, artifact_id: int) -> None:
     """
@@ -577,6 +592,7 @@ def update_artifact_by_id(
     updated_artifact = Artifact(*new_record)
     insert_artifact_with_id(conn, updated_artifact, artifact_id)
 
+
 def get_schema_version(conn) -> int:
     """
     Check what is the version of the schema used by the
@@ -584,7 +600,7 @@ def get_schema_version(conn) -> int:
 
     Arguments:
     conn            - the database connection object
-    
+
     Returns:
     An int number representing the version of the
     schema used by kb.
@@ -594,6 +610,7 @@ def get_schema_version(conn) -> int:
     cur.execute(sql_query)
     return cur.fetchone()[0]
 
+
 def set_schema_version(conn, version: int) -> int:
     """
     Check what is the version of the schema used by the
@@ -602,7 +619,7 @@ def set_schema_version(conn, version: int) -> int:
     Arguments:
     conn            - the database connection object
     version         - the version of the schema to be set (integer)
-    
+
     Returns:
     An int number representing the version of the
     schema used by kb.
@@ -612,6 +629,7 @@ def set_schema_version(conn, version: int) -> int:
     cur.execute(sql_query)
     conn.commit()
 
+
 def is_schema_updated_to_version(conn, version: int) -> bool:
     """
     Check if the schema version of the database related to the
@@ -620,7 +638,7 @@ def is_schema_updated_to_version(conn, version: int) -> bool:
     Arguments:
     conn            - the database connection object
     version         - the version to check
-    
+
     Returns:
     A boolean that is True if the database schema version is
     equal to th passed version, False otherwise.

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -53,9 +53,6 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
             edit_by_id(args["nameid"], config)
         else:
             edit_by_name(args["nameid"], args["category"], config)
-
-
-
 
 
 def edit_by_id(id: int, config: Dict[str, str]):

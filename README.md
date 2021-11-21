@@ -15,15 +15,17 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2020-10-16
+Date: 2021-03-26
 
-Version: 0.1.5
+Version: 0.1.6
 
 
 ## Table of Contents
 
    * [Purpose](#purpose)
    * [Installation](#installation)
+      * [Installation from AUR](#installation-from-aur)
+      * [Installation from pkgsrc](#installation-from-pkgsrc)
       * [Installation with homebrew](#installation-with-homebrew)
       * [Notes for Windows users](#notes-for-windows-users)
    * [Docker](#docker)
@@ -39,6 +41,7 @@ Version: 0.1.5
          * [Add a file to the artifacts](#add-a-file-to-the-artifacts)
          * [Add all files contained in a directory to kb](#add-all-files-contained-in-a-directory-to-kb)
          * [Create a new artifact from scratch](#create-a-new-artifact-from-scratch)
+         * [Create a new artifact from the output of another program](#create-a-new-artifact-from-the-output-of-another-program)
       * [Delete artifacts](#delete-artifacts)
          * [Delete an artifact by ID](#delete-an-artifact-by-id)
          * [Delete multiple artifacts by ID](#delete-multiple-artifacts-by-id)
@@ -55,6 +58,7 @@ Version: 0.1.5
          * [Grep through the knowledge base](#grep-through-the-knowledge-base)
          * [Grep (case-insensitive) through the knowledge base](#grep-case-insensitive-through-the-knowledge-base)
          * [Grep in "verbose mode" through the knowledge base](#grep-in-verbose-mode-through-the-knowledge-base)
+         * [Grep through the knowledge base and show matching lines](#grep-through-the-knowledge-base-and-show-matching-lines)
       * [Import/Export/Erase a knowledge base](#importexporterase-a-knowledge-base)
          * [Export the current knowledge base](#export-the-current-knowledge-base)
          * [Import a knowledge base](#import-a-knowledge-base)
@@ -69,6 +73,10 @@ Version: 0.1.5
          * [Apply a template to all artifacts of a category](#apply-a-template-to-all-artifacts-of-a-category)
          * [Apply a template to all artifacts having zip in their title](#apply-a-template-to-all-artifacts-having-zip-in-their-title)
          * [Apply a template to all artifacts having specific properties](#apply-a-template-to-all-artifacts-having-specific-properties)
+      * [Integrating kb with other tools](#integrating-kb-with-other-tools)
+         * [kb and rofi](#kb-and-rofi)
+      * [Experimental](#experimental)
+         * [Synchronize kb with a remote git repository](#synchronize-kb-with-a-remote-git-repository)
    * [UPGRADE](#upgrade)
    * [DONATIONS](#donations)
    * [COPYRIGHT](#copyright)
@@ -151,6 +159,32 @@ Please remember to upgrade kb frequently by doing:
 pip install -U kb-manager
 ```
 
+### Installation from AUR
+
+Arch Linux users can install [kb](https://aur.archlinux.org/packages/kb) or [kb-git](https://aur.archlinux.org/packages/kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
+
+Stable:
+```sh
+yay -S kb
+```
+
+Dev:
+```sh
+yay -S kb-git
+```
+
+### Installation from pkgsrc
+
+Of course it runs on NetBSD (and on pkgsrc). We can install it from pkgsrc source tree
+(databases/py-kb) or as a binary package using pkgin:
+
+```sh
+pkgin in py38-kb
+```
+
+Note that at the moment the package is only available from -current repositories.
+
+
 ### Installation with homebrew
 
 To install using homebrew, use:
@@ -165,19 +199,6 @@ brew update
 brew upgrade gnebbia/kb/kb
 ```
 
-### Installation from AUR
-
-Arch Linux users can install [python-kb](https://aur.archlinux.org/packages/python-kb) or [python-kb-git](https://aur.archlinux.org/packages/python-kb-git) with their favorite [AUR Helper](https://wiki.archlinux.org/index.php/AUR_helpers).
-
-Stable:
-```sh
-yay -S python-kb
-```
-
-Dev:
-```sh
-yay -S python-kb-git
-```
 
 ### Notes for Windows users
 
@@ -202,7 +223,7 @@ To set the "EDITOR" Environment variable by using Powershell, just issue
 the following commands, after having inserted the path to your desired
 text editor:
 ```sh
-$env:EDITOR="C:\path\to\editor\here.exe"
+$env:EDITOR='"C:\path\to\editor\here.exe"'
 [System.Environment]::SetEnvironmentVariable('EDITOR','"C:\path\to\editor\here.exe"', [System.EnvironmentVariableTarget]::User)
 ```
 
@@ -353,6 +374,11 @@ kb add --title "ftp" --category "notes" --tags "protocol;network"
 ```
 ![](img/kb_add_from_scratch.gif)
 
+#### Create a new artifact from the output of another program
+```sh
+kb add --title "my_network_scan" --category "scans" --body "$(nmap -T5 -p80 192.168.1.0/24)"
+```
+
 ### Delete artifacts
 
 #### Delete an artifact by ID
@@ -467,6 +493,11 @@ kb grep -i "[BG]ZIP"
 #### Grep in "verbose mode" through the knowledge base
 ```sh
 kb grep -v "[bg]zip"
+```
+
+#### Grep through the knowledge base and show matching lines
+```sh
+kb grep -m "[bg]zip"
 ```
 
 ### Import/Export/Erase a knowledge base
@@ -602,6 +633,50 @@ We can apply the template "light" to all artifacts of the category
 ```sh
 kb template apply "light" --category "cheatsheet" --author "gnc" --status "OK"
 ```
+
+### Integrating kb with other tools
+
+kb can be integrated with other tools.
+
+#### kb and rofi
+
+We can integrate kb with rofi, a custom mode has been developed
+accessible in the "misc" directory within this repository.
+
+We can launch rofi with this mode by doing:
+
+```sh
+rofi -show kb -modi kb:/path/to/rofi-kb-mode.sh
+```
+
+### Experimental
+
+#### Synchronize kb with a remote git repository
+
+Synchronization with a remote git repository is experimental at the moment.
+Anyway we can initialize our knowledge base to a created empty
+github/gitlab (other git service) repository by doing:
+```sh
+kb sync init
+```
+
+We can then push our knowledge base to the remote git repository with:
+```sh
+kb sync push
+```
+
+We can pull (e.g., from another machine) our knowledge base from the
+remote git repository with:
+```sh
+kb sync pull
+```
+
+We can at any time view to what remote endpoint our knowledge is synchronizing
+to with:
+```sh
+kb sync info
+```
+
 
 ## UPGRADE
 

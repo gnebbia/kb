@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -66,6 +66,8 @@ def add(args: Dict[str, str], config: Dict[str, str]):
         category_path = Path(config["PATH_KB_DATA"], category)
         category_path.mkdir(parents=True, exist_ok=True)
 
+        is_stdin_empty = sys.stdin.isatty()
+
         if not db.is_artifact_existing(conn, title, category):
             # If a file is provided, copy the file to kb directory
             # otherwise open up the editor and create some content
@@ -74,6 +76,10 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                 with open(artifact_path, "w+") as art_file:
                     body = args["body"].replace("\\n", "\n")
                     art_file.write(body)
+            elif not is_stdin_empty:
+                with open(artifact_path, "w+") as art_file:
+                    body_lines = sys.stdin.readlines()
+                    art_file.writelines(body_lines)
             else:
                 shell_cmd = shlex.split(
                     config["EDITOR"]) + [artifact_path]

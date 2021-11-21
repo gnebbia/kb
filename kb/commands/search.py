@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -57,6 +57,11 @@ def search(args: Dict[str, str], config: Dict[str, str]):
 
     # Write to history file
     history.write(config["PATH_KB_HIST"], artifacts)
+
+    # Is full_identifier mode enabled?
+    if args["full_identifier"]:
+        printer.print_search_result_full_mode(artifacts)
+        return
 
     # Print resulting list
     color_mode = not args["no_color"]

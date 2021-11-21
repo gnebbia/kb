@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -61,6 +61,7 @@ def list_dirs(directory: str) -> List[str]:
     files = [str(f.relative_to(dirpath))
              for f in dirpath.rglob("*") if f.is_dir()]
     return files
+
 
 def touch_file(filename: str):
     """
@@ -234,12 +235,13 @@ def get_filename_parts_wo_prefix(
     Returns:
     The provided filename without the provided prefix
     """
-    filename_str = str(filename)
-    prefix_str = str(prefix_to_remove)
-    return tuple(filename_str.replace(prefix_str, '')
-                 .replace("/", " ")
-                 .replace("\\", " ")
-                 .strip().split())
+    prefix_path = Path(prefix_to_remove)
+    file_path = Path(filename)
+
+    try:
+        return file_path.relative_to(prefix_path).parts
+    except ValueError:
+        file_path.parts
 
 
 def grep_in_files(

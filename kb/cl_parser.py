@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -67,6 +67,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         'export', help='Export the knowledge base')
     erase_parser = subparsers.add_parser(
         'erase', help='Erase the entire kb knowledge base')
+    sync_parser = subparsers.add_parser(
+        'sync', help='Synchronize the knowledge base with a remote git repository')
     help_parser = subparsers.add_parser(
         'help', help='Show help of a particular command')
 
@@ -198,6 +200,13 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="Show additional information for the provided results",
         action='store_true',
         dest='verbose',
+        default=False,
+    )
+    list_parser.add_argument(
+        "-f", "--full-identifier",
+        help="Print results in full-identifier mode",
+        action='store_true',
+        dest='full_identifier',
         default=False,
     )
     list_parser.add_argument(
@@ -379,9 +388,16 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         default=None,
         type=str,
     )
+    delete_parser.add_argument(
+        "-f", "--force",
+        help="Force removal without asking for confirmation prompt",
+        action='store_true',
+        default=False,
+    )
 
     # template parser
-    template_subparsers = template_parser.add_subparsers(help='template commands', dest="template_command")
+    template_subparsers = template_parser.add_subparsers(
+        help='template commands', dest="template_command")
     template_subparsers.required = True
 
     # template subcommands
@@ -404,7 +420,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     add_template_parser.add_argument(
-        "-t","--title",
+        "-t", "--title",
         help="The title to assign to the template added from a file to kb",
         type=str,
     )
@@ -475,7 +491,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         type=str,
     )
     apply_template_parser.add_argument(
-        "-m","--extended-match",
+        "-m", "--extended-match",
         help="""
         Perform application query not on a strict match,
         for example:
@@ -519,6 +535,16 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         dest='db',
         default=False,
     )
+
+    # sync parser
+    sync_parser.add_argument(
+        'operation',
+        help="""Use \"init\" to initialize the remote repo,
+                Use \"push\" to git push (write local -> remote) the knowledge base,
+                Use \"pull\" to git pull (retrieve remote -> local) the remote kb,
+                Use \"info\" to show information about the repository
+             """,
+        choices=['init', 'push', 'pull', 'info'])
 
     help_parser.add_argument(
         'cmd',

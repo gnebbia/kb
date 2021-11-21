@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -201,5 +201,6 @@ def get_template(artifact: Artifact, config: Dict[str, str]) -> str:
     if template == "default":
         markers = get_markers(config["PATH_KB_DEFAULT_TEMPLATE"])
     else:
-        markers = get_markers(str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split('/'))))
+        markers = get_markers(
+            str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split('/'))))
     return markers

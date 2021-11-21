@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -35,7 +35,6 @@ def generate_template_search_header(
     return header
 
 
-
 def print_template_search_result(
         template_search_result: List[str],
         color: bool = True
@@ -47,11 +46,12 @@ def print_template_search_result(
     template_search_result  - the list of templates
     color                   - a boolean, True if color is enabled
     """
-    
+
     print(generate_template_search_header(color=color))
     print()
 
-    len_template_name = max([len(template) for template in template_search_result])
+    len_template_name = max([len(template)
+                            for template in template_search_result])
 
     # Print template search results
     for view_id, template in enumerate(template_search_result):

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# kb v0.1.5
+# kb v0.1.6
 # A knowledge base organizer
 # Copyright © 2020, gnc.
 # See /LICENSE for licensing information.
@@ -18,17 +18,22 @@ from sys import platform
 from pathlib import Path
 import toml
 
+BASE_PATH = Path(os.environ.get("XDG_DATA_HOME",Path(Path.home(),".local","share")),"kb")
+
+
 DEFAULT_CONFIG = {
-    "PATH_KB": str(Path(Path.home(), ".kb")),
-    "PATH_KB_DB": str(Path(Path.home(), ".kb", "kb.db")),
-    "PATH_KB_HIST": str(Path(Path.home(), ".kb", "recent.hist")),
-    "PATH_KB_DATA": str(Path(Path.home(), ".kb", "data")),
-    "PATH_KB_CONFIG": str(Path(Path.home(), ".kb", "kb.conf.py")),  # for future use
-    "PATH_KB_TEMPLATES": str(Path(Path.home(), ".kb", "templates")),
-    "PATH_KB_DEFAULT_TEMPLATE": str(Path(Path.home(), ".kb", "templates", "default")),
+    "PATH_KB": str(Path(BASE_PATH)),
+    "PATH_KB_DB": str(Path(BASE_PATH, "kb.db")),
+    "PATH_KB_HIST": str(Path(BASE_PATH, "recent.hist")),
+    "PATH_KB_DATA": str(Path(BASE_PATH, "data")),
+    "PATH_KB_GIT": str(Path(BASE_PATH, ".git")),
+    # for future use
+    "PATH_KB_CONFIG": str(Path(BASE_PATH, "kb.conf.py")),
+    "PATH_KB_TEMPLATES": str(Path(BASE_PATH, "templates")),
+    "PATH_KB_DEFAULT_TEMPLATE": str(Path(BASE_PATH, "templates", "default")),
     "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
-    "INITIAL_CATEGORIES": ["default",]
+    "INITIAL_CATEGORIES": ["default", ]
 }
 
 

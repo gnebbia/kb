@@ -11,8 +11,10 @@ kb artifact frozen dataclass
 :License: GPLv3 (see /LICENSE).
 """
 
+# from typing import List, Set, Optional
+from typing import Optional
+
 import attr
-from typing import List, Set, Optional
 
 
 @attr.s(auto_attribs=True, frozen=True, slots=True)

@@ -13,10 +13,12 @@ kb initializer module
 
 import os
 from pathlib import Path
+
 import toml
+
+import kb.config as conf
 import kb.db as db
 import kb.filesystem as fs
-import kb.config as conf
 
 
 def init(config):
@@ -91,7 +93,7 @@ def create_kb_files(config):
         fs.create_directory(category_path)
 
     # Create markers file
-    with open(default_template_path, 'w') as cfg:
+    with open(default_template_path, "w") as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
 

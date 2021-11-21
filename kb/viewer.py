@@ -13,7 +13,8 @@ kb viewer module
 
 import re
 from typing import Dict
-from kb.styler import set_fg, reset
+
+from kb.styler import reset, set_fg
 
 
 def colorize_string(string, color):
@@ -55,16 +56,17 @@ def colorize_row(row, markers=None):
     """
     colored_row = row
     for mark in markers:
-        regex = re.compile(rf'{(markers[mark][0])}')
+        regex = re.compile(rf"{(markers[mark][0])}")
         color = markers[mark][1]
 
         match = regex.search(row)
 
         if match:
             colored_row = re.sub(
-                regex, colorize_string(
-                    match.group(0).replace(
-                        "\\", "\\\\"), color), rf'{row}')
+                regex,
+                colorize_string(match.group(0).replace("\\", "\\\\"), color),
+                rf"{row}",
+            )
             row = colored_row
 
     return colored_row

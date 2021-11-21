@@ -11,14 +11,16 @@ kb view command module
 :License: GPLv3 (see /LICENSE).
 """
 
-import os
-import platform
-import sys
+# import os
+# import platform
+# import tempfile
+
 import shlex
-import tempfile
-from subprocess import call
+import sys
 from pathlib import Path
+from subprocess import call
 from typing import Dict
+
 import kb.db as db
 import kb.filesystem as fs
 import kb.history as history
@@ -58,28 +60,18 @@ def view(args: Dict[str, str], config: Dict[str, str]):
         view_by_id(args["id"], config, args["editor"], color_mode)
     elif args["title"]:
         view_by_name(
-            args["title"],
-            args["category"],
-            config,
-            args["editor"],
-            color_mode)
+            args["title"], args["category"], config, args["editor"], color_mode
+        )
     elif args["nameid"]:
         if args["nameid"].isdigit():
             view_by_id(args["nameid"], config, args["editor"], color_mode)
         else:
             view_by_name(
-                args["nameid"],
-                args["category"],
-                config,
-                args["editor"],
-                color_mode)
+                args["nameid"], args["category"], config, args["editor"], color_mode
+            )
 
 
-def view_by_id(id: int,
-               config: Dict[str,
-                            str],
-               open_editor: bool,
-               color_mode: bool):
+def view_by_id(id: int, config: Dict[str, str], open_editor: bool, color_mode: bool):
     """
     View the content of an artifact by id.
 
@@ -98,8 +90,7 @@ def view_by_id(id: int,
                       enabled when printed on stdout
     """
     conn = db.create_connection(config["PATH_KB_DB"])
-    artifact_id = history.get_artifact_id(
-        config["PATH_KB_HIST"], id)
+    artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
 
     artifact = db.get_artifact_by_id(conn, artifact_id)
 
@@ -127,12 +118,13 @@ def view_by_id(id: int,
         opener.open_non_text_file(artifact_path)
 
 
-def view_by_name(title: str,
-                 category: str,
-                 config: Dict[str,
-                              str],
-                 open_editor: bool,
-                 color_mode: bool):
+def view_by_name(
+    title: str,
+    category: str,
+    config: Dict[str, str],
+    open_editor: bool,
+    color_mode: bool,
+):
     """
     View the content of an artifact by name, that is title/category
 
@@ -151,9 +143,9 @@ def view_by_name(title: str,
                       enabled when printed on stdout
     """
     conn = db.create_connection(config["PATH_KB_DB"])
-    artifacts = db.get_artifacts_by_filter(conn, title=title,
-                                           category=category,
-                                           is_strict=True)
+    artifacts = db.get_artifacts_by_filter(
+        conn, title=title, category=category, is_strict=True
+    )
     if len(artifacts) == 1:
         artifact = artifacts.pop()
         category_path = Path(config["PATH_KB_DATA"], artifact.category)
@@ -176,14 +168,18 @@ def view_by_name(title: str,
             opener.open_non_text_file(artifact_path)
     elif len(artifacts) > 1:
         print(
-            "There is more than one artifact with that title, please specify a category")
+            "There is more than one artifact with that title, "
+            "please specify a category"
+        )
     else:
         print(
-            "There is no artifact with that name, please specify a correct artifact name")
+            "There is no artifact with that name, "
+            "please specify a correct artifact name"
+        )
 
 
 def get_template(artifact: Artifact, config: Dict[str, str]) -> str:
-    """"
+    """ "
     Get template for a specific artifact.
 
     Arguments:
@@ -202,5 +198,6 @@ def get_template(artifact: Artifact, config: Dict[str, str]) -> str:
         markers = get_markers(config["PATH_KB_DEFAULT_TEMPLATE"])
     else:
         markers = get_markers(
-            str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split('/'))))
+            str(Path(*[config["PATH_KB_TEMPLATES"]] + template.split("/")))
+        )
     return markers

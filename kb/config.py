@@ -14,11 +14,15 @@ kb config module
 __all__ = ()
 
 import os
-from sys import platform
+
+# from sys import platform
 from pathlib import Path
+
 import toml
 
-BASE_PATH = Path(os.environ.get("XDG_DATA_HOME",Path(Path.home(),".local","share")),"kb")
+BASE_PATH = Path(
+    os.environ.get("XDG_DATA_HOME", Path(Path.home(), ".local", "share")), "kb"
+)
 
 
 DEFAULT_CONFIG = {
@@ -33,7 +37,9 @@ DEFAULT_CONFIG = {
     "PATH_KB_DEFAULT_TEMPLATE": str(Path(BASE_PATH, "templates", "default")),
     "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
-    "INITIAL_CATEGORIES": ["default", ]
+    "INITIAL_CATEGORIES": [
+        "default",
+    ],
 }
 
 

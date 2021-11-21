@@ -14,11 +14,12 @@ kb grep command module
 import sys
 from pathlib import Path
 from typing import Dict
+
 import kb.db as db
+import kb.filesystem as fs
+import kb.history as history
 import kb.initializer as initializer
 import kb.printer.grep as printer
-import kb.history as history
-import kb.filesystem as fs
 
 
 def grep(args: Dict[str, str], config: Dict[str, str]):
@@ -48,14 +49,10 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     rows = db.get_artifacts_by_filter(conn, title="")
 
     # Get all the file paths related to the artifacts in the database
-    file_list = [Path(config["PATH_KB_DATA"], r.category, r.title)
-                 for r in rows]
+    file_list = [Path(config["PATH_KB_DATA"], r.category, r.title) for r in rows]
 
     # Grep in the files
-    results = fs.grep_in_files(
-        file_list,
-        args["regex"],
-        args["case_insensitive"])
+    results = fs.grep_in_files(file_list, args["regex"], args["case_insensitive"])
 
     # If user specified --matches -> just show matching lines and exit
     color_mode = not args["no_color"]
@@ -64,8 +61,10 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
         sys.exit(0)
 
     # Get the list of artifact tuples in the form (category,title)
-    artifact_names = [fs.get_filename_parts_wo_prefix(
-        res[0], config["PATH_KB_DATA"]) for res in results]
+    artifact_names = [
+        fs.get_filename_parts_wo_prefix(res[0], config["PATH_KB_DATA"])
+        for res in results
+    ]
 
     # Get the set of uniq artifacts
     uniq_artifact_names = set(artifact_names)
@@ -78,7 +77,8 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     for art in uniq_artifact_names:
 
         artifact = db.get_artifacts_by_filter(
-            conn, category="/".join(art[:-1]), title=art[-1], is_strict=True)[0]
+            conn, category="/".join(art[:-1]), title=art[-1], is_strict=True
+        )[0]
 
         if artifact:
             no_of_hits = filecounts[art]
@@ -95,8 +95,7 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
 
     color_mode = not args["no_color"]
     if args["verbose"]:
-        printer.print_grep_result_verbose(
-            grep_artifacts, grep_hits, color_mode)
+        printer.print_grep_result_verbose(grep_artifacts, grep_hits, color_mode)
     else:
         printer.print_grep_result(grep_artifacts, grep_hits, color_mode)
 

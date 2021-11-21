@@ -38,8 +38,7 @@ def list_files(directory: str) -> List[str]:
     dirpath = Path(directory)
 
     # Get list of files in the form: file1, dir1/file2, ...
-    files = [str(f.relative_to(dirpath))
-             for f in dirpath.rglob("*") if f.is_file()]
+    files = [str(f.relative_to(dirpath)) for f in dirpath.rglob("*") if f.is_file()]
     return files
 
 
@@ -58,8 +57,7 @@ def list_dirs(directory: str) -> List[str]:
     dirpath = Path(directory)
 
     # Get list of files in the form: file1, dir1/file2, ...
-    files = [str(f.relative_to(dirpath))
-             for f in dirpath.rglob("*") if f.is_dir()]
+    files = [str(f.relative_to(dirpath)) for f in dirpath.rglob("*") if f.is_dir()]
     return files
 
 
@@ -191,8 +189,7 @@ def get_temp_filepath() -> str:
     """
     tmpfilename = None
     while tmpfilename is None:
-        random_tmp_path = str(Path(tempfile.gettempdir(),
-                                   os.urandom(24).hex()))
+        random_tmp_path = str(Path(tempfile.gettempdir(), os.urandom(24).hex()))
         if not os.path.isfile(random_tmp_path):
             tmpfilename = random_tmp_path
     return tmpfilename
@@ -210,17 +207,24 @@ def is_text_file(filename: str) -> bool:
     Returns:
     A boolean, True if the file is of type text.
     """
-    txt_extensions = ("", ".conf", ".ini", ".txt",
-                      ".md", ".rst", ".ascii", ".org", ".tex")
+    txt_extensions = (
+        "",
+        ".conf",
+        ".ini",
+        ".txt",
+        ".md",
+        ".rst",
+        ".ascii",
+        ".org",
+        ".tex",
+    )
 
     file_ext = os.path.splitext(filename)[1]
 
     return file_ext in txt_extensions
 
 
-def get_filename_parts_wo_prefix(
-        filename: str,
-        prefix_to_remove: str) -> List[str]:
+def get_filename_parts_wo_prefix(filename: str, prefix_to_remove: str) -> List[str]:
     """
     Get filename parts without the provided prefix.
     E.g., if the filename is "/path/to/data/dir1/file2.txt"
@@ -245,9 +249,7 @@ def get_filename_parts_wo_prefix(
 
 
 def grep_in_files(
-        filelist: str,
-        regex: str,
-        case_insensitive: bool = False
+    filelist: str, regex: str, case_insensitive: bool = False
 ) -> List[str]:
     """
     Grep recursively through a file list by trying to match
@@ -287,11 +289,7 @@ def grep_in_files(
     return matches
 
 
-def grep_in_files_uniq(
-        filelist: str,
-        regex: str,
-        case_insensitive=False
-) -> List[str]:
+def grep_in_files_uniq(filelist: str, regex: str, case_insensitive=False) -> List[str]:
     """
     Grep recursively through a list of files by trying to match
     a regex with the content of all the found files.

@@ -13,16 +13,17 @@ kb template command module
 
 import shlex
 import sys
-import toml
 from pathlib import Path
 from subprocess import call
 from typing import Dict, List
-import kb.db as db
-import kb.initializer as initializer
-import kb.filesystem as fs
+
 import kb.config as conf
-from kb.entities.artifact import Artifact
+import kb.db as db
+import kb.filesystem as fs
+import kb.initializer as initializer
 import kb.printer.template as printer
+import toml
+from kb.entities.artifact import Artifact
 
 
 def get_templates(templates_path: str) -> List[str]:
@@ -70,7 +71,7 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
 
     tags_list = None
     if args["tags"] and args["tags"] != "":
-        tags_list = args["tags"].split(';')
+        tags_list = args["tags"].split(";")
 
     conn = db.create_connection(config["PATH_KB_DB"])
     is_query_strict = not args["extended_match"]
@@ -81,7 +82,8 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
         tags=tags_list,
         status=args["status"],
         author=args["author"],
-        is_strict=is_query_strict)
+        is_strict=is_query_strict,
+    )
 
     for artifact in rows:
         updated_artifact = Artifact(
@@ -91,7 +93,8 @@ def apply_on_set(args: Dict[str, str], config: Dict[str, str]):
             tags=artifact.tags,
             author=artifact.author,
             status=artifact.status,
-            template=args["template"])
+            template=args["template"],
+        )
         db.update_artifact_by_id(conn, artifact.id, updated_artifact)
 
 
@@ -106,8 +109,8 @@ def new(args: Dict[str, str], config: Dict[str, str]):
                       the following keys:
                       PATH_KB_TEMPLATES         - the path to where the templates of KB
                                                   are stored
-                      PATH_KB_DEFAULT_TEMPLATE  - the path to where the default template of KB
-                                                  is stored
+                      PATH_KB_DEFAULT_TEMPLATE  - the path to where the default template
+                                                  of KB is stored
                       EDITOR                    - the editor program to call
     """
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
@@ -115,18 +118,18 @@ def new(args: Dict[str, str], config: Dict[str, str]):
     if fs.is_file(template_path):
         print(
             "ERROR: The template you inserted corresponds to an existing one. "
-            "Please specify another name for the new template")
+            "Please specify another name for the new template"
+        )
         sys.exit(1)
 
     fs.create_directory(Path(template_path).parent)
     # fs.copy_file(config["PATH_KB_DEFAULT_TEMPLATE"], template_path)
 
-    with open(template_path, 'w') as tmplt:
+    with open(template_path, "w") as tmplt:
         tmplt.write("# This is an example configuration template\n\n\n")
         tmplt.write(toml.dumps(conf.DEFAULT_TEMPLATE))
 
-    shell_cmd = shlex.split(
-        config["EDITOR"]) + [template_path]
+    shell_cmd = shlex.split(config["EDITOR"]) + [template_path]
     call(shell_cmd)
 
 
@@ -183,22 +186,23 @@ def edit(args: Dict[str, str], config: Dict[str, str]):
     template_path = str(Path(config["PATH_KB_TEMPLATES"]) / args["template"])
 
     if not fs.is_file(template_path):
-        print("ERROR: The template you want to edit does not exist. "
-              "Please specify a valid template to edit or create a new one")
+        print(
+            "ERROR: The template you want to edit does not exist. "
+            "Please specify a valid template to edit or create a new one"
+        )
         sys.exit(1)
 
-    shell_cmd = shlex.split(
-        config["EDITOR"]) + [template_path]
+    shell_cmd = shlex.split(config["EDITOR"]) + [template_path]
     call(shell_cmd)
 
 
 COMMANDS = {
-    'add': add,
-    'delete': delete,
-    'edit': edit,
-    'list': search,
-    'new': new,
-    'apply': apply_on_set,
+    "add": add,
+    "delete": delete,
+    "edit": edit,
+    "list": search,
+    "new": new,
+    "apply": apply_on_set,
 }
 
 

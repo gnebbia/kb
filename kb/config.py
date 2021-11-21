@@ -35,6 +35,7 @@ DEFAULT_CONFIG = {
     "PATH_KB_CONFIG": str(Path(BASE_PATH, "kb.conf.py")),
     "PATH_KB_TEMPLATES": str(Path(BASE_PATH, "templates")),
     "PATH_KB_DEFAULT_TEMPLATE": str(Path(BASE_PATH, "templates", "default")),
+    "PATH_KB_MARKDOWN_TEMPLATE": str(Path(BASE_PATH, "templates", "markdown")),
     "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
     "INITIAL_CATEGORIES": [
@@ -46,6 +47,17 @@ DEFAULT_CONFIG = {
 DEFAULT_TEMPLATE = {
     "TITLES": ("^#.*", "blue"),
     "WARNINGS": ("^!.*", "yellow"),
+}
+
+MARKDOWN_TEMPLATE = {
+    "MARKDOWN": "rich",
+    "STYLE": "paraiso-dark",
+    "JUSTIFY": "full",
+    "HYPERLINKS": False,
+    "PAGER": True,
+    "PAGER_COLOR": True,
+    "PADDING_VERTICAL": 0,
+    "PADDING_HORIZONTAL": 4,
 }
 
 

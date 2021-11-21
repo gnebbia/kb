@@ -29,7 +29,7 @@ setup(
     ],
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
-    install_requires=["colored", "toml", "attr", "attrs", "gitpython"],
+    install_requires=["colored", "toml", "attr", "attrs", "gitpython", "rich"],
     python_requires=">=3.6",
     entry_points={
         "console_scripts": [

@@ -129,13 +129,25 @@ def add_file_to_kb(
                     PATH_KB_DATA, the path to where artifact are stored
     fname       -   the path of the file to add to kb
     """
+    # Title
     title = args["title"] or fs.get_basename(fname)
-    category = args["category"] or "default"
-    template = args["template"] or "default"
 
+    # Template
+    if args["template"]:
+        template = args["template"]
+    elif Path(fname).suffix == ".md":
+        template = "markdown"
+        if args["title"] is None:
+            title = Path(fname).stem
+    else:
+        template = "default"
+
+    # Category
+    category = args["category"] or "default"
     category_path = Path(config["PATH_KB_DATA"], category)
     category_path.mkdir(parents=True, exist_ok=True)
 
+    # Copy
     try:
         fs.copy_file(fname, Path(category_path, title))
     except FileNotFoundError:

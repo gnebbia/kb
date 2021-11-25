@@ -234,10 +234,7 @@ def is_md_file(filename: str) -> bool:
     Returns:
     A boolean, True if the extension of the file is ".md".
     """
-    if os.path.splitext(filename)[1] == ".md":
-        return True
-    else:
-        return False
+    return os.path.splitext(filename)[1] == ".md"
 
 
 def get_filename_parts_wo_prefix(filename: str, prefix_to_remove: str) -> List[str]:

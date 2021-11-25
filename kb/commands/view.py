@@ -67,23 +67,18 @@ def view(args: Dict[str, str], config: Dict[str, str]):
             view_by_id(args["nameid"], config, args["editor"], color_mode)
         else:
             view_by_name(
-                args["nameid"],
-                args["category"],
-                config,
-                args["editor"],
-                color_mode)
+                args["nameid"], args["category"], config, args["editor"], color_mode
+            )
 
 
-def view_by_id(id: int,
-               config: Dict[str,
-                            str],
-               open_editor: bool,
-               color_mode: bool):
+def view_by_id(
+    id_artifact: int, config: Dict[str, str], open_editor: bool, color_mode: bool
+):
     """
     View the content of an artifact by id.
 
     Arguments:
-    id:             - the ID (the one you see with kb list)
+    id_artifact:    - the ID (the one you see with kb list)
                       associated to the artifact we want to edit
     config:         - a configuration dictionary containing at least
                       the following keys:
@@ -97,9 +92,9 @@ def view_by_id(id: int,
                       enabled when printed on stdout
     """
     conn = db.create_connection(config["PATH_KB_DB"])
-    artifact_id = history.get_artifact_id(config["PATH_KB_HIST"], id)
+    id_artifact = history.get_artifact_id(config["PATH_KB_HIST"], id_artifact)
 
-    artifact = db.get_artifact_by_id(conn, artifact_id)
+    artifact = db.get_artifact_by_id(conn, id_artifact)
 
     if not artifact:
         sys.exit(1)

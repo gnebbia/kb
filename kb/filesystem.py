@@ -225,6 +225,15 @@ def is_text_file(filename: str) -> bool:
 
 
 def is_md_file(filename: str) -> bool:
+    """
+    Determines if a file is a markdown based on ".md" extension.
+
+    Arguments:
+    filename        - the file name/path to check
+
+    Returns:
+    A boolean, True if the extension of the file is ".md".
+    """
     if os.path.splitext(filename)[1] == ".md":
         return True
     else:

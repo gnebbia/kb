@@ -135,7 +135,7 @@ def add_file_to_kb(
     # Template
     if args["template"]:
         template = args["template"]
-    elif Path(fname).suffix == ".md":
+    elif fs.is_md_file(fname):
         template = "markdown"
         if args["title"] is None:
             title = Path(fname).stem
@@ -151,9 +151,7 @@ def add_file_to_kb(
     try:
         fs.copy_file(fname, Path(category_path, title))
     except FileNotFoundError:
-        print(
-            "Error: The specified file {fname} does not exist!".format(
-                fname=fname))
+        print("Error: The specified file {fname} does not exist!".format(fname=fname))
         sys.exit(1)
 
     if not db.is_artifact_existing(conn, title, category):

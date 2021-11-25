@@ -131,6 +131,9 @@ def add_file_to_kb(
     """
     # Title
     title = args["title"] or fs.get_basename(fname)
+    dest_fname = (
+        title  # enable artifact to have a title different from the corresponding file
+    )
 
     # Template
     if args["template"]:
@@ -148,14 +151,30 @@ def add_file_to_kb(
     category_path.mkdir(parents=True, exist_ok=True)
 
     # Copy
+
+    if db.is_artifact_existing(conn, title, category):
+        print(
+            "Error: The specified artifact {title} already exist!".format(title=title)
+        )
+        sys.exit(1)
+
+    if fs.is_file(dest_fname):
+        print(
+            "Error: The destination file {dest_fname} already exist!".format(
+                dest_fname=dest_fname
+            )
+        )
+        sys.exit(1)
+
     try:
-        fs.copy_file(fname, Path(category_path, title))
+        fs.copy_file(fname, Path(category_path, dest_fname))
     except FileNotFoundError:
         print("Error: The specified file {fname} does not exist!".format(fname=fname))
         sys.exit(1)
 
-    if not db.is_artifact_existing(conn, title, category):
-        fs.copy_file(fname, Path(category_path, title))
+    # ???
+    # if not db.is_artifact_existing(conn, title, category):
+    #     fs.copy_file(fname, Path(category_path, title))
 
     new_artifact = Artifact(
         id=None,

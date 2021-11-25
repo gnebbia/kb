@@ -67,13 +67,18 @@ def view(args: Dict[str, str], config: Dict[str, str]):
             view_by_id(args["nameid"], config, args["editor"], color_mode)
         else:
             view_by_name(
-                args["nameid"], args["category"], config, args["editor"], color_mode
-            )
+                args["nameid"],
+                args["category"],
+                config,
+                args["editor"],
+                color_mode)
 
 
-def view_by_id(
-    id_artifact: int, config: Dict[str, str], open_editor: bool, color_mode: bool
-):
+def view_by_id(id_artifact: int,
+               config: Dict[str,
+                            str],
+               open_editor: bool,
+               color_mode: bool):
     """
     View the content of an artifact by id.
 

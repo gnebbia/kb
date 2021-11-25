@@ -38,7 +38,8 @@ def list_files(directory: str) -> List[str]:
     dirpath = Path(directory)
 
     # Get list of files in the form: file1, dir1/file2, ...
-    files = [str(f.relative_to(dirpath)) for f in dirpath.rglob("*") if f.is_file()]
+    files = [str(f.relative_to(dirpath))
+             for f in dirpath.rglob("*") if f.is_file()]
     return files
 
 
@@ -57,7 +58,8 @@ def list_dirs(directory: str) -> List[str]:
     dirpath = Path(directory)
 
     # Get list of files in the form: file1, dir1/file2, ...
-    files = [str(f.relative_to(dirpath)) for f in dirpath.rglob("*") if f.is_dir()]
+    files = [str(f.relative_to(dirpath))
+             for f in dirpath.rglob("*") if f.is_dir()]
     return files
 
 
@@ -189,7 +191,10 @@ def get_temp_filepath() -> str:
     """
     tmpfilename = None
     while tmpfilename is None:
-        random_tmp_path = str(Path(tempfile.gettempdir(), os.urandom(24).hex()))
+        random_tmp_path = str(
+            Path(
+                tempfile.gettempdir(),
+                os.urandom(24).hex()))
         if not os.path.isfile(random_tmp_path):
             tmpfilename = random_tmp_path
     return tmpfilename
@@ -237,7 +242,9 @@ def is_md_file(filename: str) -> bool:
     return os.path.splitext(filename)[1] == ".md"
 
 
-def get_filename_parts_wo_prefix(filename: str, prefix_to_remove: str) -> List[str]:
+def get_filename_parts_wo_prefix(
+        filename: str,
+        prefix_to_remove: str) -> List[str]:
     """
     Get filename parts without the provided prefix.
     E.g., if the filename is "/path/to/data/dir1/file2.txt"
@@ -302,7 +309,10 @@ def grep_in_files(
     return matches
 
 
-def grep_in_files_uniq(filelist: str, regex: str, case_insensitive=False) -> List[str]:
+def grep_in_files_uniq(
+        filelist: str,
+        regex: str,
+        case_insensitive=False) -> List[str]:
     """
     Grep recursively through a list of files by trying to match
     a regex with the content of all the found files.

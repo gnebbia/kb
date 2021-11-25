@@ -76,3 +76,4 @@ def get_markers(markers_path: str):
         print("Error: The provided file is not in the toml format")
     except FileNotFoundError:
         print("Error: The provided file does not exist or cannot be accessed")
+    return None

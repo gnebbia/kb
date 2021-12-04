@@ -154,11 +154,11 @@ def add_file_to_kb(
 
     if db.is_artifact_existing(conn, title, category):
         print(
-            "Error: The specified artifact {title} already exist!".format(
-                title=title))
+            "Error: The specified artifact {title} already exist!".format(title=title)
+        )
         sys.exit(1)
 
-    if fs.is_file(dest_fname):
+    if fs.is_file(Path(category_path, dest_fname)):
         print(
             "Error: The destination file {dest_fname} already exist!".format(
                 dest_fname=dest_fname
@@ -169,9 +169,7 @@ def add_file_to_kb(
     try:
         fs.copy_file(fname, Path(category_path, dest_fname))
     except FileNotFoundError:
-        print(
-            "Error: The specified file {fname} does not exist!".format(
-                fname=fname))
+        print("Error: The specified file {fname} does not exist!".format(fname=fname))
         sys.exit(1)
 
     # ???

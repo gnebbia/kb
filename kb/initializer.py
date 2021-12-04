@@ -13,10 +13,12 @@ kb initializer module
 
 import os
 from pathlib import Path
+
 import toml
+
+import kb.config as conf
 import kb.db as db
 import kb.filesystem as fs
-import kb.config as conf
 
 
 def init(config):
@@ -64,6 +66,7 @@ def create_kb_files(config):
     templates_path = config["PATH_KB_TEMPLATES"]
     schema_version = config["DB_SCHEMA_VERSION"]
     default_template_path = str(Path(templates_path) / "default")
+    markdown_template_path = str(Path(templates_path) / "markdown")
 
     # Create main kb
     fs.create_directory(kb_path)
@@ -91,8 +94,12 @@ def create_kb_files(config):
         fs.create_directory(category_path)
 
     # Create markers file
-    with open(default_template_path, 'w') as cfg:
+    with open(default_template_path, "w") as cfg:
         cfg.write(toml.dumps(conf.DEFAULT_TEMPLATE))
+
+    # Create markers file for Markdown
+    with open(markdown_template_path, "w") as md_cfg:
+        md_cfg.write(toml.dumps(conf.MARKDOWN_TEMPLATE))
 
 
 def is_initialized(config) -> bool:

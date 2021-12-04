@@ -12,6 +12,7 @@ kb erase command module
 """
 
 from typing import Dict
+
 import kb.filesystem as fs
 
 
@@ -41,7 +42,8 @@ def erase(args: Dict[str, str], config: Dict[str, str]):
                 pass
     else:
         answer = input(
-            "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]")
+            "Are you sure you want to erase the whole kb knowledge base ? [YES/NO]"
+        )
         if answer.lower() == "yes":
             try:
                 fs.remove_directory(config["PATH_KB"])

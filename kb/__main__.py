@@ -12,9 +12,8 @@ Main routine of kb.
 """
 from kb.main import main
 
+__all__ = ("main",)
 
-__all__ = ('main',)
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

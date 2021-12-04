@@ -3,3 +3,4 @@ attrs
 colored
 toml
 gitpython
+rich

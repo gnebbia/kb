@@ -13,7 +13,9 @@ kb viewer module
 
 import re
 from typing import Dict
-from kb.styler import set_fg, reset
+
+from kb.markdown import md_print
+from kb.styler import reset, set_fg
 
 
 def colorize_string(string, color):
@@ -55,16 +57,17 @@ def colorize_row(row, markers=None):
     """
     colored_row = row
     for mark in markers:
-        regex = re.compile(rf'{(markers[mark][0])}')
+        regex = re.compile(rf"{(markers[mark][0])}")
         color = markers[mark][1]
 
         match = regex.search(row)
 
         if match:
             colored_row = re.sub(
-                regex, colorize_string(
-                    match.group(0).replace(
-                        "\\", "\\\\"), color), rf'{row}')
+                regex,
+                colorize_string(match.group(0).replace("\\", "\\\\"), color),
+                rf"{row}",
+            )
             row = colored_row
 
     return colored_row
@@ -86,6 +89,7 @@ def colorize_output(data, markers):
     """
     if markers is None:
         return data
+
     colorized_output = list()
     for row in data:
         colorized_output.append(colorize_row(row, markers))
@@ -105,6 +109,11 @@ def view(filepath: str, markers: Dict[str, str], color: bool = True) -> None:
     content = ""
     with open(filepath) as fname:
         content = fname.read()
+
+    # Markdown
+    if "MARKDOWN" in markers:
+        md_print(content, markers)
+        return
 
     # Print on screen with proper markers
     lines = content.splitlines()

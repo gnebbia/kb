@@ -14,11 +14,12 @@ kb grep command module
 import sys
 from pathlib import Path
 from typing import Dict
+
 import kb.db as db
+import kb.filesystem as fs
+import kb.history as history
 import kb.initializer as initializer
 import kb.printer.grep as printer
-import kb.history as history
-import kb.filesystem as fs
 
 
 def grep(args: Dict[str, str], config: Dict[str, str]):
@@ -64,8 +65,10 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
         sys.exit(0)
 
     # Get the list of artifact tuples in the form (category,title)
-    artifact_names = [fs.get_filename_parts_wo_prefix(
-        res[0], config["PATH_KB_DATA"]) for res in results]
+    artifact_names = [
+        fs.get_filename_parts_wo_prefix(res[0], config["PATH_KB_DATA"])
+        for res in results
+    ]
 
     # Get the set of uniq artifacts
     uniq_artifact_names = set(artifact_names)
@@ -78,7 +81,8 @@ def grep(args: Dict[str, str], config: Dict[str, str]):
     for art in uniq_artifact_names:
 
         artifact = db.get_artifacts_by_filter(
-            conn, category="/".join(art[:-1]), title=art[-1], is_strict=True)[0]
+            conn, category="/".join(art[:-1]), title=art[-1], is_strict=True
+        )[0]
 
         if artifact:
             no_of_hits = filecounts[art]

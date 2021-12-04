@@ -14,11 +14,15 @@ kb config module
 __all__ = ()
 
 import os
-from sys import platform
+
+# from sys import platform
 from pathlib import Path
+
 import toml
 
-BASE_PATH = Path(os.environ.get("XDG_DATA_HOME",Path(Path.home(),".local","share")),"kb")
+BASE_PATH = Path(
+    os.environ.get("XDG_DATA_HOME", Path(Path.home(), ".local", "share")), "kb"
+)
 
 
 DEFAULT_CONFIG = {
@@ -31,15 +35,29 @@ DEFAULT_CONFIG = {
     "PATH_KB_CONFIG": str(Path(BASE_PATH, "kb.conf.py")),
     "PATH_KB_TEMPLATES": str(Path(BASE_PATH, "templates")),
     "PATH_KB_DEFAULT_TEMPLATE": str(Path(BASE_PATH, "templates", "default")),
+    "PATH_KB_MARKDOWN_TEMPLATE": str(Path(BASE_PATH, "templates", "markdown")),
     "DB_SCHEMA_VERSION": 1,
     "EDITOR": os.environ.get("EDITOR", "vim"),
-    "INITIAL_CATEGORIES": ["default", ]
+    "INITIAL_CATEGORIES": [
+        "default",
+    ],
 }
 
 
 DEFAULT_TEMPLATE = {
     "TITLES": ("^#.*", "blue"),
     "WARNINGS": ("^!.*", "yellow"),
+}
+
+MARKDOWN_TEMPLATE = {
+    "MARKDOWN": "rich",
+    "STYLE": "paraiso-dark",
+    "JUSTIFY": "full",
+    "HYPERLINKS": False,
+    "PAGER": True,
+    "PAGER_COLOR": True,
+    "PADDING_VERTICAL": 0,
+    "PADDING_HORIZONTAL": 4,
 }
 
 
@@ -58,3 +76,4 @@ def get_markers(markers_path: str):
         print("Error: The provided file is not in the toml format")
     except FileNotFoundError:
         print("Error: The provided file does not exist or cannot be accessed")
+    return None

@@ -1,7 +1,7 @@
 .PHONY: default, lint
 
 default:
-	python -m kb
+	python -m kb $(params)
 spell:
 	codespell . --ignore-words-list=hist --skip=./.* --quiet-level=2 || true
 lint:

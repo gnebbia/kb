@@ -12,13 +12,14 @@ kb edit command module
 """
 
 import shlex
+from pathlib import Path
 from subprocess import call
 from typing import Dict
-from pathlib import Path
+
 import kb.db as db
-import kb.initializer as initializer
-import kb.history as history
 import kb.filesystem as fs
+import kb.history as history
+import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 
 
@@ -57,11 +58,13 @@ def update(args: Dict[str, str], config: Dict[str, str]):
 
     # if an ID is specified, load artifact with that ID
     if args["id"]:
-        old_artifact = history.get_artifact(conn,
-                                            config["PATH_KB_HIST"], args["id"])
+        old_artifact = history.get_artifact(
+            conn, config["PATH_KB_HIST"], args["id"])
         if not old_artifact:
-            print("The artifact you are trying to update does not exist! "
-                  "Please insert a valid ID...")
+            print(
+                "The artifact you are trying to update does not exist! "
+                "Please insert a valid ID..."
+            )
             return None
 
         updated_artifact = Artifact(
@@ -71,7 +74,8 @@ def update(args: Dict[str, str], config: Dict[str, str]):
             tags=args["tags"],
             author=args["author"],
             status=args["status"],
-            template=args["template"])
+            template=args["template"],
+        )
 
         db.update_artifact_by_id(conn, old_artifact.id, updated_artifact)
         # If either title or category has been changed, we must move the file
@@ -84,35 +88,44 @@ def update(args: Dict[str, str], config: Dict[str, str]):
                 args["category"] or old_artifact.category)
             fs.create_directory(new_category_path)
 
-            fs.move_file(Path(old_category_path, old_artifact.title), Path(
-                new_category_path, args["title"] or old_artifact.title))
+            fs.move_file(
+                Path(old_category_path, old_artifact.title),
+                Path(new_category_path, args["title"] or old_artifact.title),
+            )
     # else if a title is specified
     elif args["title"]:
-        artifact = db.get_uniq_artifact_by_filter(conn, title=args["title"],
-                                                  category=args["category"],
-                                                  author=args["author"],
-                                                  status=args["status"],
-                                                  is_strict=True)
+        artifact = db.get_uniq_artifact_by_filter(
+            conn,
+            title=args["title"],
+            category=args["category"],
+            author=args["author"],
+            status=args["status"],
+            is_strict=True,
+        )
 
         if artifact:
             category_path = Path(config["PATH_KB_DATA"], artifact.category)
         else:
             print(
-                "There is none or more than one artifact with that title, please specify a category")
+                "There is none or more than one artifact with that title, "
+                " please specify a category"
+            )
 
     if args["edit_content"] or args["body"]:
         if args["title"]:
             artifact_path = str(Path(category_path, artifact.title))
             shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
         elif args["id"]:
-            artifact_path = str(Path(config["PATH_KB_DATA"])
-                                / old_artifact.category
-                                / old_artifact.title)
+            artifact_path = str(
+                Path(config["PATH_KB_DATA"])
+                / old_artifact.category
+                / old_artifact.title
+            )
             shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
 
         if args["body"]:
             args["body"] = args["body"].replace("\\n", "\n")
-            with open(artifact_path, 'w') as art_file:
+            with open(artifact_path, "w") as art_file:
                 art_file.write(args["body"])
         else:
             call(shell_cmd)

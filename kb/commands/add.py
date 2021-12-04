@@ -16,9 +16,10 @@ import sys
 from pathlib import Path
 from subprocess import call
 from typing import Dict
+
 import kb.db as db
-import kb.initializer as initializer
 import kb.filesystem as fs
+import kb.initializer as initializer
 from kb.entities.artifact import Artifact
 
 
@@ -53,6 +54,7 @@ def add(args: Dict[str, str], config: Dict[str, str]):
     if args["file"]:
         for fname in args["file"]:
             if fs.is_directory(fname):
+                print("Error:", fname, "is a directory, ignored.")
                 continue
             add_file_to_kb(conn, args, config, fname)
     else:
@@ -81,15 +83,19 @@ def add(args: Dict[str, str], config: Dict[str, str]):
                     body_lines = sys.stdin.readlines()
                     art_file.writelines(body_lines)
             else:
-                shell_cmd = shlex.split(
-                    config["EDITOR"]) + [artifact_path]
+                shell_cmd = shlex.split(config["EDITOR"]) + [artifact_path]
                 call(shell_cmd)
 
         new_artifact = Artifact(
-            id=None, title=title, category=category,
+            id=None,
+            title=title,
+            category=category,
             path="{category}/{title}".format(category=category, title=title),
             tags=args["tags"],
-            status=args["status"], author=args["author"], template=args["template"])
+            status=args["status"],
+            author=args["author"],
+            template=args["template"],
+        )
         db.insert_artifact(conn, new_artifact)
 
 
@@ -108,10 +114,7 @@ def validate(args):
 
 
 def add_file_to_kb(
-        conn,
-        args: Dict[str, str],
-        config: Dict[str, str],
-        fname: str
+    conn, args: Dict[str, str], config: Dict[str, str], fname: str
 ) -> None:
     """
     Adds a file to the kb knowledge base.
@@ -126,26 +129,61 @@ def add_file_to_kb(
                     PATH_KB_DATA, the path to where artifact are stored
     fname       -   the path of the file to add to kb
     """
+    # Title
     title = args["title"] or fs.get_basename(fname)
-    category = args["category"] or "default"
-    template = args["template"] or "default"
+    dest_fname = (
+        title  # enable artifact to have a title different from the corresponding file
+    )
 
+    # Template
+    if args["template"]:
+        template = args["template"]
+    elif fs.is_md_file(fname):
+        template = "markdown"
+        if args["title"] is None:
+            title = Path(fname).stem
+    else:
+        template = "default"
+
+    # Category
+    category = args["category"] or "default"
     category_path = Path(config["PATH_KB_DATA"], category)
     category_path.mkdir(parents=True, exist_ok=True)
 
-    try:
-        fs.copy_file(fname, Path(category_path, title))
-    except FileNotFoundError:
-        print("Error: The specified file does not exist!".format(fname=fname))
+    # Copy
+
+    if db.is_artifact_existing(conn, title, category):
+        print(
+            "Error: The specified artifact {title} already exist!".format(title=title)
+        )
         sys.exit(1)
 
-    if not db.is_artifact_existing(conn, title, category):
-        fs.copy_file(fname, Path(category_path, title))
+    if fs.is_file(Path(category_path, dest_fname)):
+        print(
+            "Error: The destination file {dest_fname} already exist!".format(
+                dest_fname=dest_fname
+            )
+        )
+        sys.exit(1)
+
+    try:
+        fs.copy_file(fname, Path(category_path, dest_fname))
+    except FileNotFoundError:
+        print("Error: The specified file {fname} does not exist!".format(fname=fname))
+        sys.exit(1)
+
+    # ???
+    # if not db.is_artifact_existing(conn, title, category):
+    #     fs.copy_file(fname, Path(category_path, title))
 
     new_artifact = Artifact(
         id=None,
-        title=title, category=category,
+        title=title,
+        category=category,
         path="{category}/{title}".format(category=category, title=title),
         tags=args["tags"],
-        status=args["status"], author=args["author"], template=template)
+        status=args["status"],
+        author=args["author"],
+        template=template,
+    )
     db.insert_artifact(conn, new_artifact)

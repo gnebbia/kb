@@ -14,37 +14,35 @@ kb main module
 __all__ = ()
 
 import sys
+
 from kb.cl_parser import parse_args
-
 from kb.commands.add import add
-from kb.commands.search import search
-from kb.commands.edit import edit
-from kb.commands.update import update
 from kb.commands.delete import delete
-from kb.commands.template import template
-from kb.commands.view import view
-from kb.commands.grep import grep
+from kb.commands.edit import edit
 from kb.commands.erase import erase
-from kb.commands.ingest import ingest
 from kb.commands.export import export
+from kb.commands.grep import grep
+from kb.commands.ingest import ingest
+from kb.commands.search import search
 from kb.commands.sync import sync
-
+from kb.commands.template import template
+from kb.commands.update import update
+from kb.commands.view import view
 from kb.config import DEFAULT_CONFIG
 
-
 COMMANDS = {
-    'add': add,
-    'delete': delete,
-    'edit': edit,
-    'update': update,
-    'list': search,
-    'view': view,
-    'grep': grep,
-    'erase': erase,
-    'import': ingest,
-    'export': export,
-    'template': template,
-    'sync': sync,
+    "add": add,
+    "delete": delete,
+    "edit": edit,
+    "update": update,
+    "list": search,
+    "view": view,
+    "grep": grep,
+    "erase": erase,
+    "import": ingest,
+    "export": export,
+    "template": template,
+    "sync": sync,
 }
 
 

@@ -12,10 +12,11 @@ kb search command module
 """
 
 from typing import Dict
+
 import kb.db as db
+import kb.history as history
 import kb.initializer as initializer
 import kb.printer.search as printer
-import kb.history as history
 
 
 def search(args: Dict[str, str], config: Dict[str, str]):
@@ -41,7 +42,7 @@ def search(args: Dict[str, str], config: Dict[str, str]):
 
     tags_list = None
     if args["tags"] and args["tags"] != "":
-        tags_list = args["tags"].split(';')
+        tags_list = args["tags"].split(";")
 
     conn = db.create_connection(config["PATH_KB_DB"])
     rows = db.get_artifacts_by_filter(
@@ -50,7 +51,8 @@ def search(args: Dict[str, str], config: Dict[str, str]):
         category=args["category"],
         tags=tags_list,
         status=args["status"],
-        author=args["author"])
+        author=args["author"],
+    )
 
     # rows.sort(key=lambda x: x[1])
     artifacts = sorted(rows, key=lambda x: x.title)

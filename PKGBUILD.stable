@@ -3,7 +3,7 @@
 pkgbase='kb'
 pkgname=('kb')
 _module='kb-manager'
-pkgver='0.1.6'
+pkgver='0.1.7'
 pkgrel=1
 pkgdesc="A command line minimalist knowledge base manager"
 url="https://github.com/gnebbia/kb"

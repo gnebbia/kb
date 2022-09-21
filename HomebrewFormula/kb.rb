@@ -4,7 +4,7 @@ class Kb < Formula
   desc "Minimalist knowledge base manager"
   homepage "https://github.com/gnebbia/kb"
   url "https://github.com/gnebbia/kb.git",
-    tag:      "v0.1.6",
+    tag:      "v0.1.7",
     revision: "40d361d420baab260e6a57a21f4908f1a8a283ee"
   license "GPL-3.0-or-later"
 

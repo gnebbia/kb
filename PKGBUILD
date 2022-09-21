@@ -13,7 +13,7 @@ makedepends=('git')
 provides=("kb-git")
 conflicts=("python-kb-git" "python-kb" "kb")
 source=("git+$url")
-md5sums=('SKIP')
+md5sums=('')
 
 pkgver() {
 	cd "$srcdir/${_reponame}"

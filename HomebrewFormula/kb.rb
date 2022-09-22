@@ -5,7 +5,7 @@ class Kb < Formula
   homepage "https://github.com/gnebbia/kb"
   url "https://github.com/gnebbia/kb.git",
     tag:      "v0.1.7",
-    revision: "40d361d420baab260e6a57a21f4908f1a8a283ee"
+    revision: "be3aceb291e7e58e0d17eb4ceeac3090353c917f"
   license "GPL-3.0-or-later"
 
   depends_on "python@3.8"

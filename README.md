@@ -75,6 +75,7 @@ Version: 0.1.7
       * [Experimental](#experimental)
          * [Synchronize kb with a remote git repository](#synchronize-kb-with-a-remote-git-repository)
    * [UPGRADE](#upgrade)
+   * [FAQ](#faq)
    * [DONATIONS](#donations)
    * [COPYRIGHT](#copyright)
 
@@ -689,6 +690,19 @@ git clone https://github.com/gnebbia/kb
 cd kb
 pip install --upgrade .
 ```
+
+## FAQ
+
+Q) How do I solve the `AttributeError: module 'attr' has no attribute 's'` error?
+
+A) Uninstall attr and use attrs:
+```sh
+pip uninstall attr
+pip uninstall attrs
+pip install attrs
+pip install -U kb-manager
+```
+
 
 ## DONATIONS
 

@@ -727,3 +727,11 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+## Similar projects
+
+- [Command Line Interface Pages](https://github.com/command-line-interface-pages)
+- [TlDr](https://github.com/tldr-pages/tldr)
+- [Cheat](https://github.com/cheat/cheat)
+- [Cheatsheets](https://github.com/rstacruz/cheatsheets)
+- [Eg](https://github.com/srsudar/eg)

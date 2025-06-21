@@ -24,7 +24,7 @@ A knowledge base organizer
 """
 
 __title__ = 'kb'
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 __author__ = 'gnc'
 __license__ = 'GPLv3'
 __docformat__ = 'restructuredtext en'

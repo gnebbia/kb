@@ -63,3 +63,7 @@
       `cat ../script.py | python -m kb add -t mycoolscript`
       `cat path/to/script.py | python -m kb add -t mycoolscript -c python_scripts`
     * Implemented the confirmation mechanism for artifact removal
+
+0.1.8
+    
+    * Fixed bug with colored module

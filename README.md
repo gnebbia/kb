@@ -12,9 +12,9 @@ Author: gnc <nebbionegiuseppe@gmail.com>
 
 Copyright: © 2020, gnc
 
-Date: 2022-09-21
+Date: 2025-06-22
 
-Version: 0.1.7
+Version: 0.1.8
 
 
 ## Table of Contents

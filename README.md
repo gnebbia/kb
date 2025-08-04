@@ -728,6 +728,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+This program includes code from 'shtab' library licensed under the
+Apache License 2.0. The original copyright holders retain their
+copyright. You may obtain a copy of the license at
+http://www.apache.org/licenses/LICENSE-2.0
+
 ## Similar projects
 
 - [Command Line Interface Pages](https://github.com/command-line-interface-pages)

@@ -15,8 +15,33 @@ __all__ = ()
 
 import sys
 import argparse
+import shtab
 from kb import __version__
 from typing import Sequence
+
+commands_descriptions = {
+    'add': 'Add an artifact',
+    'edit': 'Edit an artifact content',
+    'list': 'Search for artifacts',
+    'view': 'View artifacts',
+    'grep': 'Grep through kb artifacts',
+    'update': 'Update artifact properties',
+    'delete': 'Delete artifacts',
+    'template': {
+        '.': 'Manage templates for artifacts',
+        'add': 'Add a template from a file',
+        'edit': 'Edit a template',
+        'list': 'List all templates',
+        'new': 'Create a template from starting from an example',
+        'delete': 'Delete an existing template',
+        'apply': 'Apply a template to an entire set of artifacts'
+    },
+    'import': 'Import a knowledge base',
+    'export': 'Export the knowledge base',
+    'erase': 'Erase the entire kb knowledge base',
+    'sync': 'Synchronize the knowledge base with a remote git repository',
+    'help': 'Show help of a particular command'
+}
 
 
 def parse_args(args: Sequence[str]) -> argparse.Namespace:
@@ -36,6 +61,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog='kb',
                                      description='A knowledge base organizer')
 
+    shtab.add_argument_to(parser, ["--print-completion"])
+
     parser.add_argument(
         "--version",
         action="version",
@@ -46,31 +73,57 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
     # Main Commands
     add_parser = subparsers.add_parser(
-        'add', help='Add an artifact')
+        'add',
+        description=commands_descriptions['add'],
+        help=commands_descriptions['add'])
     edit_parser = subparsers.add_parser(
-        'edit', help='Edit an artifact content')
+        'edit',
+        description=commands_descriptions['edit'],
+        help=commands_descriptions['edit'])
     list_parser = subparsers.add_parser(
-        'list', help='Search for artifacts')
+        'list',
+        description=commands_descriptions['list'],
+        help=commands_descriptions['list'])
     view_parser = subparsers.add_parser(
-        'view', help='View artifacts')
+        'view',
+        description=commands_descriptions['view'],
+        help=commands_descriptions['view'])
     grep_parser = subparsers.add_parser(
-        'grep', help='Grep through kb artifacts')
+        'grep',
+        description=commands_descriptions['grep'],
+        help=commands_descriptions['grep'])
     update_parser = subparsers.add_parser(
-        'update', help='Update artifact properties')
+        'update',
+        description=commands_descriptions['update'],
+        help=commands_descriptions['update'])
     delete_parser = subparsers.add_parser(
-        'delete', help='Delete artifacts')
+        'delete',
+        description=commands_descriptions['delete'],
+        help=commands_descriptions['delete'])
     template_parser = subparsers.add_parser(
-        'template', help='Manage templates for artifacts')
+        'template',
+        description=commands_descriptions['template']['.'],
+        help=commands_descriptions['template']['.'])
     import_parser = subparsers.add_parser(
-        'import', help='Import a knowledge base')
+        'import',
+        description=commands_descriptions['import'],
+        help=commands_descriptions['import'])
     export_parser = subparsers.add_parser(
-        'export', help='Export the knowledge base')
+        'export',
+        description=commands_descriptions['export'],
+        help=commands_descriptions['export'])
     erase_parser = subparsers.add_parser(
-        'erase', help='Erase the entire kb knowledge base')
+        'erase',
+        description=commands_descriptions['erase'],
+        help=commands_descriptions['erase'])
     sync_parser = subparsers.add_parser(
-        'sync', help='Synchronize the knowledge base with a remote git repository')
+        'sync',
+        description=commands_descriptions['sync'],
+        help=commands_descriptions['sync'])
     help_parser = subparsers.add_parser(
-        'help', help='Show help of a particular command')
+        'help',
+        description=commands_descriptions['help'],
+        help=commands_descriptions['help'])
 
     # add parser
     add_parser.add_argument(
@@ -78,6 +131,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         help="Path of the file to add to kb as artifact",
         type=str,
         nargs="*",
+        choices=shtab.Required.FILE
     )
     add_parser.add_argument(
         "-t", "--title",
@@ -92,9 +146,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
     add_parser.add_argument(
         "-g", "--tags",
-        help="""
-        Tags to associate to the artifact in the form \"tag1;tag2;...;tagN\"
-        """,
+        help="Tags to associate to the artifact in the form \"tag1;tag2;...;tagN\"",
         type=str,
     )
     add_parser.add_argument(
@@ -177,9 +229,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
     list_parser.add_argument(
         "-g", "--tags",
-        help="""
-        Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"
-        """,
+        help="Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"",
         default=None,
         type=str,
     )
@@ -268,9 +318,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
     )
     grep_parser.add_argument(
         "-g", "--tags",
-        help="""
-        Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"
-        """,
+        help="Tags associates to the artifact to search in the form \"tag1;tag2;...;tagN\"",
         default=None,
         type=str,
     )
@@ -402,22 +450,35 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
 
     # template subcommands
     add_template_parser = template_subparsers.add_parser(
-        'add', help='Add a template from a file')
+        'add',
+        description=commands_descriptions['template']['add'],
+        help=commands_descriptions['template']['add'])
     edit_template_parser = template_subparsers.add_parser(
-        'edit', help='Edit a template')
+        'edit',
+        description=commands_descriptions['template']['edit'],
+        help=commands_descriptions['template']['edit'])
     list_template_parser = template_subparsers.add_parser(
-        'list', help='List all templates')
+        'list',
+        description=commands_descriptions['template']['list'],
+        help=commands_descriptions['template']['list'])
     new_template_parser = template_subparsers.add_parser(
-        'new', help='Create a template from starting from an example')
+        'new',
+        description=commands_descriptions['template']['new'],
+        help=commands_descriptions['template']['new'])
     delete_template_parser = template_subparsers.add_parser(
-        'delete', help='Delete an existing template')
+        'delete',
+        description=commands_descriptions['template']['delete'],
+        help=commands_descriptions['template']['delete'])
     apply_template_parser = template_subparsers.add_parser(
-        'apply', help='Apply a template to an entire set of artifacts')
+        'apply',
+        description=commands_descriptions['template']['apply'],
+        help=commands_descriptions['template']['apply'])
 
     add_template_parser.add_argument(
         "file",
         help="The template file to add to kb",
         type=str,
+        choices=shtab.Required.FILE
     )
     add_template_parser.add_argument(
         "-t", "--title",
@@ -509,6 +570,7 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         "file",
         help="Archive to import as knowledge base",
         type=str,
+        choices=shtab.Required.FILE
     )
 
     # export parser
@@ -516,7 +578,8 @@ def parse_args(args: Sequence[str]) -> argparse.Namespace:
         "-f", "--file",
         help="Name of the exported archive",
         type=str,
-        nargs="?"
+        nargs="?",
+        choices=shtab.Required.FILE
     )
     export_parser.add_argument(
         "-d",
